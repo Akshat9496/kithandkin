@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kith & Kin — Premium elder concierge service for families who cannot always be present. Structured visits, vital monitoring, and same-day WhatsApp updates. Serving South Delhi, Noida and Gurgaon.">
+<title>Kith & Kin — Elder Concierge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ─────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+:root {
+  --deep:   #2C2418;
+  --ivory:  #FAF7F2;
+  --cream:  #F2EDE4;
+  --sand:   #D9CFC0;
+  --terra:  #A0674A;
+  --gold:   #BFA06A;
+  --muted:  #7A6E62;
+  --sage:   #6E8C74;
+  --white:  #FFFFFF;
+  --nav-h:  68px;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ivory);
+  color: var(--deep);
+  overflow-x: hidden;
+}
+
+/* ── Typography helpers ───────────────────────── */
+.display { font-family: 'Cormorant Garamond', serif; }
+.eyebrow {
+  font-size: 0.68rem; font-weight: 400; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--terra);
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 300; line-height: 1.1;
+}
+.section-title em { font-style: italic; color: var(--terra); }
+
+/* ── Nav ──────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%;
+  background: rgba(44,36,24,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(191,160,106,0.15);
+  transition: all 0.3s ease;
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem; font-weight: 400; color: var(--ivory);
+  text-decoration: none; letter-spacing: 0.04em;
+}
+.nav-logo em { font-style: italic; color: var(--gold); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  font-size: 0.78rem; font-weight: 300; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--sand);
+  text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-cta {
+  background: none; border: 1px solid var(--gold);
+  color: var(--gold) !important; padding: 0.5rem 1.2rem;
+  font-size: 0.72rem !important; letter-spacing: 0.15em !important;
+  cursor: pointer; transition: all 0.2s !important;
+  text-decoration: none;
+}
+.nav-cta:hover { background: var(--gold) !important; color: var(--deep) !important; }
+
+/* Hamburger */
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; width: 22px; height: 1.5px; background: var(--sand); transition: all 0.3s; }
+.mobile-menu {
+  display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
+  background: rgba(44,36,24,0.98); padding: 2rem 5%;
+  flex-direction: column; gap: 1.5rem; z-index: 99;
+  border-bottom: 1px solid rgba(191,160,106,0.15);
+}
+.mobile-menu a {
+  font-size: 0.85rem; font-weight: 300; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--sand); text-decoration: none;
+  padding: 0.5rem 0; border-bottom: 1px solid rgba(217,207,192,0.1);
+}
+.mobile-menu.open { display: flex; }
+
+/* ── Hero ─────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  background: var(--deep);
+  display: flex; align-items: center;
+  position: relative; overflow: hidden;
+  padding: calc(var(--nav-h) + 4rem) 5% 5rem;
+}
+
+/* Decorative arcs */
+.hero-arc {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(191,160,106,0.12);
+  pointer-events: none;
+}
+.hero-arc1 { width: 600px; height: 600px; top: -150px; right: -150px; }
+.hero-arc2 { width: 900px; height: 900px; top: -300px; right: -300px; border-color: rgba(191,160,106,0.06); }
+.hero-arc3 { width: 300px; height: 300px; bottom: 50px; left: -100px; border-color: rgba(191,160,106,0.08); }
+
+/* Grain texture overlay */
+.hero::after, #hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: 0.4; pointer-events: none;
+}
+
+.hero-content {
+  max-width: 680px; position: relative; z-index: 2;
+  animation: fadeUp 0.9s ease both;
+}
+.hero-eyebrow {
+  font-size: 0.7rem; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--gold); font-weight: 300; margin-bottom: 1.8rem;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  font-weight: 300; line-height: 0.95;
+  color: var(--ivory); margin-bottom: 1.2rem;
+}
+.hero-title em { font-style: italic; color: var(--gold); display: block; }
+.hero-rule { width: 48px; height: 1px; background: var(--gold); margin: 2rem 0; }
+.hero-sub {
+  font-size: 1rem; font-weight: 300; line-height: 1.8;
+  color: var(--sand); margin-bottom: 0.7rem; max-width: 500px;
+}
+.hero-sub strong { color: var(--ivory); font-weight: 400; }
+.hero-tags {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  margin: 2rem 0 2.8rem;
+}
+.hero-tag {
+  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--sand); border: 1px solid rgba(217,207,192,0.25);
+  padding: 0.35rem 0.85rem; font-weight: 300;
+}
+.hero-buttons { display: flex; flex-wrap: wrap; gap: 1rem; }
+.btn-primary {
+  background: var(--gold); color: var(--deep);
+  padding: 0.9rem 2.2rem; font-size: 0.78rem;
+  font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all 0.25s; display: inline-block;
+}
+.btn-primary:hover { background: var(--ivory); }
+.btn-outline {
+  background: none; color: var(--sand);
+  border: 1px solid rgba(217,207,192,0.35);
+  padding: 0.9rem 2.2rem; font-size: 0.78rem;
+  font-weight: 300; letter-spacing: 0.15em; text-transform: uppercase;
+  text-decoration: none; cursor: pointer;
+  transition: all 0.25s; display: inline-block;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute; bottom: 2.5rem; left: 5%;
+  display: flex; align-items: center; gap: 0.8rem;
+  font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(217,207,192,0.4); z-index: 2;
+  animation: fadeUp 1.2s 0.4s ease both;
+}
+.scroll-line {
+  width: 40px; height: 1px; background: rgba(191,160,106,0.3);
+  position: relative; overflow: hidden;
+}
+.scroll-line::after {
+  content: ''; position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%; background: var(--gold);
+  animation: scanline 2s 1s ease-in-out infinite;
+}
+
+/* ── Why Us (Stats strip) ─────────────────────── */
+#why {
+  background: var(--terra);
+  padding: 2.5rem 5%;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+.why-item { text-align: center; }
+.why-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 300; color: var(--ivory); line-height: 1;
+}
+.why-label {
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(250,247,242,0.65); margin-top: 0.4rem; font-weight: 300;
+}
+
+/* ── About ────────────────────────────────────── */
+#about {
+  padding: 7rem 5%;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6rem; align-items: center;
+  background: var(--ivory);
+}
+.about-left { position: relative; }
+.about-card {
+  background: var(--deep); padding: 3rem;
+  position: relative;
+}
+.about-card::before {
+  content: '\201C';
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 8rem; color: var(--gold); opacity: 0.2;
+  position: absolute; top: -1rem; left: 1.5rem; line-height: 1;
+}
+.about-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 300; font-style: italic;
+  color: var(--sand); line-height: 1.7; position: relative; z-index: 1;
+}
+.about-attr {
+  margin-top: 1.5rem;
+  font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold); font-weight: 400;
+}
+.about-accent {
+  position: absolute; bottom: -1.5rem; right: -1.5rem;
+  width: 80px; height: 80px;
+  border: 1px solid var(--gold); opacity: 0.3;
+}
+.about-right {}
+.about-body {
+  font-size: 0.97rem; font-weight: 300; line-height: 1.85;
+  color: var(--muted); margin-bottom: 1.4rem;
+}
+.about-body strong { color: var(--deep); font-weight: 500; }
+.about-rule { width: 36px; height: 1.5px; background: var(--gold); margin: 2rem 0; }
+
+/* ── How it works ─────────────────────────────── */
+#how {
+  background: var(--cream);
+  padding: 7rem 5%;
+}
+.how-header { text-align: center; margin-bottom: 5rem; }
+.how-header .eyebrow { margin-bottom: 1rem; }
+.how-rule { width: 36px; height: 1.5px; background: var(--gold); margin: 1.5rem auto 0; }
+.steps-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0; position: relative;
+}
+.steps-grid::before {
+  content: '';
+  position: absolute; top: 28px; left: 12.5%; right: 12.5%;
+  height: 1px; background: var(--sand);
+}
+.step { padding: 0 1.5rem; text-align: center; position: relative; }
+.step-num {
+  width: 56px; height: 56px; border: 1px solid var(--gold);
+  border-radius: 50%; margin: 0 auto 1.8rem;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem; color: var(--gold); background: var(--cream);
+  position: relative; z-index: 1;
+}
+.step-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; font-weight: 400; color: var(--deep);
+  margin-bottom: 0.8rem;
+}
+.step-body { font-size: 0.85rem; font-weight: 300; color: var(--muted); line-height: 1.7; }
+
+/* ── Plans ────────────────────────────────────── */
+#plans {
+  padding: 7rem 5%;
+  background: var(--ivory);
+}
+.plans-header { text-align: center; margin-bottom: 4rem; }
+.plans-header .eyebrow { margin-bottom: 1rem; }
+.plans-rule { width: 36px; height: 1.5px; background: var(--gold); margin: 1.5rem auto 0; }
+.plans-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px; background: var(--sand);
+  max-width: 960px; margin: 0 auto 3rem;
+}
+.plan-card {
+  background: var(--white); padding: 2.8rem 2rem;
+  display: flex; flex-direction: column;
+  position: relative; transition: transform 0.2s;
+}
+.plan-card:hover { transform: translateY(-4px); }
+.plan-card.featured { background: var(--deep); }
+.plan-badge {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: var(--deep);
+  font-size: 0.6rem; letter-spacing: 0.2em; font-weight: 600;
+  text-transform: uppercase; padding: 0.25rem 1rem; white-space: nowrap;
+}
+.plan-tier { font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin-bottom: 0.5rem; }
+.plan-card.featured .plan-tier { color: var(--sand); }
+.plan-name { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: var(--deep); margin-bottom: 0.3rem; }
+.plan-card.featured .plan-name { color: var(--ivory); }
+.plan-freq { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; font-weight: 300; }
+.plan-card.featured .plan-freq { color: var(--sand); }
+.plan-price {
+  display: flex; align-items: baseline; gap: 0.2rem;
+  padding-bottom: 1.5rem; margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--sand);
+}
+.plan-card.featured .plan-price { border-bottom-color: rgba(255,255,255,0.1); }
+.plan-currency { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--terra); }
+.plan-card.featured .plan-currency { color: var(--gold); }
+.plan-amount { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: var(--deep); line-height: 1; }
+.plan-card.featured .plan-amount { color: var(--ivory); }
+.plan-per { font-size: 0.72rem; color: var(--muted); font-weight: 300; align-self: flex-end; padding-bottom: 4px; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; margin-bottom: 2rem; }
+.plan-features li { font-size: 0.85rem; font-weight: 300; color: var(--deep); display: flex; gap: 0.7rem; align-items: flex-start; line-height: 1.5; }
+.plan-card.featured .plan-features li { color: var(--sand); }
+.plan-features li::before { content: '—'; color: var(--gold); font-size: 0.75rem; flex-shrink: 0; margin-top: 2px; }
+.plan-btn {
+  display: block; text-align: center; padding: 0.85rem;
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  font-weight: 500; text-decoration: none; transition: all 0.2s;
+  border: 1px solid var(--deep); color: var(--deep); background: none;
+  cursor: pointer;
+}
+.plan-btn:hover { background: var(--deep); color: var(--ivory); }
+.plan-card.featured .plan-btn { background: var(--gold); border-color: var(--gold); color: var(--deep); }
+.plan-card.featured .plan-btn:hover { background: var(--ivory); border-color: var(--ivory); }
+
+.plans-note {
+  text-align: center;
+  font-size: 0.8rem; font-weight: 300; color: var(--muted);
+  font-style: italic; max-width: 540px; margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Add-ons strip */
+.addons-strip {
+  background: var(--cream); border: 1px solid var(--sand);
+  padding: 2rem 2.5rem; max-width: 960px; margin: 2.5rem auto 0;
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 2rem; align-items: center;
+}
+.addons-label { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: var(--deep); white-space: nowrap; }
+.addons-items { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.addon-pill {
+  font-size: 0.72rem; font-weight: 300; color: var(--muted);
+  border: 1px solid var(--sand); padding: 0.3rem 0.85rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.addon-pill::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--terra); flex-shrink: 0; }
+
+/* ── FAQ ──────────────────────────────────────── */
+#faq {
+  padding: 7rem 5%;
+  background: var(--deep);
+}
+.faq-header { margin-bottom: 4rem; }
+.faq-header .eyebrow { color: var(--gold); margin-bottom: 1rem; }
+.faq-header .section-title { color: var(--ivory); }
+.faq-header .section-title em { color: var(--gold); }
+.faq-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; border: 1px solid rgba(217,207,192,0.12);
+  max-width: 960px;
+}
+.faq-item {
+  padding: 2rem 2.2rem;
+  border-bottom: 1px solid rgba(217,207,192,0.1);
+  border-right: 1px solid rgba(217,207,192,0.1);
+  cursor: pointer; transition: background 0.2s;
+}
+.faq-item:nth-child(even) { border-right: none; }
+.faq-item:nth-last-child(-n+2) { border-bottom: none; }
+.faq-item:hover { background: rgba(191,160,106,0.04); }
+.faq-tag { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--terra); font-weight: 500; margin-bottom: 0.6rem; }
+.faq-q { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 500; color: var(--ivory); margin-bottom: 0.8rem; line-height: 1.3; }
+.faq-a { font-size: 0.83rem; font-weight: 300; color: var(--sand); line-height: 1.75; }
+
+/* ── Contact ──────────────────────────────────── */
+#contact {
+  padding: 7rem 5%;
+  background: var(--cream);
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6rem; align-items: start;
+}
+.contact-left .eyebrow { margin-bottom: 1rem; }
+.contact-intro { font-size: 0.95rem; font-weight: 300; line-height: 1.85; color: var(--muted); margin: 1.5rem 0 2.5rem; }
+.contact-methods { display: flex; flex-direction: column; gap: 1rem; }
+.contact-method {
+  display: flex; align-items: center; gap: 1.2rem;
+  padding: 1.2rem 1.5rem; background: var(--white);
+  border: 1px solid var(--sand); text-decoration: none;
+  transition: all 0.2s; color: inherit;
+}
+.contact-method:hover { border-color: var(--gold); transform: translateX(4px); }
+.contact-method-icon {
+  width: 40px; height: 40px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--sand); font-size: 1.1rem;
+}
+.contact-method.whatsapp .contact-method-icon { border-color: #25D366; background: rgba(37,211,102,0.06); }
+.contact-method.email   .contact-method-icon { border-color: var(--gold); background: rgba(191,160,106,0.06); }
+.contact-method.phone   .contact-method-icon { border-color: var(--terra); background: rgba(160,103,74,0.06); }
+.contact-method-text {}
+.contact-method-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+.contact-method-value { font-size: 0.9rem; font-weight: 400; color: var(--deep); margin-top: 0.2rem; }
+
+/* Contact form */
+.contact-form-wrap { background: var(--white); padding: 2.5rem; border: 1px solid var(--sand); }
+.contact-form-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; color: var(--deep); margin-bottom: 0.4rem; }
+.contact-form-sub { font-size: 0.8rem; font-weight: 300; color: var(--muted); margin-bottom: 2rem; }
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin-bottom: 0.5rem; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 0.85rem 1rem;
+  border: 1px solid var(--sand); background: var(--ivory);
+  font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 300;
+  color: var(--deep); outline: none; transition: border 0.2s;
+  appearance: none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
+.form-group textarea { resize: vertical; min-height: 90px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-submit {
+  width: 100%; padding: 1rem;
+  background: var(--deep); color: var(--ivory);
+  border: none; font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem; font-weight: 500; letter-spacing: 0.2em;
+  text-transform: uppercase; cursor: pointer; transition: all 0.25s;
+  margin-top: 0.5rem;
+}
+.form-submit:hover { background: var(--terra); }
+.form-success {
+  display: none; text-align: center; padding: 2rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem; color: var(--sage); font-style: italic;
+}
+
+/* ── Floating WhatsApp ────────────────────────── */
+.whatsapp-float {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+  text-decoration: none; transition: transform 0.2s;
+}
+.whatsapp-float:hover { transform: scale(1.1); }
+.whatsapp-float svg { width: 28px; height: 28px; fill: white; }
+
+/* ── Footer ───────────────────────────────────── */
+footer {
+  background: var(--deep); padding: 4rem 5% 2rem;
+  border-top: 1px solid rgba(191,160,106,0.15);
+}
+.footer-top {
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  gap: 4rem; padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(217,207,192,0.1);
+}
+.footer-brand { }
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; color: var(--ivory); }
+.footer-logo em { font-style: italic; color: var(--gold); }
+.footer-tagline { font-size: 0.8rem; font-weight: 300; color: var(--sand); margin-top: 0.5rem; line-height: 1.7; max-width: 280px; }
+.footer-col-title { font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 1.2rem; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+.footer-links a { font-size: 0.82rem; font-weight: 300; color: var(--sand); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--gold); }
+.footer-bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 2rem; flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy { font-size: 0.75rem; font-weight: 300; color: var(--muted); }
+.footer-legal { display: flex; gap: 1.5rem; }
+.footer-legal a { font-size: 0.72rem; font-weight: 300; color: var(--muted); text-decoration: none; }
+.footer-legal a:hover { color: var(--sand); }
+
+/* ── Animations ───────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scanline {
+  0%   { left: -100%; }
+  50%  { left: 100%; }
+  100% { left: 100%; }
+}
+
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  #why { grid-template-columns: repeat(2, 1fr); }
+  #about { grid-template-columns: 1fr; gap: 3rem; }
+  .steps-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .steps-grid::before { display: none; }
+  .plans-grid { grid-template-columns: 1fr; max-width: 420px; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .faq-item { border-right: none !important; }
+  .faq-item:nth-last-child(-n+2) { border-bottom: 1px solid rgba(217,207,192,0.1) !important; }
+  .faq-item:last-child { border-bottom: none !important; }
+  #contact { grid-template-columns: 1fr; gap: 3rem; }
+  .footer-top { grid-template-columns: 1fr; gap: 2.5rem; }
+  .addons-strip { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  #why { grid-template-columns: 1fr 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .hero-title { font-size: 3.2rem; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════ -->
+
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Kith <em>&amp;</em> Kin</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#plans">Plans</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about"   onclick="toggleMenu()">About</a>
+  <a href="#how"     onclick="toggleMenu()">How It Works</a>
+  <a href="#plans"   onclick="toggleMenu()">Plans</a>
+  <a href="#faq"     onclick="toggleMenu()">FAQ</a>
+  <a href="#contact" onclick="toggleMenu()">Get in Touch</a>
+</div>
+
+<!-- ══ HERO ═════════════════════════════════════ -->
+
+<section id="hero">
+  <div class="hero-arc hero-arc1"></div>
+  <div class="hero-arc hero-arc2"></div>
+  <div class="hero-arc hero-arc3"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">A Private Concierge for Your Parents</p>
+    <h1 class="hero-title">
+      Kith
+      <em>&amp; Kin</em>
+    </h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">
+      <strong>Presence without proximity.</strong><br>
+      Because the distance between you and your parents should never mean uncertainty. Structured visits, vital monitoring, and real-time family updates — so you always know they are well.
+    </p>
+    <div class="hero-tags">
+      <span class="hero-tag">Structured Visits</span>
+      <span class="hero-tag">Vital Monitoring</span>
+      <span class="hero-tag">WhatsApp Updates</span>
+      <span class="hero-tag">Founder-Supervised</span>
+      <span class="hero-tag">NRI Families Welcome</span>
+    </div>
+    <div class="hero-buttons">
+      <a href="#plans" class="btn-primary">View Plans</a>
+      <a href="#contact" class="btn-outline">Enquire Now</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- ══ WHY STRIP ════════════════════════════════ -->
+
+<div id="why">
+  <div class="why-item">
+    <div class="why-num">10–15</div>
+    <div class="why-label">Families served at a time</div>
+  </div>
+  <div class="why-item">
+    <div class="why-num">1</div>
+    <div class="why-label">Founder-supervised always</div>
+  </div>
+  <div class="why-item">
+    <div class="why-num">Same</div>
+    <div class="why-label">Day WhatsApp report after every visit</div>
+  </div>
+  <div class="why-item">
+    <div class="why-num">0</div>
+    <div class="why-label">Lock-in contracts</div>
+  </div>
+</div>
+
+<!-- ══ ABOUT ════════════════════════════════════ -->
+
+<section id="about">
+  <div class="about-left reveal">
+    <div class="about-card">
+      <p class="about-quote">
+        "I built Kith &amp; Kin because I know exactly what it feels like to be thousands of miles away, unable to check in on the people who matter most. I was that person in London. Now I am back in India — and I am here, so you don't have to worry about not being."
+      </p>
+      <p class="about-attr">— Akshat Sharma, Founder</p>
+    </div>
+    <div class="about-accent"></div>
+  </div>
+
+  <div class="about-right reveal">
+    <p class="eyebrow">Our Story</p>
+    <h2 class="section-title" style="margin: 1rem 0 0">Built by someone <em>who understands</em></h2>
+    <div class="about-rule"></div>
+    <p class="about-body">
+      Kith &amp; Kin was founded by <strong>Akshat Sharma</strong> — a Project Manager who spent years in London managing high-accountability programmes for major brands and government clients. He returned to India with his family and a clear purpose: to build the elder support service he wished had existed when he was abroad.
+    </p>
+    <p class="about-body">
+      What makes this service different is not a technology platform or a large team. It is a founder who brings <strong>professional rigour, structured reporting, and genuine empathy</strong> to every client relationship. The founder conducts every onboarding visit personally, makes a monthly check-in with every client, and oversees all associates and reports.
+    </p>
+    <p class="about-body">
+      We deliberately keep our client circle small — so that attention is never diluted, and every family feels genuinely known.
+    </p>
+    <a href="#contact" class="btn-primary" style="margin-top: 1rem; display: inline-block;">Book an Introduction Call</a>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══════════════════════════════ -->
+
+<section id="how">
+  <div class="how-header reveal">
+    <p class="eyebrow">The Process</p>
+    <h2 class="section-title">How it <em>works</em></h2>
+    <div class="how-rule"></div>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <h3 class="step-title">Introduction Call</h3>
+      <p class="step-body">We begin with a call between you, the founder, and ideally your parent. We discuss health context, daily routines, specific needs, and agree a care plan.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <h3 class="step-title">Onboarding Visit</h3>
+      <p class="step-body">The founder conducts the first visit personally — meeting your parents, surveying the home environment, and establishing trust before regular visits begin.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <h3 class="step-title">Regular Visits</h3>
+      <p class="step-body">Scheduled visits take place according to your chosen plan. Each visit follows a structured protocol — vitals, medication, errands, and companionship.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <h3 class="step-title">Family Updates</h3>
+      <p class="step-body">On the same day as every visit, your family WhatsApp group receives a structured report — vitals, observations, issues flagged, and next steps.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PLANS ═════════════════════════════════════ -->
+
+<section id="plans">
+  <div class="plans-header reveal">
+    <p class="eyebrow">Membership Architecture</p>
+    <h2 class="section-title">Choose your <em>plan</em></h2>
+    <div class="plans-rule"></div>
+  </div>
+
+  <div class="plans-grid reveal">
+
+```
+<!-- Essential -->
+<div class="plan-card">
+  <p class="plan-tier">Tier One</p>
+  <h3 class="plan-name">The Essential</h3>
+  <p class="plan-freq">One visit per week</p>
+  <div class="plan-price">
+    <span class="plan-currency">₹</span>
+    <span class="plan-amount">5,500</span>
+    <span class="plan-per">/ month</span>
+  </div>
+  <ul class="plan-features">
+    <li>Arrival check-in &amp; environment safety scan</li>
+    <li>Vital monitoring — blood pressure &amp; pulse</li>
+    <li>Medication adherence verification</li>
+    <li>Structured WhatsApp report to family</li>
+  </ul>
+  <a href="#contact" class="plan-btn">Get Started</a>
+</div>
+
+<!-- Signature -->
+<div class="plan-card featured">
+  <div class="plan-badge">Most Chosen</div>
+  <p class="plan-tier">Tier Two</p>
+  <h3 class="plan-name">The Signature</h3>
+  <p class="plan-freq">Two visits per week</p>
+  <div class="plan-price">
+    <span class="plan-currency">₹</span>
+    <span class="plan-amount">9,500</span>
+    <span class="plan-per">/ month</span>
+  </div>
+  <ul class="plan-features">
+    <li>Everything in The Essential</li>
+    <li>Companionship &amp; wellbeing conversation</li>
+    <li>Issue identification &amp; family escalation</li>
+    <li>Errand liaison — bills, groceries &amp; home needs</li>
+    <li>Service coordination — repairs &amp; domestic help</li>
+    <li>Proactive updates between visits</li>
+  </ul>
+  <a href="#contact" class="plan-btn">Get Started</a>
+</div>
+
+<!-- Premiere -->
+<div class="plan-card">
+  <p class="plan-tier">Tier Three</p>
+  <h3 class="plan-name">The Premiere</h3>
+  <p class="plan-freq">Three visits per week</p>
+  <div class="plan-price">
+    <span class="plan-currency">₹</span>
+    <span class="plan-amount">20,000</span>
+    <span class="plan-per">/ month</span>
+  </div>
+  <ul class="plan-features">
+    <li>Everything in The Signature</li>
+    <li>Early health-shift detection &amp; advocacy</li>
+    <li>Medical escort — 2 included per month</li>
+    <li>Emergency protocol &amp; escalation plan</li>
+    <li>Lifestyle curation — interests &amp; hobbies</li>
+    <li>Monthly in-person visit by the founder</li>
+    <li>Direct WhatsApp line to founder</li>
+  </ul>
+  <a href="#contact" class="plan-btn">Get Started</a>
+</div>
+```
+
+  </div>
+
+  <div class="addons-strip reveal">
+    <div class="addons-label">Add-On Services</div>
+    <div class="addons-items">
+      <div class="addon-pill">Hospital accompaniment</div>
+      <div class="addon-pill">Emergency coordination</div>
+      <div class="addon-pill">Bill &amp; document management</div>
+      <div class="addon-pill">Travel &amp; logistics</div>
+      <div class="addon-pill">Extra medical escorts</div>
+    </div>
+  </div>
+
+  <p class="plans-note reveal" style="margin-top: 2rem;">
+    All plans are month-to-month with no lock-in. Cancel with 30 days' notice. Non-medical monitoring only — we do not provide nursing or live-in care.
+  </p>
+</section>
+
+<!-- ══ FAQ ═══════════════════════════════════════ -->
+
+<section id="faq">
+  <div class="faq-header reveal">
+    <p class="eyebrow">Before You Begin</p>
+    <h2 class="section-title">Frequently asked <em>questions</em></h2>
+  </div>
+
+  <div class="faq-grid reveal">
+    <div class="faq-item">
+      <p class="faq-tag">Who Visits</p>
+      <p class="faq-q">Who exactly will be visiting my parents?</p>
+      <p class="faq-a">Visits are carried out by trained, verified associates supervised by the founder. The founder personally conducts every onboarding visit and makes a monthly in-person check-in with every client. You always have someone accountable, by name.</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-tag">Trust & Vetting</p>
+      <p class="faq-q">How do I know the person visiting is trustworthy?</p>
+      <p class="faq-a">Every associate undergoes police verification and structured elder-care training before meeting any client. The founder's background and references are available on request. The very first visit to your parents is always conducted by the founder personally.</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-tag">Updates</p>
+      <p class="faq-q">How will I know what happened during each visit?</p>
+      <p class="faq-a">On the same day as every visit, your family WhatsApp group receives a structured report: vitals, medication check, mood observations, and any issues flagged. Signature and Premiere members also receive a message if anything notable happens between visits.</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-tag">Medical Care</p>
+      <p class="faq-q">Do you provide medical treatment or nursing?</p>
+      <p class="faq-a">No. We offer structured non-medical monitoring — vital tracking, medication verification, and early-warning flagging. Think of us as a highly organised, accountable family friend. For medical needs we coordinate with your family's doctors.</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-tag">Medical Escorts</p>
+      <p class="faq-q">What if my parent needs frequent doctor visits?</p>
+      <p class="faq-a">The Premiere plan includes 2 medical escorts per month. If your parent needs additional doctor visits in a given month, extra escorts are available as an add-on and billed separately — always with your prior agreement. We never turn away a family in a genuine health situation.</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-tag">Getting Started</p>
+      <p class="faq-q">How quickly can we start? Is there a contract?</p>
+      <p class="faq-a">Onboarding takes 5–7 days from your first enquiry — covering the family call, care plan, and introductory visit. There is no long-term contract. All plans are month-to-month. Cancel with 30 days' written notice. Trust, not paperwork, keeps families with us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ═══════════════════════════════════ -->
+
+<section id="contact">
+  <div class="contact-left reveal">
+    <p class="eyebrow">Get in Touch</p>
+    <h2 class="section-title">Let's have a <em>conversation</em></h2>
+    <p class="contact-intro">
+      Every family's situation is different. The best first step is a short call — no commitment, no pressure. We'll listen, understand what your parents need, and explain honestly whether we're the right fit.
+    </p>
+
+```
+<div class="contact-methods">
+  <a href="https://wa.me/919891135259?text=Hello%2C%20I%20am%20interested%20in%20Kith%20%26%20Kin%20elder%20concierge%20services." class="contact-method whatsapp" target="_blank" rel="noopener">
+    <div class="contact-method-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </div>
+    <div class="contact-method-text">
+      <div class="contact-method-label">WhatsApp</div>
+      <div class="contact-method-value">Message us directly</div>
+    </div>
+  </a>
+
+  <a href="mailto:Akshatsharma9496@gmail.com" class="contact-method email">
+    <div class="contact-method-icon">✉</div>
+    <div class="contact-method-text">
+      <div class="contact-method-label">Email</div>
+      <div class="contact-method-value">Akshatsharma9496@gmail.com</div>
+    </div>
+  </a>
+
+  <a href="tel:+919891135259" class="contact-method phone">
+    <div class="contact-method-icon">✆</div>
+    <div class="contact-method-text">
+      <div class="contact-method-label">Phone / Call Back</div>
+      <div class="contact-method-value">+91 98911 35259</div>
+    </div>
+  </a>
+</div>
+```
+
+  </div>
+
+  <div class="contact-form-wrap reveal">
+    <h3 class="contact-form-title">Send an Enquiry</h3>
+    <p class="contact-form-sub">We'll respond within 24 hours, usually much sooner.</p>
+
+```
+<form id="contactForm" onsubmit="handleSubmit(event)">
+  <div class="form-row">
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" name="name" placeholder="e.g. Rahul Sharma" required>
+    </div>
+    <div class="form-group">
+      <label>Your Location</label>
+      <input type="text" name="location" placeholder="e.g. London / Dubai">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>WhatsApp / Phone</label>
+      <input type="tel" name="phone" placeholder="+91 or +44..." required>
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" name="email" placeholder="your@email.com">
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Parent's City</label>
+    <input type="text" name="parent_city" placeholder="e.g. Delhi, Noida, Gurgaon..." required>
+  </div>
+  <div class="form-group">
+    <label>Plan of Interest</label>
+    <select name="plan">
+      <option value="">— Select a plan —</option>
+      <option>The Essential (₹5,500/month)</option>
+      <option>The Signature (₹9,500/month)</option>
+      <option>The Premiere (₹20,000/month)</option>
+      <option>Not sure yet — need guidance</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Tell us about your parent's situation</label>
+    <textarea name="message" placeholder="A few lines about your parent's health, living situation, and what support you're looking for..."></textarea>
+  </div>
+  <button type="submit" class="form-submit">Send Enquiry →</button>
+</form>
+
+<div class="form-success" id="formSuccess">
+  Thank you. We'll be in touch within 24 hours.
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════ -->
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">Kith <em>&amp;</em> Kin</div>
+      <p class="footer-tagline">
+        A founder-led elder concierge service for families who cannot always be present. Structured, accountable, personal.
+      </p>
+    </div>
+    <div>
+      <p class="footer-col-title">Navigate</p>
+      <ul class="footer-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#plans">Plans &amp; Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <ul class="footer-links">
+        <li><a href="mailto:Akshatsharma9496@gmail.com">Akshatsharma9496@gmail.com</a></li>
+        <li><a href="tel:+919891135259">+91 98911 35259</a></li>
+        <li><a href="https://wa.me/919891135259" target="_blank">WhatsApp</a></li>
+        <li><a href="#" style="color:var(--muted)">South Delhi, Noida & Gurgaon</a></li>
+        <li><a href="#" style="color:var(--muted)">NRI Families Welcome</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 Kith &amp; Kin Elder Concierge. All rights reserved.</p>
+    <div class="footer-legal">
+      <a href="#">Terms &amp; Conditions</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ FLOATING WHATSAPP ═════════════════════════ -->
+
+<a href="https://wa.me/919891135259?text=Hello%2C%20I%20am%20interested%20in%20Kith%20%26%20Kin%20elder%20concierge%20services." class="whatsapp-float" target="_blank" rel="noopener" title="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- ══ JS ════════════════════════════════════════ -->
+
+<script>
+// ── Mobile menu ──────────────────────────────────
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── Scroll reveal ────────────────────────────────
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+// ── Nav scroll effect ────────────────────────────
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 60) {
+    nav.style.borderBottomColor = 'rgba(191,160,106,0.25)';
+  } else {
+    nav.style.borderBottomColor = 'rgba(191,160,106,0.15)';
+  }
+});
+
+// ── Form submit ──────────────────────────────────
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  form.style.display = 'none';
+  success.style.display = 'block';
+}
+</script>
+
+</body>
+</html>
