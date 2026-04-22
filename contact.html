@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Kith & Kin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep: #2C2418; --ivory: #FAF7F2; --cream: #F2EDE4;
+    --sand: #D9CFC0; --terra: #A0674A; --gold: #BFA06A; --muted: #7A6E62;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--ivory); color: var(--deep); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7; }
+  nav { background: var(--deep); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .nav-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--ivory); text-decoration: none; }
+  .nav-brand em { color: var(--gold); font-style: italic; }
+  .nav-links { display: flex; gap: 1.5rem; }
+  .nav-links a { color: var(--sand); font-size: 0.8rem; text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--gold); }
+  .hero { background: var(--deep); padding: 4rem 2rem 3rem; border-bottom: 3px solid var(--gold); }
+  .hero-inner { max-width: 780px; margin: 0 auto; }
+  .hero-eyebrow { font-size: 0.7rem; letter-spacing: 0.15em; color: var(--terra); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 5vw, 3rem); color: var(--ivory); font-weight: 400; margin-bottom: 0.75rem; }
+  .hero h1 em { color: var(--gold); }
+  .hero p { color: var(--sand); font-size: 0.95rem; }
+  .content { max-width: 780px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+  .card { background: var(--cream); border: 1px solid var(--sand); border-radius: 6px; padding: 1.5rem; }
+  .card-label { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--terra); text-transform: uppercase; margin-bottom: 0.5rem; }
+  .card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--deep); margin-bottom: 0.4rem; }
+  .card a { color: var(--deep); text-decoration: none; font-weight: 500; word-break: break-all; }
+  .card a:hover { color: var(--terra); }
+  .card p { color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; }
+  .business-info { background: var(--deep); border-radius: 6px; padding: 2rem; color: var(--sand); margin-bottom: 3rem; }
+  .business-info h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--ivory); margin-bottom: 1.25rem; }
+  .info-row { display: flex; gap: 1rem; margin-bottom: 0.75rem; font-size: 0.9rem; }
+  .info-label { color: var(--gold); min-width: 160px; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; padding-top: 2px; }
+  .info-value { color: var(--sand); }
+  .hours { background: var(--cream); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; border-radius: 0 4px 4px 0; margin-bottom: 2rem; }
+  .hours p { color: var(--deep); margin: 0; }
+  footer { background: var(--deep); color: var(--sand); text-align: center; padding: 2rem; font-size: 0.8rem; }
+  footer a { color: var(--gold); text-decoration: none; }
+  @media (max-width: 600px) { .nav-links { display: none; } .content { padding: 2rem 1.25rem 4rem; } .info-row { flex-direction: column; gap: 0.2rem; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">Kith &amp; <em>Kin</em></a>
+  <div class="nav-links">
+    <a href="/#plans">Plans</a>
+    <a href="/terms.html">Terms</a>
+    <a href="/refund.html">Refund Policy</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Get in Touch</div>
+    <h1>Contact <em>Details</em></h1>
+    <p>We respond to all enquiries within a few hours. WhatsApp is the fastest way to reach us.</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">WhatsApp &amp; Phone</div>
+      <h3><a href="https://wa.me/919891135259">+91 98911 35259</a></h3>
+      <p>WhatsApp support available 7am – 10pm daily</p>
+    </div>
+    <div class="card">
+      <div class="card-label">Email</div>
+      <h3><a href="mailto:hello@kithkin.care">hello@kithkin.care</a></h3>
+      <p>We typically reply within a few hours</p>
+    </div>
+    <div class="card">
+      <div class="card-label">Website</div>
+      <h3><a href="https://kithkin.care">kithkin.care</a></h3>
+      <p>Plans, pricing, and full service details</p>
+    </div>
+  </div>
+
+  <div class="hours">
+    <p><strong>Support hours:</strong> WhatsApp and phone support available 7am – 10pm, 7 days a week. Email responses within 4 hours during support hours.</p>
+  </div>
+
+  <div class="business-info">
+    <h2>Business Information</h2>
+    <div class="info-row">
+      <span class="info-label">Business Name</span>
+      <span class="info-value">Kith &amp; Kin</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Type</span>
+      <span class="info-value">Sole Proprietorship — Elder Concierge Service</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Founder</span>
+      <span class="info-value">Akshat Sharma</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Udyam No.</span>
+      <span class="info-value">UDYAM-HR-03-0152952</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Location</span>
+      <span class="info-value">Faridabad, Haryana — Serving Delhi NCR</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Service Area</span>
+      <span class="info-value">Delhi NCR — Faridabad, South Delhi, Noida, Gurgaon &amp; surrounding areas</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Email</span>
+      <span class="info-value">hello@kithkin.care</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Phone</span>
+      <span class="info-value">+91 98911 35259</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Kith &amp; Kin &nbsp;·&nbsp; Faridabad, Delhi NCR &nbsp;·&nbsp; <a href="/">kithkin.care</a> &nbsp;·&nbsp; <a href="mailto:hello@kithkin.care">hello@kithkin.care</a></p>
+</footer>
+
+</body>
+</html>
