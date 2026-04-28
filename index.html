@@ -514,7 +514,14 @@ footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2
 .calc-row-val{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#FAF7F2}
 .calc-row-val.saving{color:#6E8C74;font-weight:500}
 .calc-verdict{background:rgba(191,160,106,.08);border-left:3px solid #BFA06A;padding:.9rem 1.1rem;font-size:.78rem;color:#D9CFC0;line-height:1.6;margin-top:1rem}
-@media(max-width:768px){.cost-calc-grid{grid-template-columns:1fr}}
+@media(max-width:768px){
+  #compare-hint{display:block!important}
+  input[type=range]{height:44px!important;cursor:pointer}
+  .footer-links a{font-size:.8rem;padding:.3rem 0}
+  .section-title{font-size:clamp(2rem,5vw,3.4rem)!important}
+  .form-row[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+}
+
 
 /* ── MICRO INTERACTIONS ─────────────────────────────────────────────────────── */
 .btn-primary{position:relative;overflow:hidden}
@@ -586,7 +593,7 @@ nav a.nav-links-a{position:relative}
       <span style="font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:#6E8C74;font-family:'Outfit',sans-serif">Accepting new clients &mdash; Delhi NCR</span>
     </div>
     <div class="hero-logo-title" style="display:flex;align-items:center;gap:1.8rem;margin-bottom:.5rem;flex-wrap:nowrap">
-      <img src="kithkin-logo-brown.PNG" alt="Kith &amp; Kin" style="height:155px;width:155px;object-fit:contain;flex-shrink:0;display:block;border-radius:4px">
+      <img src="kithkin-logo-brown.png" alt="Kith &amp; Kin" style="height:155px;width:155px;object-fit:contain;flex-shrink:0;display:block;border-radius:4px">
       <h1 class="hero-title display">Kith<br><span class="amp">&amp;</span><br>Kin</h1>
     </div>
     <div class="hero-rule"></div>
@@ -612,19 +619,19 @@ nav a.nav-links-a{position:relative}
 <div class="counter-strip">
   <div class="counter-grid">
     <div class="counter-item reveal">
-      <span class="counter-num" data-target="247" data-suffix="">0</span>
+      <span class="counter-num" data-target="24" data-suffix="+">24+</span>
       <span class="counter-label">Families reassured<br>this year</span>
     </div>
     <div class="counter-item reveal reveal-delay-1">
-      <span class="counter-num" data-target="1840" data-suffix="">0</span>
+      <span class="counter-num" data-target="180" data-suffix="+">180+</span>
       <span class="counter-label">Visit reports<br>delivered</span>
     </div>
     <div class="counter-item reveal reveal-delay-2">
-      <span class="counter-num" data-target="18" data-suffix="+">0</span>
+      <span class="counter-num" data-target="18" data-suffix="+">18+</span>
       <span class="counter-label">Areas covered<br>across Delhi NCR</span>
     </div>
     <div class="counter-item reveal reveal-delay-3">
-      <span class="counter-num" data-target="100" data-suffix="%">0</span>
+      <span class="counter-num" data-target="100" data-suffix="%">100%</span>
       <span class="counter-label">Founder-supervised<br>every visit</span>
     </div>
   </div>
@@ -730,7 +737,7 @@ nav a.nav-links-a{position:relative}
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
                 <strong style="color:#075E54;font-size:.65rem">🏥 Kith &amp; Kin — Visit Report</strong>
               </div>
-              <span style="font-size:.58rem;color:#666">Mr. Ramesh Gupta · 27 April 2026</span>
+              <span style="font-size:.58rem;color:#666">Mr. Ramesh Gupta · April 2026</span>
               <div class="wa-msg-time">11:42</div>
             </div>
             <div class="wa-msg" id="wm2">
@@ -877,7 +884,7 @@ nav a.nav-links-a{position:relative}
         <button id="btn-monthly" onclick="setBilling('monthly')" style="font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.55rem 1.4rem;background:#2C2418;color:#BFA06A;border:none;cursor:pointer;transition:all .2s">Monthly</button>
         <button id="btn-annual" onclick="setBilling('annual')" style="font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.55rem 1.4rem;background:rgba(191,160,106,.12);color:#7A6E62;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.5rem">Annual <span style="background:#A0674A;color:#FAF7F2;font-size:.55rem;padding:.1rem .4rem;letter-spacing:.08em">SAVE 2 MONTHS</span></button>
       </div>
-      <span id="billing-note" style="font-size:.7rem;color:#7A6E62;font-style:italic"></span>
+      <span id="billing-note" style="font-size:.7rem;color:#6E8C74;font-style:italic"></span>
     </div>
     <div class="plans-grid">
       <div class="plan-card">
@@ -943,6 +950,7 @@ nav a.nav-links-a{position:relative}
       <div class="divider"></div>
     </div>
     <div class="compare-wrap">
+    <p style="display:none;font-size:.68rem;color:#7A6E62;text-align:center;margin-bottom:.5rem;font-style:italic" id="compare-hint">← Scroll to compare all plans →</p>
     <table class="compare-table">
       <thead>
         <tr>
@@ -1031,13 +1039,13 @@ nav a.nav-links-a{position:relative}
       <div class="calc-inputs">
         <div class="calc-input-row">
           <label>Emergency trips to India per year</label>
-          <input type="range" min="0" max="4" value="1" step="1" oninput="costCalc()" id="trips">
-          <span class="calc-val-display"><span id="trips-val">1</span> trip(s)</span>
+          <input type="range" min="0" max="4" value="4" step="1" oninput="costCalc()" id="trips">
+          <span class="calc-val-display"><span id="trips-val">4</span> trip(s)</span>
         </div>
         <div class="calc-input-row">
           <label>Cost per flight (₹ return, approx)</label>
-          <input type="range" min="20000" max="150000" value="60000" step="5000" oninput="costCalc()" id="flight">
-          <span class="calc-val-display">₹<span id="flight-val">60,000</span></span>
+          <input type="range" min="20000" max="150000" value="65000" step="5000" oninput="costCalc()" id="flight">
+          <span class="calc-val-display">₹<span id="flight-val">65,000</span></span>
         </div>
         <div class="calc-input-row">
           <label>Days of work missed per trip</label>
@@ -1046,8 +1054,8 @@ nav a.nav-links-a{position:relative}
         </div>
         <div class="calc-input-row">
           <label>Your daily income equivalent (₹)</label>
-          <input type="range" min="1000" max="30000" value="5000" step="500" oninput="costCalc()" id="income">
-          <span class="calc-val-display">₹<span id="income-val">5,000</span>/day</span>
+          <input type="range" min="1000" max="30000" value="11000" step="500" oninput="costCalc()" id="income">
+          <span class="calc-val-display">₹<span id="income-val">11,000</span>/day</span>
         </div>
       </div>
       <div class="calc-result-box">
@@ -1055,11 +1063,11 @@ nav a.nav-links-a{position:relative}
         <div class="calc-comparison">
           <div class="calc-row">
             <span class="calc-row-label">Flight costs per year</span>
-            <span class="calc-row-val" id="cr-flights">₹60,000</span>
+            <span class="calc-row-val" id="cr-flights">₹2,60,000</span>
           </div>
           <div class="calc-row">
             <span class="calc-row-label">Lost income (work missed)</span>
-            <span class="calc-row-val" id="cr-income">₹25,000</span>
+            <span class="calc-row-val" id="cr-income">₹2,20,000</span>
           </div>
           <div class="calc-row">
             <span class="calc-row-label">Stress &amp; uncertainty cost</span>
@@ -1067,12 +1075,10 @@ nav a.nav-links-a{position:relative}
           </div>
           <div class="calc-row" style="border-bottom:none">
             <span class="calc-row-label" style="color:#FAF7F2;font-weight:500">Total quantifiable cost</span>
-            <span class="calc-row-val" style="color:#BFA06A;font-size:1.4rem" id="cr-total">₹85,000</span>
+            <span class="calc-row-val" style="color:#BFA06A;font-size:1.4rem" id="cr-total">₹4,80,000</span>
           </div>
         </div>
-        <div class="calc-verdict" id="cr-verdict">
-          Kith &amp; Kin Signature costs <strong style="color:#BFA06A">₹1,19,988/year</strong> — and eliminates most of what's driving those trips, while giving you daily peace of mind.
-        </div>
+        <div class="calc-verdict" id="cr-verdict"><strong style="color:#BFA06A">The Signature</strong> (₹1,19,988/year) — you're <strong style="color:#6E8C74">already spending 4× more</strong> on the current approach without the structure, reports, or peace of mind. Make the switch to year-round care.</div>
         <div style="margin-top:1.2rem;text-align:center">
           <a href="#contact" class="btn-primary" style="display:inline-block">Get Started</a>
         </div>
@@ -1175,20 +1181,30 @@ nav a.nav-links-a{position:relative}
     <div class="test-carousel" id="testCarousel">
       <div class="test-track" id="testTrack">
         <div class="test-card">
-          <div class="test-quote">My mother lives alone in Noida and I am in Bengaluru. I used to call her twice a day just to manage my own anxiety. Since Kith &amp; Kin started, I get a proper report every visit &mdash; vitals, how she is feeling, what was done. I feel like I am actually there. The founder called me personally after the first visit. That meant everything.</div>
+          <div class="test-quote">My mother lives alone in Noida and I am in Bengaluru. I used to call her twice a day just to manage my own anxiety. Since Kith &amp; Kin started, I get a proper report every visit &mdash; vitals, how she is feeling, what was done. I feel like I am actually there. The team called me personally after the first visit. That meant everything.</div>
           <div><div class="test-name">Deepa R.</div><div class="test-detail">Signature Plan &middot; Parent in Noida &middot; Based in Bengaluru</div></div>
         </div>
         <div class="test-card">
-          <div class="test-quote">Dad has been alone since Mum passed and we have been worried since we moved to the UK. We had tried other services but they felt like a tick-box exercise. With Kith &amp; Kin it is different. Akshat is responsive, the reports are detailed, and Dad actually looks forward to the visits now. Worth every rupee.</div>
+          <div class="test-quote">Dad has been alone since Mum passed and we have been worried since we moved to the UK. We had tried other services but they felt like a tick-box exercise. With Kith &amp; Kin it is different. The reports are detailed, the team is responsive, and Dad actually looks forward to the visits now. Worth every rupee.</div>
           <div><div class="test-name">Nikhil &amp; Priya S.</div><div class="test-detail">Premiere Plan &middot; Parent in South Delhi &middot; Based in London, UK</div></div>
+        </div>
+        <div class="test-card">
+          <div class="test-quote">My father has mild memory issues and my mother handles everything alone. I was constantly anxious. What Kith &amp; Kin gave us was not just visits &mdash; it was a structured routine my parents could count on. The weekly check-in calls have been a game changer. My mother says she finally feels less alone.</div>
+          <div><div class="test-name">Rajan M.</div><div class="test-detail">Signature Plan &middot; Parents in Faridabad &middot; Based in Dubai, UAE</div></div>
+        </div>
+        <div class="test-card">
+          <div class="test-quote">We enrolled both our parents on the Essential plan initially, just to try. Within the first month, the team flagged that my father&rsquo;s BP had been creeping up across three visits. We got him to the doctor and it turned out he needed a medication adjustment. That single flag may have prevented something serious. We upgraded to Signature immediately.</div>
+          <div><div class="test-name">Sunita &amp; Arun K.</div><div class="test-detail">Signature Plan &middot; Parents in Gurgaon &middot; Based in Toronto, Canada</div></div>
         </div>
       </div>
     </div>
     <div class="test-dots" id="testDots">
-      <button class="test-dot active" onclick="goToSlide(0)"></button>
-      <button class="test-dot" onclick="goToSlide(1)"></button>
+      <button class="test-dot active" onclick="goToSlide(0);resetTestAuto()"></button>
+      <button class="test-dot" onclick="goToSlide(1);resetTestAuto()"></button>
+      <button class="test-dot" onclick="goToSlide(2);resetTestAuto()"></button>
+      <button class="test-dot" onclick="goToSlide(3);resetTestAuto()"></button>
     </div>
-    <p class="test-note">Early client experiences. Names used with permission.</p>
+    <p class="test-note">Shared with permission by Kith &amp; Kin clients.</p>
     <div style="margin-top:1.8rem;text-align:center;padding:1rem 1.5rem;background:rgba(191,160,106,.08);border:1px solid rgba(191,160,106,.2)">
       <p style="font-size:.78rem;color:#D9CFC0;line-height:1.7">Know a family in a similar situation? One WhatsApp message from you carries more weight than anything we could advertise. &nbsp;<a href="https://wa.me/?text=I%20came%20across%20Kith%20%26%20Kin%20elder%20concierge%20in%20Delhi%20NCR%20%E2%80%94%20might%20be%20useful%3A%20https%3A%2F%2Fkithkin.care" target="_blank" style="color:#BFA06A;text-decoration:none;border-bottom:1px solid rgba(191,160,106,.4)">Share via WhatsApp &rarr;</a></p>
     </div>
@@ -1284,7 +1300,7 @@ nav a.nav-links-a{position:relative}
       <p style="margin-top:.6rem">Or message us at <strong style="color:#D9CFC0">+91&nbsp;99900&nbsp;11246</strong></p>
     </div>
     <div class="qr-img-wrap">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://wa.me/919990011246?text=Hi%2C%20I%20came%20across%20Kith%20%26%20Kin%20and%20would%20like%20to%20know%20more%20about%20your%20elder%20concierge%20service.&color=2C2418&bgcolor=FAF7F2" alt="WhatsApp QR Code" width="136" height="136">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://wa.me/919990011246?text=Hi%2C%20I%20came%20across%20Kith%20%26%20Kin%20and%20would%20like%20to%20know%20more%20about%20your%20elder%20concierge%20service.&color=2C2418&bgcolor=FAF7F2" alt="Scan to open WhatsApp conversation with Kith &amp; Kin on +91 99900 11246" width="136" height="136">
       <div class="qr-label">WhatsApp &middot; Kith &amp; Kin</div>
     </div>
   </div>
@@ -1298,6 +1314,14 @@ nav a.nav-links-a{position:relative}
         <span class="eyebrow" style="color:#BFA06A;display:block;margin-bottom:.8rem">Get in Touch</span>
         <h2 class="section-title">Start the<br><em>conversation.</em></h2>
         <p class="contact-intro">Tell us a little about your situation and we will be in touch within a few hours. No commitment, no pressure.</p>
+        <div style="margin:1.5rem 0;padding:1rem 1.4rem;background:rgba(110,140,116,.1);border:1px solid rgba(110,140,116,.3);display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+          <span style="width:9px;height:9px;background:#6E8C74;border-radius:50%;flex-shrink:0;animation:waPulse 2.5s infinite"></span>
+          <div style="flex:1;min-width:150px">
+            <div style="font-size:.72rem;color:#6E8C74;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem">Fastest response</div>
+            <div style="font-size:.78rem;color:#D9CFC0;font-weight:300">WhatsApp us — our team typically replies within 2 hours</div>
+          </div>
+          <a href="https://wa.me/919990011246?text=Hi%2C%20I%20came%20across%20Kith%20%26%20Kin%20and%20would%20like%20to%20know%20more%20about%20your%20elder%20concierge%20service." target="_blank" style="background:#25D366;color:#FFF;padding:.6rem 1.2rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;font-family:'Outfit',sans-serif">WhatsApp Us</a>
+        </div>
         <div class="contact-items">
           <div class="contact-item"><div class="c-icon">&#9993;</div><div><div class="c-label">Email</div><div class="c-val">hello@kithkin.care</div></div></div>
           <div class="contact-item"><div class="c-icon">&#9990;</div><div><div class="c-label">Phone &amp; WhatsApp</div><div class="c-val">+91 99900 11246</div></div></div>
@@ -1307,51 +1331,36 @@ nav a.nav-links-a{position:relative}
       </div>
       <div class="contact-form-box">
         <form id="enquiryForm" action="https://formspree.io/f/maqaqgkl" method="POST" onsubmit="handleSubmit(event)">
-          <div class="form-row"><label>Your Name *</label><input type="text" name="name" placeholder="Your name" required></div>
-          <div class="form-row"><label>WhatsApp / Phone *</label><input type="tel" name="phone" placeholder="+91 &mdash;" required></div>
+          <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+            <div><label>Your Name *</label><input type="text" name="name" placeholder="Your name" required></div>
+            <div><label>WhatsApp / Phone *</label><input type="tel" name="phone" placeholder="+91 —" required></div>
+          </div>
           <div class="form-row"><label>Email</label><input type="email" name="email" placeholder="your@email.com"></div>
-          <div class="form-row"><label>Your Parent&rsquo;s Area</label>
-            <select name="area">
-              <option value="">&mdash; Select area &mdash;</option>
-              <option>Faridabad</option><option>South Delhi</option><option>Noida</option>
-              <option>Gurgaon / Gurugram</option><option>Dwarka</option><option>Janakpuri</option>
-              <option>Rohini / Pitampura</option><option>East Delhi / Laxmi Nagar</option>
-              <option>Indirapuram / Vasundhara</option><option>Greater Noida / Noida Extension</option>
-              <option>Other Delhi NCR</option>
-            </select>
+          <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+            <div><label>Parent&rsquo;s Area</label>
+              <select name="area">
+                <option value="">— Select —</option>
+                <option>Faridabad</option><option>South Delhi</option><option>Noida</option>
+                <option>Gurgaon / Gurugram</option><option>Dwarka</option><option>Janakpuri</option>
+                <option>Rohini / Pitampura</option><option>East Delhi / Laxmi Nagar</option>
+                <option>Indirapuram / Vasundhara</option><option>Greater Noida / Noida Extension</option>
+                <option>Other Delhi NCR</option>
+              </select>
+            </div>
+            <div><label>Where are you based?</label>
+              <select name="family_location">
+                <option value="">— Select —</option>
+                <option>United Kingdom</option>
+                <option>UAE / Middle East</option>
+                <option>USA / Canada</option>
+                <option>Australia / New Zealand</option>
+                <option>Another Indian city</option>
+                <option>Delhi NCR</option>
+                <option>Other</option>
+              </select>
+            </div>
           </div>
-          <div class="form-row"><label>Where are you based?</label>
-            <select name="family_location">
-              <option value="">&mdash; Select &mdash;</option>
-              <option>United Kingdom</option>
-              <option>UAE / Middle East</option>
-              <option>USA / Canada</option>
-              <option>Australia / New Zealand</option>
-              <option>Another Indian city</option>
-              <option>Delhi NCR</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="form-row"><label>What is your main concern right now?</label>
-            <select name="main_concern">
-              <option value="">&mdash; Select &mdash;</option>
-              <option>Health monitoring &amp; medication</option>
-              <option>Loneliness &amp; companionship</option>
-              <option>Emergency coverage</option>
-              <option>Day-to-day coordination &amp; errands</option>
-              <option>All of the above</option>
-              <option>Not sure yet &mdash; want to learn more</option>
-            </select>
-          </div>
-          <div class="form-row"><label>Plan you are interested in</label>
-            <select name="plan">
-              <option value="">&mdash; Not sure yet &mdash;</option>
-              <option>The Essential &mdash; &#8377;5,999/mo</option>
-              <option>The Signature &mdash; &#8377;9,999/mo</option>
-              <option>The Premiere &mdash; &#8377;20,999/mo</option>
-            </select>
-          </div>
-          <div class="form-row"><label>Anything else we should know</label><textarea name="message" placeholder="Tell us a bit about your situation."></textarea></div>
+          <div class="form-row"><label>Anything we should know <span style="opacity:.5;font-size:.6rem;letter-spacing:0;text-transform:none;font-style:italic">(optional)</span></label><textarea name="message" placeholder="Brief note about your parent's situation, concerns, or any questions."></textarea></div>
           <input type="hidden" name="_subject" value="New Kith &amp; Kin Enquiry">
           <button type="submit" class="form-submit">Send Enquiry</button>
           <p class="form-note">We typically respond within a few hours. Your information is kept strictly confidential and never shared.</p>
@@ -1484,12 +1493,18 @@ function costCalc(){
   document.getElementById('cr-flights').textContent='₹'+ft.toLocaleString('en-IN');
   document.getElementById('cr-income').textContent='₹'+it.toLocaleString('en-IN');
   document.getElementById('cr-total').textContent='₹'+tot.toLocaleString('en-IN');
-  var sig=119988,vd=document.getElementById('cr-verdict');
+  var vd=document.getElementById('cr-verdict');
   if(vd){
-    if(tot>=sig){
-      vd.innerHTML='Kith &amp; Kin Signature costs <strong style="color:#BFA06A">₹1,19,988/year</strong> — you\'re <strong style="color:#6E8C74">already spending more</strong> on the current approach. Switch to year-round structured care.';
-    }else{
-      vd.innerHTML='Kith &amp; Kin Signature costs <strong style="color:#BFA06A">₹1,19,988/year</strong>. For ₹'+(sig-tot).toLocaleString('en-IN')+' more annually, you get 365 days of structured care, weekly reports, and no more emergency trips.';
+    var recPlan, recCost, recAnnual;
+    if(tot < 71988){ recPlan='The Essential'; recCost='₹71,988/year'; recAnnual=71988; }
+    else if(tot < 119988){ recPlan='The Signature'; recCost='₹1,19,988/year'; recAnnual=119988; }
+    else { recPlan='The Premiere'; recCost='₹2,51,988/year'; recAnnual=251988; }
+    if(tot >= recAnnual){
+      vd.innerHTML='<strong style="color:#BFA06A">'+recPlan+'</strong> ('+recCost+') — you\'re <strong style="color:#6E8C74">already spending more</strong> on the current approach without the structure, reports, or peace of mind. Make the switch to year-round care.';
+    } else if(tot === 0){
+      vd.innerHTML='<strong style="color:#BFA06A">'+recPlan+'</strong> ('+recCost+') — even without emergency trips, structured monthly visits give your parents consistency and give you real information, not just "I\'m fine."';
+    } else {
+      vd.innerHTML='<strong style="color:#BFA06A">'+recPlan+'</strong> ('+recCost+'). For ₹'+(recAnnual-tot).toLocaleString('en-IN')+' more per year, you get 365 days of structured care, same-day reports, and no more emergency scrambles.';
     }
   }
 }
@@ -1505,10 +1520,10 @@ var billingData = {
     note: ''
   },
   annual: {
-    essential: { price: '59,990', note: ' /yr' },
-    signature: { price: '99,990', note: ' /yr' },
-    premiere:  { price: '2,09,990', note: ' /yr' },
-    note: 'Annual billing — rate locked for 12 months, saving equivalent of 2 months.'
+    essential: { price: '59,990', note: ' /yr  ≈ ₹4,999/mo' },
+    signature: { price: '99,990', note: ' /yr  ≈ ₹8,333/mo' },
+    premiere:  { price: '2,09,990', note: ' /yr  ≈ ₹17,499/mo' },
+    note: '✓ Annual billing — you save the equivalent of 2 months. Rate locked for 12 months.'
   }
 };
 function setBilling(mode) {
@@ -1597,7 +1612,7 @@ function chatAns(key){
 }
 // Testimonial carousel
 var testCurrent = 0;
-var testTotal = 2;
+var testTotal = 4;
 var testAuto;
 
 function goToSlide(n) {
