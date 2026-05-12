@@ -714,11 +714,6 @@ nav a.nav-links-a{position:relative}
         View Plans
       </a>
     </div>
-    <div class="hero-stats reveal reveal-delay-3">
-      <div class="hero-stat"><div class="val display">Quality-assured</div><div class="lbl">Every visit held to the same standard</div></div>
-      <div class="hero-stat"><div class="val display">Delhi NCR</div><div class="lbl">All areas served</div></div>
-      <div class="hero-stat"><div class="val display">No lock-in</div><div class="lbl">Cancel anytime · 7 days notice</div></div>
-    </div>
   </div>
 </section>
 
@@ -924,28 +919,6 @@ nav a.nav-links-a{position:relative}
       <h2 class="section-title">Our <em>Plans</em> &amp; What We Do</h2>
       <div class="divider"></div>
       <p style="margin-top:1rem;font-size:.82rem;color:#7A6E62;font-weight:300;max-width:560px;line-height:1.7">Every client receives a personal onboarding visit. All plans are month-to-month. Cancel anytime with 7 days notice.</p>
-    </div>
-
-    <!-- FLIGHT ANCHOR -->
-    <div style="background:#2C2418;border:1px solid rgba(191,160,106,.2);padding:1.4rem 2rem;margin-bottom:2rem;display:flex;align-items:stretch;gap:0;flex-wrap:wrap">
-      <div style="flex:1;min-width:200px;padding-right:1.5rem;border-right:1px solid rgba(191,160,106,.15)">
-        <div style="font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:#7A6E62;margin-bottom:.4rem">Emergency flight London &rarr; Delhi (return)</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:300;color:#FAF7F2;line-height:1">£700 &ndash; £1,200</div>
-        <div style="font-size:.7rem;color:#7A6E62;margin-top:.3rem">One trip. One crisis. No ongoing support.</div>
-      </div>
-      <div style="padding:0 1.5rem;display:flex;align-items:center">
-        <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:rgba(191,160,106,.4)">vs</span>
-      </div>
-      <div style="flex:1;min-width:200px;padding-left:.5rem">
-        <div style="font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:#BFA06A;margin-bottom:.4rem">Kith &amp; Kin Signature &mdash; 12 months</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:300;color:#BFA06A;line-height:1">&#8377;1,19,988/yr <span style="font-size:.85rem;color:#7A6E62">&asymp; &pound;1,130</span></div>
-        <div style="font-size:.7rem;color:#7A6E62;margin-top:.3rem">365 days of presence. Every situation handled.</div>
-      </div>
-    </div>
-
-    <!-- VALUE STACK NOTE -->
-    <div style="background:#F2EDE4;border-left:3px solid #BFA06A;padding:.9rem 1.4rem;margin-bottom:2rem;font-size:.78rem;color:#7A6E62;line-height:1.65">
-      <strong style="color:#2C2418;font-weight:400">What Signature replaces à la carte:</strong> 4 visits (&#8377;6,396) + errand coordination (&#8377;499&times;4) + health coordination + proactive updates = <strong style="color:#2C2418">&#8377;8,400+/month.</strong> Your plan: <strong style="color:#A0674A">&#8377;9,999/month</strong> — with everything included, no per-task billing.
     </div>
 
     <!-- BILLING TOGGLE -->
@@ -1494,37 +1467,6 @@ var waObs=new IntersectionObserver(function(entries){
 },{threshold:0.3});
 var waS=document.getElementById('wa-demo');if(waS)waObs.observe(waS);
 
-// ── COST CALCULATOR ───────────────────────────────────────────────────────────
-function costCalc(){
-  var trips=parseInt(document.getElementById('trips').value);
-  var flight=parseInt(document.getElementById('flight').value);
-  var days=parseInt(document.getElementById('days').value);
-  var income=parseInt(document.getElementById('income').value);
-  document.getElementById('trips-val').textContent=trips;
-  document.getElementById('flight-val').textContent=flight.toLocaleString('en-IN');
-  document.getElementById('days-val').textContent=days;
-  document.getElementById('income-val').textContent=income.toLocaleString('en-IN');
-  var ft=trips*flight,it=trips*days*income,tot=ft+it;
-  document.getElementById('cr-flights').textContent='₹'+ft.toLocaleString('en-IN');
-  document.getElementById('cr-income').textContent='₹'+it.toLocaleString('en-IN');
-  document.getElementById('cr-total').textContent='₹'+tot.toLocaleString('en-IN');
-  var vd=document.getElementById('cr-verdict');
-  if(vd){
-    var recPlan, recCost, recAnnual;
-    if(tot < 71988){ recPlan='The Essential'; recCost='₹71,988/year'; recAnnual=71988; }
-    else if(tot < 119988){ recPlan='The Signature'; recCost='₹1,19,988/year'; recAnnual=119988; }
-    else { recPlan='The Premiere'; recCost='₹2,51,988/year'; recAnnual=251988; }
-    if(tot >= recAnnual){
-      vd.innerHTML='<strong style="color:#BFA06A">'+recPlan+'</strong> ('+recCost+') — you\'re <strong style="color:#6E8C74">already spending more</strong> on the current approach without the structure, reports, or peace of mind. Make the switch to year-round care.';
-    } else if(tot === 0){
-      vd.innerHTML='<strong style="color:#BFA06A">'+recPlan+'</strong> ('+recCost+') — even without emergency trips, structured monthly visits give your parents consistency and give you real information, not just "I\'m fine."';
-    } else {
-      vd.innerHTML='<strong style="color:#BFA06A">'+recPlan+'</strong> ('+recCost+'). For ₹'+(recAnnual-tot).toLocaleString('en-IN')+' more per year, you get 365 days of structured care, same-day reports, and no more emergency scrambles.';
-    }
-  }
-}
-if(document.getElementById('trips'))costCalc();
-
 // ── BILLING TOGGLE ──────────────────────────────────────────────────────────
 var billingMode = 'monthly';
 var billingData = {
@@ -1671,39 +1613,6 @@ if (carousel) {
 startTestAuto();
 
 // Cost Calculator
-function calcUpdate(val) {
-  val = parseInt(val);
-  var slider = document.getElementById('visitSlider');
-  var pct = ((val - 2) / 8) * 100;
-  slider.style.background = 'linear-gradient(90deg, #BFA06A ' + pct + '%, rgba(191,160,106,.2) ' + pct + '%)';
-  document.getElementById('visitCount').textContent = val;
-  var plan, price, perVisit, includes;
-  var sigExtra = val > 4 ? Math.round((9999 + (val-4)*1599)) : 0;
-  var sigExtraPerVisit = val > 4 ? Math.round(sigExtra/val) : 0;
-  if (val <= 2) {
-    plan = 'The Essential'; price = '&#8377;5,999'; perVisit = '&#8377;3,000 per visit';
-    includes = 'Vital monitoring · Medication check · Structured Wellbeing Check-in (15–20 mins) · Same-day WhatsApp report';
-    document.getElementById('calcAlt').style.display = 'none';
-  } else if (val <= 4) {
-    plan = 'The Signature'; price = '&#8377;9,999'; perVisit = '&#8377;' + Math.round(9999/val).toLocaleString('en-IN') + ' per visit';
-    includes = 'Everything in Essential · Companionship & Mood Assessment (30–40 mins) · Errand liaison · Service coordination';
-    document.getElementById('calcAlt').style.display = 'none';
-  } else if (val < 10) {
-    plan = 'THE SIGNATURE + EXTRA VISITS'; price = '&#8377;9,999'; perVisit = '&#8377;' + sigExtraPerVisit.toLocaleString('en-IN') + ' per visit';
-    includes = 'Signature plan (4 visits) + ' + (val-4) + ' extra visit' + (val-4>1?'s':'') + ' at &#8377;1,599 each = &#8377;' + sigExtra.toLocaleString('en-IN') + '/mo total';
-    document.getElementById('calcAlt').style.display = 'block';
-    document.getElementById('calcAltText').innerHTML = 'Or upgrade to <strong>The Premiere</strong> (10 visits) at &#8377;20,999/mo &mdash; &#8377;' + Math.round(20999/10).toLocaleString('en-IN') + ' per visit with more included.';
-  } else {
-    plan = 'The Premiere'; price = '&#8377;20,999'; perVisit = '&#8377;2,100 per visit';
-    includes = 'Everything in Signature · In-depth Longitudinal Assessment (45–60 mins) · Hospital attendance · Emergency protocol · Monthly senior review visit';
-    document.getElementById('calcAlt').style.display = 'none';
-  }
-  document.getElementById('calcPlan').textContent = plan;
-  document.getElementById('calcPrice').innerHTML = price + '<span style="font-size:1rem;color:#7A6E62">/mo</span>';
-  document.getElementById('calcPerVisit').textContent = perVisit;
-  document.getElementById('calcIncludes').innerHTML = includes;
-}
-
 function resetChat(){
   document.getElementById('chatMsgs').innerHTML='<div class="chat-msg bot">What else can I help you with?</div>';
   document.getElementById('chatPrompts').innerHTML=Object.keys(chatData).map(function(k){return'<button class="chat-prompt" onclick="chatAns(\''+k+'\')">'+chatData[k].q+'</button>'}).join('');
