@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Kith &amp; Kin Elder Concierge, Delhi NCR</title>
+<meta name="description" content="Honest, practical guidance for families caring for elderly parents in India from a distance. Written by Kith &amp; Kin, Delhi NCR's elder concierge service.">
+<link rel="canonical" href="https://kithkin.care/blog.html">
+<meta property="og:title" content="Blog — Kith &amp; Kin Elder Concierge">
+<meta property="og:description" content="Honest, practical guidance for families caring for elderly parents in India from a distance.">
+<meta property="og:image" content="https://kithkin.care/og-image.jpeg">
+<meta property="og:url" content="https://kithkin.care/blog.html">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+:root{--deep:#2C2418;--ivory:#FAF7F2;--cream:#F2EDE4;--sand:#D9CFC0;--terra:#A0674A;--gold:#BFA06A;--muted:#7A6E62}
+body{font-family:'Outfit',sans-serif;background:#FAF7F2;color:#2C2418;overflow-x:hidden}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:300}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(44,36,24,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(191,160,106,.15)}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{font-size:.72rem;font-weight:300;letter-spacing:.06em;color:#D9CFC0;text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:#BFA06A}
+.nav-cta{background:none;border:1px solid #BFA06A;color:#BFA06A!important;padding:.45rem 1rem;font-size:.68rem!important;letter-spacing:.15em!important;text-decoration:none;transition:all .2s}
+.nav-cta:hover{background:#BFA06A;color:#2C2418!important}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:1.5px;background:#D9CFC0;display:block}
+.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(44,36,24,.99);padding:2rem 5%;flex-direction:column;gap:1.5rem;z-index:199;border-bottom:1px solid rgba(191,160,106,.2)}
+.mobile-menu a{font-size:.85rem;letter-spacing:.05em;color:#D9CFC0;text-decoration:none}
+.mobile-menu.open{display:flex}
+
+.page-hero{background:#2C2418;padding:calc(68px + 3.5rem) 5% 4rem;border-bottom:2px solid rgba(191,160,106,.15);position:relative;overflow:hidden}
+.page-hero::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,#BFA06A 50%,transparent)}
+.page-hero-inner{max-width:1100px;margin:0 auto}
+.eyebrow{font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:#A0674A;display:block;margin-bottom:.8rem}
+.page-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,3.8rem);font-weight:300;color:#FAF7F2;line-height:1.1;margin-bottom:.5rem}
+.page-hero h1 em{font-style:italic;color:#BFA06A}
+.page-hero p{font-size:.88rem;color:#D9CFC0;font-weight:300;line-height:1.75;margin-top:.7rem;max-width:600px}
+
+.blog-body{max-width:1100px;margin:0 auto;padding:4rem 5% 5rem}
+
+/* Featured article */
+.featured{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#2C2418;border:1px solid rgba(191,160,106,.2);margin-bottom:3rem}
+.featured-text{padding:2.5rem}
+.featured-label{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:#BFA06A;margin-bottom:.8rem;display:block}
+.featured-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;color:#FAF7F2;line-height:1.2;margin-bottom:.8rem}
+.featured-title em{font-style:italic;color:#BFA06A}
+.featured-excerpt{font-size:.82rem;color:#D9CFC0;line-height:1.75;font-weight:300;margin-bottom:1.4rem}
+.featured-meta{font-size:.68rem;color:#D9CFC0;margin-bottom:1.4rem}
+.featured-img{background:#3A3028;display:flex;align-items:center;justify-content:center;min-height:280px;position:relative;overflow:hidden}
+.featured-img-inner{padding:2rem;text-align:center}
+.featured-img-quote{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;color:rgba(191,160,106,.75);line-height:1.5}
+
+/* Article grid */
+.articles-label{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:#A0674A;margin-bottom:1.5rem;display:block;padding-bottom:.8rem;border-bottom:1px solid #D9CFC0}
+.articles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.article-card{background:#FFFFFF;border:1px solid #D9CFC0;transition:border-color .2s,transform .2s}
+.article-card:hover{border-color:#BFA06A;transform:translateY(-3px)}
+.article-card-inner{padding:1.8rem}
+.article-tag{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:#A0674A;margin-bottom:.6rem;display:block}
+.article-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:400;color:#2C2418;line-height:1.25;margin-bottom:.7rem}
+.article-title em{font-style:italic;color:#A0674A}
+.article-excerpt{font-size:.78rem;color:#7A6E62;line-height:1.7;font-weight:300;margin-bottom:1rem}
+.article-meta{font-size:.65rem;color:#A0674A;display:flex;justify-content:space-between;align-items:center;padding-top:.8rem;border-top:1px solid #F2EDE4}
+.read-more{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#A0674A;text-decoration:none;font-weight:400;display:inline-flex;align-items:center;gap:.3rem;transition:gap .2s}
+.read-more:hover{gap:.6rem}
+
+/* CTA strip */
+.blog-cta{background:#F2EDE4;border:1px solid #D9CFC0;padding:2.5rem;text-align:center;margin-top:3rem}
+.blog-cta h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:#2C2418;margin-bottom:.5rem}
+.blog-cta h3 em{font-style:italic;color:#A0674A}
+.blog-cta p{font-size:.82rem;color:#7A6E62;font-weight:300;line-height:1.7;margin-bottom:1.2rem}
+.btn-primary{background:#BFA06A;color:#2C2418;padding:.8rem 2rem;font-size:.76rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;transition:background .2s;display:inline-block}
+.btn-primary:hover{background:#2C2418;color:#BFA06A}
+
+footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2rem 5%}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-links{display:flex;gap:1.6rem;flex-wrap:wrap}
+.footer-links a{font-size:.68rem;letter-spacing:.06em;color:#7A6E62;text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:#BFA06A}
+.footer-copy{font-size:.68rem;color:#7A6E62;font-weight:300}
+
+@media(max-width:768px){
+  .nav-links{display:none}.hamburger{display:flex}
+  .featured{grid-template-columns:1fr}
+  .featured-img{display:none}
+  .articles-grid{grid-template-columns:1fr}
+  .footer-inner{flex-direction:column;align-items:flex-start;gap:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" style="display:flex;align-items:center;gap:.65rem;text-decoration:none">
+    <img src="kithkin-logo-black.png" alt="Kith &amp; Kin" style="height:42px;width:42px;object-fit:contain;border-radius:2px">
+    <div style="display:flex;flex-direction:column;gap:1px">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:#FAF7F2;letter-spacing:.04em;line-height:1">Kith &amp; Kin</span>
+      <span style="font-family:'Outfit',sans-serif;font-size:.42rem;letter-spacing:.22em;text-transform:uppercase;color:#BFA06A;line-height:1">Elder Concierge</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#plans">Plans</a></li>
+    <li><a href="/#what">What We Do</a></li>
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/blog.html" style="color:#BFA06A">Blog</a></li>
+    <li><a href="/#contact" class="nav-cta">Get in Touch</a></li>
+  </ul>
+  <div class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mob">
+  <a href="/#plans">Plans</a>
+  <a href="/#what">What We Do</a>
+  <a href="/about.html">About</a>
+  <a href="/blog.html">Blog</a>
+  <a href="/#contact">Get in Touch</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="eyebrow">Kith &amp; Kin — Perspectives</span>
+    <h1>For families caring from <em>a distance.</em></h1>
+    <p>Honest guidance on elder care, long-distance parenting, and what actually helps — written from experience, not a content brief.</p>
+  </div>
+</div>
+
+<div class="blog-body">
+
+  <!-- FEATURED -->
+  <div class="featured">
+    <div class="featured-text">
+      <span class="featured-label">Featured Article</span>
+      <h2 class="featured-title">What to do when your elderly parent <em>refuses help.</em></h2>
+      <p class="featured-excerpt">They say they're fine. They don't want a stranger in the house. They've managed this long without you worrying. Sound familiar? Here's what actually works — and what makes it worse.</p>
+      <div class="featured-meta">5 min read &nbsp;·&nbsp; Elder Care Guidance</div>
+      <a href="/blog-refuses-help.html" class="btn-primary">Read Article</a>
+    </div>
+    <div class="featured-img">
+      <div class="featured-img-inner">
+        <div class="featured-img-quote">"I'm fine, beta.<br>Don't worry about me."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL ARTICLES -->
+  <span class="articles-label">All Articles</span>
+  <div class="articles-grid">
+
+    <div class="article-card">
+      <div class="article-card-inner">
+        <span class="article-tag">Health Monitoring</span>
+        <h3 class="article-title">How to monitor your elderly parent's BP from abroad — <em>what the numbers actually mean</em></h3>
+        <p class="article-excerpt">Blood pressure is one of the most reliable early warning signals in older adults. But most families don't know what they're looking for — or what to do when the numbers change.</p>
+        <div class="article-meta">
+          <span>4 min read</span>
+          <a href="/blog-bp-monitoring.html" class="read-more">Read →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card">
+      <div class="article-card-inner">
+        <span class="article-tag">Understanding Your Options</span>
+        <h3 class="article-title">Caregiver, nurse, or concierge — <em>which does your parent actually need?</em></h3>
+        <p class="article-excerpt">Three very different services are often confused for the same thing. Choosing the wrong one wastes money, creates friction, and can leave your parent worse off than before.</p>
+        <div class="article-meta">
+          <span>5 min read</span>
+          <a href="/blog-caregiver-vs-concierge.html" class="read-more">Read →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card">
+      <div class="article-card-inner">
+        <span class="article-tag">Quality of Care</span>
+        <h3 class="article-title">What a good elder care visit report should <em>actually contain</em></h3>
+        <p class="article-excerpt">Most families receive a WhatsApp message that says "Uncle is fine, had lunch, all good." That is not a report. Here's what you should expect — and what to ask for.</p>
+        <div class="article-meta">
+          <span>4 min read</span>
+          <a href="/blog-visit-report.html" class="read-more">Read →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card">
+      <div class="article-card-inner">
+        <span class="article-tag">NRI &amp; Distance Families</span>
+        <h3 class="article-title">Moving back to India to care for your parents — <em>what NRIs get wrong</em></h3>
+        <p class="article-excerpt">Every year, NRIs move back to India to look after ageing parents. Some of it works. A lot of it doesn't. Here's an honest account of what the decision actually involves.</p>
+        <div class="article-meta">
+          <span>6 min read</span>
+          <a href="/blog-moving-back.html" class="read-more">Read →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="blog-cta">
+    <h3>Your parents are in good hands.<br><em>We'll make sure you know it.</em></h3>
+    <p>Plans from ₹5,999/month. No joining fee. Cancel with 7 days notice.</p>
+    <a href="/#contact" class="btn-primary">Enquire Now</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:#FAF7F2">Kith &amp; <em style="font-style:italic;color:#BFA06A">Kin</em></div>
+    <div class="footer-links">
+      <a href="/#plans">Plans</a>
+      <a href="/#addons">Add-Ons</a>
+      <a href="/blog.html">Blog</a>
+      <a href="mailto:hello@kithkin.care">Contact</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/refund.html">Refund Policy</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 Kith &amp; Kin &middot; Delhi NCR</div>
+  </div>
+</footer>
+<script>function toggleMenu(){document.getElementById('mob').classList.toggle('open')}</script>
+</body>
+</html>

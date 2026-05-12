@@ -29,7 +29,10 @@
 <meta name="twitter:image" content="https://kithkin.care/og-image.jpeg">
 
 <!-- Favicon — inline SVG as data URI (the & monogram) -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%232C2418'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23BFA06A' stroke-width='1'/><text x='16' y='23' font-family='Georgia,serif' font-size='18' font-style='italic' fill='%23BFA06A' text-anchor='middle'>&amp;</text></svg>">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <!-- Schema.org Structured Data -->
 <script type="application/ld+json">
@@ -439,7 +442,7 @@ footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2
 .counter-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center}
 .counter-item{padding:1.2rem 1rem;border-right:1px solid rgba(191,160,106,.15)}
 .counter-item:last-child{border-right:none}
-.counter-num{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:#BFA06A;line-height:1;display:block}
+.counter-num{font-family:'Cormorant Garamond',serif;font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:300;color:#BFA06A;line-height:1;display:block;letter-spacing:.02em}
 .counter-label{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:#7A6E62;margin-top:.4rem;display:block;line-height:1.4}
 @media(max-width:560px){.counter-grid{grid-template-columns:repeat(2,1fr)}.counter-item:nth-child(2){border-right:none}.counter-item:nth-child(3){border-right:1px solid rgba(191,160,106,.15)}}
 
@@ -543,7 +546,110 @@ nav a.nav-links-a{position:relative}
 .coverage-map-wrap iframe{display:block;width:100%;height:300px;border:none;filter:sepia(20%) saturate(80%) hue-rotate(5deg)}
 .map-overlay-badge{position:absolute;top:.8rem;left:.8rem;background:#2C2418;color:#BFA06A;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;padding:.35rem .8rem;border:1px solid rgba(191,160,106,.3)}
 
+/* ── SCROLL ANIMATIONS ───────────────────────────────────────────────────────── */
+/* Base hidden state — applied via JS to avoid flash of invisible content if JS fails */
+.anim-fade{opacity:0;transform:translateY(28px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)}
+.anim-fade-left{opacity:0;transform:translateX(-28px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)}
+.anim-fade-right{opacity:0;transform:translateX(28px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)}
+.anim-scale{opacity:0;transform:scale(.97);transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1)}
+
+/* Visible state — added by IntersectionObserver */
+.anim-in{opacity:1!important;transform:none!important}
+
+/* Stagger delays for child groups */
+.anim-stagger>*{opacity:0;transform:translateY(22px);transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1)}
+.anim-stagger.anim-in>*:nth-child(1){opacity:1;transform:none;transition-delay:.05s}
+.anim-stagger.anim-in>*:nth-child(2){opacity:1;transform:none;transition-delay:.15s}
+.anim-stagger.anim-in>*:nth-child(3){opacity:1;transform:none;transition-delay:.25s}
+.anim-stagger.anim-in>*:nth-child(4){opacity:1;transform:none;transition-delay:.35s}
+.anim-stagger.anim-in>*:nth-child(5){opacity:1;transform:none;transition-delay:.45s}
+.anim-stagger.anim-in>*:nth-child(6){opacity:1;transform:none;transition-delay:.52s}
+.anim-stagger.anim-in>*:nth-child(n+7){opacity:1;transform:none;transition-delay:.58s}
+
+/* Gold line wipe — for dividers */
+.anim-line{transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.anim-line.anim-in{transform:scaleX(1)}
+
+/* Respect reduced motion */
+@media(prefers-reduced-motion:reduce){
+  .anim-fade,.anim-fade-left,.anim-fade-right,.anim-scale,
+  .anim-stagger>*,.anim-line{transition:none!important;opacity:1!important;transform:none!important}
+}
 </style>
+
+<!-- FAQ Schema for Google rich results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Who will visit my parents?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Visits are by trained, verified associates held to the same quality standard every time. Every onboarding visit is supervised directly, and a monthly senior review is conducted for every active client."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I know the person visiting is trustworthy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Every associate undergoes police verification and structured training. Our team background and references are available on request. The first visit is always personally supervised."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How will I know what happened during each visit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On the same day as every visit, your family WhatsApp group receives a structured report: vitals, medication, mood observations, and issues flagged. Signature and Premiere members also get proactive updates between visits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if my parent has a medical emergency?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Our team is the first call. We notify your family immediately, coordinate with your doctor or hospital, and stay on-site until stable. Premiere members receive a written emergency protocol at onboarding."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does it cost? Is there a free trial?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Plans start from ₹5,999 per month. Payment is collected before your first visit. No free trials — but your onboarding visit is included in your first month so you see exactly how we work from day one."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the annual health check work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We coordinate a comprehensive home collection covering 80+ health parameters. Our team is present and the report is shared with the family with a plain-language summary. Included after 6 months on Signature, 3 months on Premiere."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How quickly can we start? Is there a contract?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Onboarding takes 5–7 days from confirmed booking. No long-term contract. Cancel anytime with 7 days notice before your next billing date. We raise your invoice 7 days before each month begins. We'd rather earn your loyalty than lock it in."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens on the weekly check-in call?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Every week we call your parent for a structured conversation — how they are feeling, whether any needs have come up, anything the family should know. It is not a medical call. It is a consistent, caring presence that catches small issues before they become big ones."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -559,11 +665,12 @@ nav a.nav-links-a{position:relative}
   <ul class="nav-links">
     <li><a href="#what">What We Do</a></li>
     <li><a href="#onboarding">How It Works</a></li>
-    <li><a href="#plans">Plans</a></li>
+    <li><a href="#plans">Pricing</a></li>
     <li><a href="#compare">Compare</a></li>
     <li><a href="#addons">Add-Ons</a></li>
     <li><a href="#founder">About</a></li>
     <li><a href="#faqs">FAQs</a></li>
+    <li><a href="/blog.html">Blog</a></li>
     <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
   </ul>
   <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
@@ -618,21 +725,21 @@ nav a.nav-links-a{position:relative}
 <!-- COUNTER STRIP -->
 <div class="counter-strip">
   <div class="counter-grid">
-    <div class="counter-item reveal">
-      <span class="counter-num" data-target="24" data-suffix="+">24+</span>
-      <span class="counter-label">Families reassured<br>this year</span>
+    <div class="counter-item anim-fade">
+      <span class="counter-num">Same-Day</span>
+      <span class="counter-label">Reports delivered<br>every visit</span>
     </div>
-    <div class="counter-item reveal reveal-delay-1">
-      <span class="counter-num" data-target="180" data-suffix="+">180+</span>
-      <span class="counter-label">Visit reports<br>delivered</span>
+    <div class="counter-item anim-fade">
+      <span class="counter-num">No Lock-In</span>
+      <span class="counter-label">Cancel with<br>7 days notice</span>
     </div>
-    <div class="counter-item reveal reveal-delay-2">
-      <span class="counter-num" data-target="18" data-suffix="+">18+</span>
-      <span class="counter-label">Areas covered<br>across Delhi NCR</span>
+    <div class="counter-item anim-fade">
+      <span class="counter-num">Verified</span>
+      <span class="counter-label">Every associate<br>background-checked</span>
     </div>
-    <div class="counter-item reveal reveal-delay-3">
-      <span class="counter-num" data-target="100" data-suffix="%">100%</span>
-      <span class="counter-label">Quality-assured<br>every visit</span>
+    <div class="counter-item anim-fade">
+      <span class="counter-num">Delhi NCR</span>
+      <span class="counter-label">Faridabad · South Delhi<br>Noida · Gurgaon</span>
     </div>
   </div>
 </div>
@@ -1393,6 +1500,12 @@ nav a.nav-links-a{position:relative}
       <a href="/refund.html">Refund &amp; Cancellation</a>
       <a href="/contact.html">Contact Details</a>
     </div>
+    <div class="footer-links" style="margin-top:.5rem">
+      <a href="/blog.html" style="color:#BFA06A">From our blog &rarr;</a>
+      <a href="/blog-refuses-help.html">When parents refuse help</a>
+      <a href="/blog-caregiver-vs-concierge.html">Caregiver vs concierge</a>
+      <a href="/blog-visit-report.html">What a good report looks like</a>
+    </div>
     <div class="footer-copy">&copy; 2026 Kith &amp; Kin &middot; Delhi NCR</div>
   </div>
 </footer>
@@ -1695,6 +1808,155 @@ function resetChat(){
   document.getElementById('chatMsgs').innerHTML='<div class="chat-msg bot">What else can I help you with?</div>';
   document.getElementById('chatPrompts').innerHTML=Object.keys(chatData).map(function(k){return'<button class="chat-prompt" onclick="chatAns(\''+k+'\')">'+chatData[k].q+'</button>'}).join('');
 }
+
+/* ── SCROLL ANIMATIONS ───────────────────────────────────────────────────────── */
+(function(){
+  // Only run if IntersectionObserver is available
+  if(!('IntersectionObserver' in window)) return;
+  // Skip if user prefers reduced motion
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+  // ── 1. TAG ELEMENTS WITH ANIMATION CLASSES ──
+  // Section headings — fade up
+  document.querySelectorAll('.section-head').forEach(function(el){
+    el.classList.add('anim-fade');
+  });
+
+  // Service pillars — stagger
+  var pillars = document.querySelector('.pillars');
+  if(pillars) pillars.classList.add('anim-stagger');
+
+  // Visit steps — stagger
+  var visitSteps = document.querySelector('.visit-steps');
+  if(visitSteps) visitSteps.classList.add('anim-stagger');
+
+  // Plan cards — stagger
+  var plansGrid = document.querySelector('.plans-grid');
+  if(plansGrid) plansGrid.classList.add('anim-stagger');
+
+  // Comparison table — fade up
+  var compareWrap = document.querySelector('.compare-wrap');
+  if(compareWrap) compareWrap.classList.add('anim-fade');
+
+  // Add-ons — stagger
+  var addonsGrid = document.querySelector('.addons-grid');
+  if(addonsGrid) addonsGrid.classList.add('anim-stagger');
+
+  // Testimonials section — fade up
+  var testCarousel = document.querySelector('.test-carousel');
+  if(testCarousel) testCarousel.classList.add('anim-fade');
+
+  // Founder — left/right split
+  var founderLeft = document.querySelector('.founder-inner>:first-child');
+  var founderRight = document.querySelector('.founder-inner>:last-child');
+  if(founderLeft) founderLeft.classList.add('anim-fade-left');
+  if(founderRight) founderRight.classList.add('anim-fade-right');
+
+  // FAQ items — stagger
+  var faqList = document.querySelector('.faq-list');
+  if(faqList) faqList.classList.add('anim-stagger');
+
+  // Contact — left/right split
+  var contactLeft = document.querySelector('.contact-inner>:first-child');
+  var contactRight = document.querySelector('.contact-inner>:last-child');
+  if(contactLeft) contactLeft.classList.add('anim-fade-left');
+  if(contactRight) contactRight.classList.add('anim-fade-right');
+
+  // WA demo — left/right split
+  var waLeft = document.querySelector('.wa-demo-inner>:first-child');
+  var waRight = document.querySelector('.wa-demo-inner>:last-child');
+  if(waLeft) waLeft.classList.add('anim-fade-left');
+  if(waRight) waRight.classList.add('anim-fade-right');
+
+  // Counter strip items — stagger
+  var counterGrid = document.querySelector('.counter-grid');
+  if(counterGrid) counterGrid.classList.add('anim-stagger');
+
+  // Area section — left/right split
+  var areaLeft = document.querySelector('.area-inner>:first-child');
+  var areaRight = document.querySelector('.area-inner>:last-child');
+  if(areaLeft) areaLeft.classList.add('anim-fade-left');
+  if(areaRight) areaRight.classList.add('anim-fade-right');
+
+  // Non-medical note — fade up
+  var nonMed = document.querySelector('.non-medical-note');
+  if(nonMed) nonMed.classList.add('anim-fade');
+
+  // Diff table — scale in
+  var diffTable = document.querySelector('.diff-table');
+  if(diffTable) diffTable.classList.add('anim-scale');
+
+  // Cost calc — fade up
+  var calcGrid = document.querySelector('.cost-calc-grid');
+  if(calcGrid) calcGrid.classList.add('anim-fade');
+
+  // Families strip — fade up
+  var famInner = document.querySelector('.fam-inner');
+  if(famInner) famInner.classList.add('anim-fade');
+
+  // QR strip — fade up
+  var qrInner = document.querySelector('.qr-inner');
+  if(qrInner) qrInner.classList.add('anim-fade');
+
+  // Report tabs — fade up
+  var reportTabs = document.querySelector('.report-tabs');
+  if(reportTabs) reportTabs.classList.add('anim-fade');
+
+  // ── 2. OBSERVE AND TRIGGER ──
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('anim-in');
+        observer.unobserve(entry.target); // fire once only
+      }
+    });
+  },{
+    threshold: 0.12,       // trigger when 12% of element is visible
+    rootMargin: '0px 0px -40px 0px'  // slight offset so animation starts just before element reaches viewport
+  });
+
+  // Observe everything that has an anim class
+  document.querySelectorAll('.anim-fade,.anim-fade-left,.anim-fade-right,.anim-scale,.anim-stagger').forEach(function(el){
+    observer.observe(el);
+  });
+
+  // ── 3. ANIMATED STAT COUNTERS ──
+  // Trigger count-up when the counter strip enters view
+  var counterObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting) return;
+      counterObserver.unobserve(entry.target);
+
+      entry.target.querySelectorAll('.counter-num').forEach(function(el){
+        var raw = el.textContent.trim();
+        // Parse target: strip non-numeric suffix, keep it for display
+        var match = raw.match(/^([0-9,]+)(\+|%|k)?/);
+        if(!match) return;
+        var target = parseInt(match[1].replace(/,/g,''));
+        var suffix = match[2] || '';
+        var duration = 1800;
+        var start = null;
+
+        function easeOut(t){ return 1 - Math.pow(1 - t, 3); }
+
+        function step(timestamp){
+          if(!start) start = timestamp;
+          var progress = Math.min((timestamp - start) / duration, 1);
+          var current = Math.round(easeOut(progress) * target);
+          // Format with commas for large numbers
+          el.textContent = current.toLocaleString('en-IN') + suffix;
+          if(progress < 1) requestAnimationFrame(step);
+          else el.textContent = raw; // ensure final value is exact original
+        }
+        requestAnimationFrame(step);
+      });
+    });
+  },{threshold: 0.3});
+
+  var counterStrip = document.querySelector('.counter-strip');
+  if(counterStrip) counterObserver.observe(counterStrip);
+
+})();
 
 </script>
 </body>
