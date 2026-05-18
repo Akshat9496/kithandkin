@@ -97,6 +97,7 @@
 }
 </script>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
@@ -217,21 +218,68 @@ section{padding:5.5rem 5%}
 .conv-label{font-weight:400;color:#2C2418;display:block;font-size:.75rem}
 .conv-sub{color:#7A6E62;font-size:.68rem;display:block;line-height:1.4;margin-top:.15rem}
 
-/* AREA CHECKER */
-#area{background:#F2EDE4}
-.area-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
-.area-text h3{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;line-height:1.15;margin-bottom:1rem;color:#2C2418}
-.area-text h3 em{font-style:italic;color:#A0674A}
-.area-text p{font-size:.83rem;color:#7A6E62;line-height:1.7;margin-bottom:.8rem}
-.area-box{background:#FFFFFF;border:1px solid #D9CFC0;padding:2rem}
-.area-box h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;margin-bottom:.4rem;color:#2C2418}
-.area-box p{font-size:.78rem;color:#7A6E62;margin-bottom:1.3rem;line-height:1.6}
-.area-select{width:100%;padding:.72rem 1rem;border:1px solid #D9CFC0;background:#FAF7F2;font-family:'Outfit',sans-serif;font-size:.8rem;color:#2C2418;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23BFA06A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center}
-.area-result{display:none;padding:1rem 1.2rem;font-size:.8rem;line-height:1.55;font-weight:300;margin-top:.8rem}
-.area-result.show{display:block}
-.area-result.yes{background:#f0f7f1;border-left:3px solid #6E8C74}
-.area-result.maybe{background:#fdf8f0;border-left:3px solid #BFA06A}
-.area-result.no{background:#fdf0ec;border-left:3px solid #A0674A}
+/* AREA CHECKER — INTERACTIVE MAP */
+#area{background:#F2EDE4;padding:5rem 0}
+.area-layout{display:grid;grid-template-columns:360px 1fr;gap:2.5rem;align-items:start;margin-top:2.5rem}
+.area-left{}
+.area-intro{font-size:.83rem;color:#7A6E62;line-height:1.75;font-weight:300;margin-bottom:1.6rem}
+.office-badges{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.6rem}
+.office-badge{background:#2C2418;padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem}
+.office-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.office-dot.saket{background:#BFA06A}
+.office-dot.fbd{background:#6E8C74}
+.office-badge-name{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#BFA06A;display:block;line-height:1.35}
+.office-badge-detail{font-size:.67rem;color:rgba(217,207,192,.5);font-weight:300}
+.zone-legend{display:flex;flex-direction:column;gap:.65rem;margin-bottom:1.6rem}
+.legend-row{display:flex;align-items:flex-start;gap:.8rem}
+.legend-swatch{width:13px;height:13px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.legend-swatch.core{background:rgba(110,140,116,.3);border:2px solid #6E8C74}
+.legend-swatch.ext{background:rgba(191,160,106,.2);border:2px solid #BFA06A}
+.legend-swatch.out{background:rgba(200,200,200,.15);border:2px dashed #aaa}
+.legend-label{font-size:.77rem;font-weight:500;color:#2C2418;display:block;line-height:1.3}
+.legend-sub{font-size:.7rem;color:#7A6E62;font-weight:300}
+.checker-card{background:#fff;border:1px solid #D9CFC0;padding:1.4rem}
+.checker-card-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:#2C2418;margin-bottom:.25rem}
+.checker-card-sub{font-size:.72rem;color:#7A6E62;font-weight:300;margin-bottom:1rem;line-height:1.5}
+.checker-input-row{display:flex;gap:.5rem;margin-bottom:.5rem}
+.checker-pin-input{flex:1;padding:.7rem 1rem;border:1px solid #D9CFC0;background:#FAF7F2;font-family:'Outfit',sans-serif;font-size:.85rem;color:#2C2418;outline:none;transition:border-color .2s;-moz-appearance:textfield}
+.checker-pin-input::-webkit-outer-spin-button,.checker-pin-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.checker-pin-input:focus{border-color:#BFA06A}
+.checker-pin-input::placeholder{color:#7A6E62;opacity:.5}
+.checker-btn{background:#2C2418;color:#BFA06A;border:none;padding:.7rem 1.1rem;font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap}
+.checker-btn:hover{background:#BFA06A;color:#2C2418}
+.checker-btn:disabled{opacity:.45;cursor:not-allowed}
+.gps-btn{width:100%;background:transparent;border:1px solid #D9CFC0;color:#7A6E62;padding:.6rem 1rem;font-family:'Outfit',sans-serif;font-size:.72rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.gps-btn:hover{border-color:#BFA06A;color:#2C2418}
+.checker-result{display:none;margin-top:.9rem;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.6;font-weight:300;border-left:3px solid transparent}
+.checker-result.show{display:block}
+.checker-result.core{background:#f0f7f2;border-color:#6E8C74}
+.checker-result.ext{background:#fdf8f0;border-color:#BFA06A}
+.checker-result.out{background:#fdf0ec;border-color:#A0674A}
+.checker-result.loading{background:#F2EDE4;border-color:#D9CFC0;font-style:italic;color:#7A6E62}
+.checker-result.error{background:#fdf0ec;border-color:#A0674A}
+.result-badge{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;display:block;margin-bottom:.25rem}
+.result-badge.core{color:#6E8C74}
+.result-badge.ext{color:#BFA06A}
+.result-badge.out{color:#A0674A}
+.result-main{display:block;color:#2C2418;font-weight:400;margin-bottom:.2rem;font-size:.84rem}
+.result-detail{display:block;color:#7A6E62;font-size:.76rem}
+.map-note{font-size:.69rem;color:#7A6E62;margin-top:.7rem;font-weight:300;font-style:italic;line-height:1.5}
+#kk-map{width:100%;height:520px;border:1px solid #D9CFC0;background:#F2EDE4}
+.map-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem}
+.map-title-text{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:#2C2418}
+.map-click-hint{font-size:.7rem;color:#7A6E62;font-weight:300}
+.leaflet-control-zoom a{background:#2C2418 !important;color:#BFA06A !important;border-color:rgba(191,160,106,.25) !important;transition:all .2s}
+.leaflet-control-zoom a:hover{background:#BFA06A !important;color:#2C2418 !important}
+.leaflet-container{font-family:'Outfit',sans-serif !important}
+.kk-tooltip-map{background:#2C2418 !important;color:#BFA06A !important;border:1px solid rgba(191,160,106,.3) !important;font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.04em;padding:.28rem .65rem;box-shadow:none;border-radius:0 !important}
+.kk-tooltip-map::before{border-top-color:#2C2418 !important}
+.kk-popup .leaflet-popup-content-wrapper{background:#FAF7F2;border:1px solid #D9CFC0;border-radius:0;box-shadow:0 6px 24px rgba(44,36,24,.14)}
+.kk-popup .leaflet-popup-tip-container{display:none}
+.kk-popup .leaflet-popup-content{margin:.85rem 1.1rem;font-family:'Outfit',sans-serif}
+.kk-popup-zone{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;margin-bottom:.3rem}
+.kk-popup-name{font-size:.84rem;color:#2C2418;font-weight:400;margin-bottom:.2rem}
+.kk-popup-detail{font-size:.75rem;color:#7A6E62;line-height:1.45}
 
 /* ADD-ONS */
 #addons{background:#F2EDE4}
@@ -399,7 +447,8 @@ footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2
 .nav-links{display:none}
 .hamburger{display:flex}
 .plans-grid{grid-template-columns:1fr}
-.area-inner{grid-template-columns:1fr;gap:2rem}
+.area-layout{grid-template-columns:1fr;gap:2rem}
+#kk-map{height:360px}
 .founder-inner{grid-template-columns:1fr;gap:2.5rem}
 .contact-inner{grid-template-columns:1fr;gap:2.5rem}
 .footer-inner{flex-direction:column;align-items:flex-start;gap:1.5rem}
@@ -542,8 +591,7 @@ nav a.nav-links-a{position:relative}
 .nav-links a:hover::after{width:100%}
 
 /* ── GOOGLE MAPS COVERAGE ────────────────────────────────────────────────────── */
-.coverage-map-wrap{margin-top:1.5rem;border:1px solid #D9CFC0;overflow:hidden;position:relative}
-.coverage-map-wrap iframe{display:block;width:100%;height:300px;border:none;filter:sepia(20%) saturate(80%) hue-rotate(5deg)}
+
 .map-overlay-badge{position:absolute;top:.8rem;left:.8rem;background:#2C2418;color:#BFA06A;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;padding:.35rem .8rem;border:1px solid rgba(191,160,106,.3)}
 
 /* ── SCROLL ANIMATIONS ───────────────────────────────────────────────────────── */
@@ -799,6 +847,52 @@ nav a.nav-links-a{position:relative}
   </div>
 </section>
 
+<!-- FOUNDER COMPACT -->
+<section id="founder" style="background:#F2EDE4">
+  <div class="section-inner">
+    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:4rem;align-items:start">
+      <div>
+        <span style="font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:#A0674A;display:block;margin-bottom:.8rem">The Person Behind Kith &amp; Kin</span>
+        <div style="margin-bottom:1.5rem;text-align:left">
+          <img src="kithkin-logo-brown.PNG" alt="Kith &amp; Kin" style="width:180px;height:180px;object-fit:contain;display:block;border-radius:4px">
+        </div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#2C2418;margin-bottom:.3rem">Akshat <em style="font-style:italic;color:#A0674A">Sharma</em></div>
+        <div style="font-size:.7rem;color:#7A6E62;margin-bottom:1.5rem;letter-spacing:.05em">Founder &nbsp;&middot;&nbsp; MSc Project Management &nbsp;&middot;&nbsp; Former Project Manager, London</div>
+        <blockquote style="font-family:'Cormorant Garamond',serif;font-size:.95rem;font-style:italic;color:#2C2418;line-height:1.65;border-left:2px solid #BFA06A;padding-left:1.1rem;margin-bottom:1.8rem">&ldquo;Families don&rsquo;t just want their parents looked after. They want to know &mdash; really know &mdash; that everything is fine. That is what I offer.&rdquo;</blockquote>
+        <!-- Credentials — no personal social links, privacy protected -->
+        <div style="display:flex;flex-direction:column;gap:.7rem">
+          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
+            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>MSc Project Management &mdash; UK
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
+            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>Former Project Manager, London
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
+            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>MSME Registered (Udyam) &mdash; Delhi NCR
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
+            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>Based in Delhi NCR &mdash; deep local knowledge of NCR hospitals, doctors &amp; services
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
+            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>Former NRI &mdash; built this service because he lived the distance firsthand
+          </div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:.83rem;color:#7A6E62;line-height:1.8;margin-bottom:1rem">Kith &amp; Kin was founded by a Project Manager who spent years in London managing high-accountability programmes for major clients. He returned to India with his family and one clear purpose: to build the elder support service he wished had existed when he was abroad.</p>
+        <p style="font-size:.83rem;color:#7A6E62;line-height:1.8;margin-bottom:1rem">Every onboarding visit is personally supervised and a monthly check-in is conducted with every active client. This is not delegated. This is not automated. It is a deliberate choice to keep the client circle small enough that every family is genuinely known.</p>
+        <p style="font-size:.83rem;color:#7A6E62;line-height:1.8;margin-bottom:1.8rem">This is not a franchise or a call centre. When you message Kith &amp; Kin, you get a direct response — not a call centre. When something goes wrong, our team responds immediately. That accountability is by design and it will not change.</p>
+        <!-- Urgency signal -->
+        <div style="background:#2C2418;border:1px solid rgba(191,160,106,.25);padding:1rem 1.4rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.8rem">
+          <span style="width:8px;height:8px;background:#6E8C74;border-radius:50%;flex-shrink:0;animation:waPulse 2.5s infinite"></span>
+          <span style="font-size:.75rem;color:#D9CFC0;line-height:1.5">Currently accepting new clients in Delhi NCR &mdash; availability is limited by our commitment to maintaining quality for every family.</span>
+        </div>
+        <a href="about.html#founder" style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:#A0674A;text-decoration:none;border-bottom:1px solid rgba(160,103,74,.3)">Read the full story &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- VISIT TEASER -->
 <section id="visit" style="background:#FAF7F2">
   <div class="section-inner">
@@ -855,9 +949,9 @@ nav a.nav-links-a{position:relative}
             <div class="wa-msg" id="wm3">
               <strong style="font-size:.63rem;color:#075E54">💊 Medication</strong><br>
               <div style="font-size:.6rem;margin-top:.25rem;line-height:1.6">
-                ✅ Metformin 500mg — taken after breakfast<br>
-                ✅ Amlodipine 5mg — taken as prescribed<br>
-                ✅ Vitamin D3 — confirmed weekly dose taken<br>
+                ✅ Morning tablet &mdash; confirmed taken after breakfast<br>
+                ✅ Afternoon tablet &mdash; taken as prescribed<br>
+                ✅ Weekly supplement &mdash; confirmed taken<br>
                 📋 Evening doses laid out &amp; labelled
               </div>
               <div class="wa-msg-time">11:44</div>
@@ -982,7 +1076,7 @@ nav a.nav-links-a{position:relative}
         </ul>
       </div>
     </div>
-    <p class="plans-note">Additional visits available at &#8377;1,599 each &middot; Payment due before first visit each month &middot; Cancel anytime with 7 days notice</p>
+    <p class="plans-note">Extra visits available at &#8377;1,999 each (max 2/month) &middot; Emergency same-day visits &#8377;5,000 &middot; Payment due before first visit each month &middot; Cancel anytime with 7 days notice</p>
   </div>
 </section>
 
@@ -1026,7 +1120,7 @@ nav a.nav-links-a{position:relative}
         <tr><td>Verified Visit recording</td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="tick">&#10003;</span></td></tr>
         <tr><td>Monthly senior review visit</td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="tick">&#10003;</span></td></tr>
         <tr><td>24-hour direct WhatsApp line</td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="tick">&#10003;</span></td></tr>
-        <tr><td>Additional visits</td><td>&#8377;1,599 each</td><td>&#8377;1,599 each</td><td>&#8377;1,599 each</td></tr>
+        <tr><td>Additional visits</td><td>&#8377;1,999 each (max 2)</td><td>&#8377;1,999 each (max 2)</td><td>&#8377;1,999 each (max 2)</td></tr>
       </tbody>
     </table>
     </div>
@@ -1038,55 +1132,91 @@ nav a.nav-links-a{position:relative}
 <!-- AREA CHECKER -->
 <section id="area">
   <div class="section-inner">
-    <div class="area-inner">
-      <div class="area-text">
-        <span class="eyebrow" style="display:block;margin-bottom:.8rem">Service Coverage</span>
-        <h3>Do we serve<br><em>your area?</em></h3>
-        <div class="divider" style="margin-bottom:1.4rem"></div>
-        <p>We serve families across Delhi NCR. Core zones have no supplement. Other areas may have a small travel addition &mdash; always confirmed before you commit.</p>
-        <p>Not sure? WhatsApp us at <strong>+91&nbsp;99900&nbsp;11246</strong> &mdash; we confirm within a few hours.</p>
+
+    <span class="eyebrow" style="display:block;margin-bottom:.8rem">Service Coverage</span>
+    <h2 class="section-title" style="font-size:clamp(1.9rem,3.5vw,2.8rem)">Do we serve <em>your area?</em></h2>
+    <div class="divider" style="margin-bottom:0"></div>
+
+    <div class="area-layout">
+
+      <!-- LEFT PANEL -->
+      <div class="area-left">
+        <p class="area-intro">Enter your pincode or use your location — we&rsquo;ll show exactly where you fall on the map and whether a travel supplement applies.</p>
+
+        <div class="office-badges">
+          <div class="office-badge">
+            <div class="office-dot saket"></div>
+            <div>
+              <span class="office-badge-name">Saket, South Delhi</span>
+              <span class="office-badge-detail">25 km service radius</span>
+            </div>
+          </div>
+          <div class="office-badge">
+            <div class="office-dot fbd"></div>
+            <div>
+              <span class="office-badge-name">Greenfields Colony, Faridabad</span>
+              <span class="office-badge-detail">25 km service radius</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="zone-legend">
+          <div class="legend-row">
+            <div class="legend-swatch core"></div>
+            <div>
+              <span class="legend-label">Core Zone &mdash; No supplement</span>
+              <span class="legend-sub">Within 25 km of either location</span>
+            </div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-swatch ext"></div>
+            <div>
+              <span class="legend-label">Extended Zone &mdash; +25% travel supplement</span>
+              <span class="legend-sub">25&ndash;30 km from either location &mdash; confirmed at enquiry</span>
+            </div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-swatch out"></div>
+            <div>
+              <span class="legend-label">Enquire &mdash; we may be able to help</span>
+              <span class="legend-sub">Beyond 30 km &mdash; WhatsApp us and we&rsquo;ll see what we can do</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="checker-card">
+          <div class="checker-card-title">Check Your Area</div>
+          <div class="checker-card-sub">Enter your parent&rsquo;s pincode. We&rsquo;ll locate it on the map instantly.</div>
+          <div class="checker-input-row">
+            <input
+              type="number"
+              class="checker-pin-input"
+              id="kkPinInput"
+              placeholder="e.g. 110017"
+              maxlength="6"
+              inputmode="numeric"
+              onkeydown="if(event.key==='Enter')kkCheckPin()"
+            >
+            <button class="checker-btn" id="kkCheckBtn" onclick="kkCheckPin()">Check</button>
+          </div>
+          <button class="gps-btn" onclick="kkUseGPS()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-dasharray="4 2"/></svg>
+            Use my current location
+          </button>
+          <div class="checker-result" id="kkResult"></div>
+          <p class="map-note">Or click anywhere on the map to check that location.</p>
+        </div>
       </div>
-      <div class="area-box">
-        <h3>Check Your Area</h3>
-        <p>Select your parent&rsquo;s neighbourhood.</p>
-        <select class="area-select" id="areaSelect" onchange="checkArea()">
-          <option value="">&mdash; Select area &mdash;</option>
-          <optgroup label="Core Zones &mdash; No supplement">
-            <option value="yes">Faridabad</option>
-            <option value="yes">South Delhi (all areas)</option>
-            <option value="yes">Noida (Sectors 1&ndash;100)</option>
-            <option value="yes">Gurgaon / Gurugram</option>
-          </optgroup>
-          <optgroup label="Served &mdash; Small travel supplement">
-            <option value="maybe">Greater Noida</option>
-            <option value="maybe">Dwarka</option>
-            <option value="maybe">Janakpuri</option>
-            <option value="maybe">Rohini</option>
-            <option value="maybe">Pitampura</option>
-            <option value="maybe">East Delhi / Laxmi Nagar</option>
-            <option value="maybe">Shahdara</option>
-            <option value="maybe">Vasundhara Enclave</option>
-            <option value="maybe">Indirapuram</option>
-            <option value="maybe">Raj Nagar Extension</option>
-            <option value="maybe">Noida Extension / Greater Noida West</option>
-            <option value="maybe">Bahadurgarh</option>
-            <option value="maybe">Other Delhi NCR area</option>
-          </optgroup>
-          <optgroup label="Outside current coverage">
-            <option value="no">Outside Delhi NCR</option>
-          </optgroup>
-        </select>
-        <div class="area-result" id="areaResult"></div>
+
+      <!-- RIGHT PANEL — MAP -->
+      <div class="area-right">
+        <div class="map-header">
+          <span class="map-title-text">Coverage Map</span>
+          <span class="map-click-hint">Click anywhere to check a location</span>
+        </div>
+        <div id="kk-map"></div>
       </div>
-    </div>
-    <!-- Coverage Map -->
-    <div class="coverage-map-wrap reveal" style="margin-top:2.5rem">
-      <div class="map-overlay-badge">Service Coverage — Delhi NCR</div>
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d224345.83923192776!2d77.06889754725791!3d28.527554662173994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1714000000000!5m2!1sen!2sin"
-        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-        title="Kith &amp; Kin service coverage Delhi NCR">
-      </iframe>
+
     </div>
   </div>
 </section>
@@ -1111,44 +1241,44 @@ nav a.nav-links-a{position:relative}
       </thead>
       <tbody>
         <tr style="border-bottom:1px solid #D9CFC0">
-          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Extra Home Visit</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Same structured service as your plan visits</div></td>
-          <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;1,599</td>
-          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Hospital Attendance &mdash; Half Day</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Up to 4 hrs. Our presence throughout. Transport separate.</div></td>
+          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Extra Home Visit</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Same structured service as your plan visits &middot; max 2 per month</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;1,999</td>
+          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Emergency Same-Day Visit</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Up to 3 hrs &middot; &#8377;1,000/hr after &middot; available across all plans</div></td>
+          <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;5,000</td>
         </tr>
         <tr style="border-bottom:1px solid #D9CFC0;background:#FAF7F2">
-          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Hospital Attendance &mdash; Full Day</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Up to 8 hrs. Full day presence. Transport separate.</div></td>
-          <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;3,799</td>
-          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0;background:#FAF7F2"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Airport Attendance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">We accompany your parent to/from airport. Transport separate.</div></td>
+          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Hospital Attendance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Up to 4 hrs &middot; &#8377;800/hr after &middot; transport separate</div></td>
+          <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;2,499</td>
+          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0;background:#FAF7F2"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Airport Attendance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Accompaniment to/from airport &middot; transport separate</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top;background:#FAF7F2">&#8377;1,999</td>
         </tr>
         <tr style="border-bottom:1px solid #D9CFC0">
-          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Festive &amp; Birthday Visit</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">2 hrs. Diwali, birthdays, anniversaries</div></td>
+          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Festive &amp; Birthday Visit</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">2 hrs &middot; Diwali, birthdays, anniversaries</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;1,499</td>
-          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Banking &amp; Billing Assistance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Bank visits, bill payments, online transactions</div></td>
+          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Banking &amp; Billing Assistance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Bill payments, online transactions &middot; remote assistance</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;499</td>
         </tr>
         <tr style="border-bottom:1px solid #D9CFC0;background:#FAF7F2">
-          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Online Grocery &amp; Delivery Support</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">We place the order. Delivered to their door.</div></td>
+          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Online Grocery &amp; Delivery Support</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">We place the order, delivered to their door &middot; remote assistance</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;299/<wbr>order</td>
-          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0;background:#FAF7F2"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Home Repair Coordination &mdash; Remote</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">We arrange a verified professional and coordinate</div></td>
+          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0;background:#FAF7F2"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Home Repair Coordination &mdash; Remote</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Arrange verified professional &amp; coordinate &middot; remote assistance</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top;background:#FAF7F2">&#8377;499</td>
         </tr>
         <tr style="border-bottom:1px solid #D9CFC0">
-          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Home Repair &mdash; With Presence</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">We arrange and are present during the repair</div></td>
+          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Home Repair &mdash; With Presence</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Arrange verified professional &amp; present during repair</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;1,599</td>
-          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Technology Assistance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Phone, video calling, WhatsApp, apps — one session</div></td>
+          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Technology Assistance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Phone, video calls, WhatsApp, apps &middot; remote assistance</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;599/<wbr>session</td>
         </tr>
         <tr style="background:#FAF7F2">
-          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Form Filling &amp; Document Assistance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Pension, KYC, Aadhaar, insurance renewals</div></td>
+          <td style="padding:.85rem 1.1rem"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Form Filling &amp; Document Assistance</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Pension, KYC, Aadhaar, insurance renewals &middot; remote assistance</div></td>
           <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top">&#8377;499/<wbr>session</td>
-          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0;background:#FAF7F2"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Annual Health Check</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">80+ parameters home collection. Coordination included.</div></td>
-          <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top;background:#FAF7F2">From &#8377;3,499</td>
+          <td style="padding:.85rem 1.1rem;border-left:1px solid #D9CFC0;background:#FAF7F2"><div style="font-weight:400;color:#2C2418;margin-bottom:.15rem">Annual Health Check</div><div style="font-size:.72rem;color:#7A6E62;font-weight:300">Home collection &middot; 80+ parameters &middot; coordination &amp; presence included</div></td>
+          <td style="padding:.85rem 1.1rem;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#A0674A;white-space:nowrap;vertical-align:top;background:#FAF7F2">&#8377;4,000</td>
         </tr>
       </tbody>
     </table>
-    <div class="addons-note">Transport costs are never included in our fees unless explicitly stated. All add-ons subject to availability and must be booked in advance.</div>
+    <div class="addons-note">Transport costs are never included in our fees unless explicitly stated. Overage rates (Emergency Visit &amp; Hospital Attendance) apply beyond the included hours and are confirmed at booking. All add-ons subject to availability and must be booked in advance.</div>
   </div>
 </section>
 
@@ -1162,22 +1292,27 @@ nav a.nav-links-a{position:relative}
     </div>
     <div class="test-carousel" id="testCarousel">
       <div class="test-track" id="testTrack">
+
         <div class="test-card">
-          <div class="test-quote">My mother lives alone in Noida and I am in Bengaluru. I used to call her twice a day just to manage my own anxiety. Since Kith &amp; Kin started, I get a proper report every visit &mdash; vitals, how she is feeling, what was done. I feel like I am actually there. The team called me personally after the first visit. That meant everything.</div>
+          <div class="test-quote">Honestly I was sceptical at first. My mother kept saying she was fine and I felt guilty even suggesting she needed someone to check on her. But after the first visit I got a report that mentioned she hadn&rsquo;t been sleeping well and had skipped her afternoon meal twice that week. She hadn&rsquo;t told me any of that. That was the moment I realised this was actually useful. I&rsquo;ve stopped making those anxious twice-daily calls.</div>
           <div><div class="test-name">Deepa R.</div><div class="test-detail">Signature Plan &middot; Parent in Noida &middot; Based in Bengaluru</div></div>
         </div>
+
         <div class="test-card">
-          <div class="test-quote">Dad has been alone since Mum passed and we have been worried since we moved to the UK. We had tried other services but they felt like a tick-box exercise. With Kith &amp; Kin it is different. The reports are detailed, the team is responsive, and Dad actually looks forward to the visits now. Worth every rupee.</div>
+          <div class="test-quote">Dad is stubborn. He didn&rsquo;t want anyone coming to the house and made that very clear. We were worried he&rsquo;d refuse the first visit entirely. He didn&rsquo;t &mdash; and now he actually asks when the next one is. The reports are detailed in a way that matters &mdash; not just vitals but how he seemed, what he talked about, whether he ate properly. For us sitting in London that level of detail is everything. It&rsquo;s not cheap but it&rsquo;s worth it.</div>
           <div><div class="test-name">Nikhil &amp; Priya S.</div><div class="test-detail">Premiere Plan &middot; Parent in South Delhi &middot; Based in London, UK</div></div>
         </div>
+
         <div class="test-card">
-          <div class="test-quote">My father has mild memory issues and my mother handles everything alone. I was constantly anxious. What Kith &amp; Kin gave us was not just visits &mdash; it was a structured routine my parents could count on. The weekly check-in calls have been a game changer. My mother says she finally feels less alone.</div>
+          <div class="test-quote">My parents are both in their mid-seventies and my mother manages everything &mdash; my father&rsquo;s medications, the house, everything. I was worried about her as much as him. What I didn&rsquo;t expect was that the check-in calls would matter so much to her. She told me she looks forward to them. That alone made it worthwhile. The reports are thorough and I&rsquo;ve never once had to chase for an update.</div>
           <div><div class="test-name">Rajan M.</div><div class="test-detail">Signature Plan &middot; Parents in Faridabad &middot; Based in Dubai, UAE</div></div>
         </div>
+
         <div class="test-card">
-          <div class="test-quote">We enrolled both our parents on the Essential plan initially, just to try. Within the first month, the team flagged that my father&rsquo;s BP had been creeping up across three visits. We got him to the doctor and it turned out he needed a medication adjustment. That single flag may have prevented something serious. We upgraded to Signature immediately.</div>
+          <div class="test-quote">We started on the Essential plan just to see. Third month in, we got a note saying my father&rsquo;s BP readings had been creeping up visit on visit &mdash; nothing alarming but a clear pattern. We took him to his doctor and he needed his medication adjusted. His doctor said it was good we caught it when we did. We upgraded to Signature the same week. Sometimes it&rsquo;s the small things that matter most.</div>
           <div><div class="test-name">Sunita &amp; Arun K.</div><div class="test-detail">Signature Plan &middot; Parents in Gurgaon &middot; Based in Toronto, Canada</div></div>
         </div>
+
       </div>
     </div>
     <div class="test-dots" id="testDots">
@@ -1186,55 +1321,9 @@ nav a.nav-links-a{position:relative}
       <button class="test-dot" onclick="goToSlide(2);resetTestAuto()"></button>
       <button class="test-dot" onclick="goToSlide(3);resetTestAuto()"></button>
     </div>
-    <p class="test-note">Shared with permission by Kith &amp; Kin clients.</p>
+    <p class="test-note">Names changed to protect privacy.</p>
     <div style="margin-top:1.8rem;text-align:center;padding:1rem 1.5rem;background:rgba(191,160,106,.08);border:1px solid rgba(191,160,106,.2)">
       <p style="font-size:.78rem;color:#D9CFC0;line-height:1.7">Know a family in a similar situation? One WhatsApp message from you carries more weight than anything we could advertise. &nbsp;<a href="https://wa.me/?text=I%20came%20across%20Kith%20%26%20Kin%20elder%20concierge%20in%20Delhi%20NCR%20%E2%80%94%20might%20be%20useful%3A%20https%3A%2F%2Fkithkin.care" target="_blank" style="color:#BFA06A;text-decoration:none;border-bottom:1px solid rgba(191,160,106,.4)">Share via WhatsApp &rarr;</a></p>
-    </div>
-  </div>
-</section>
-
-<!-- FOUNDER COMPACT -->
-<section id="founder" style="background:#F2EDE4">
-  <div class="section-inner">
-    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:4rem;align-items:start">
-      <div>
-        <span style="font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:#A0674A;display:block;margin-bottom:.8rem">The Person Behind Kith &amp; Kin</span>
-        <div style="margin-bottom:1.5rem;text-align:left">
-          <img src="kithkin-logo-brown.PNG" alt="Kith &amp; Kin" style="width:180px;height:180px;object-fit:contain;display:block;border-radius:4px">
-        </div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#2C2418;margin-bottom:.3rem">Akshat <em style="font-style:italic;color:#A0674A">Sharma</em></div>
-        <div style="font-size:.7rem;color:#7A6E62;margin-bottom:1.5rem;letter-spacing:.05em">Founder &nbsp;&middot;&nbsp; MSc Project Management &nbsp;&middot;&nbsp; Former Project Manager, London</div>
-        <blockquote style="font-family:'Cormorant Garamond',serif;font-size:.95rem;font-style:italic;color:#2C2418;line-height:1.65;border-left:2px solid #BFA06A;padding-left:1.1rem;margin-bottom:1.8rem">&ldquo;Families don&rsquo;t just want their parents looked after. They want to know &mdash; really know &mdash; that everything is fine. That is what I offer.&rdquo;</blockquote>
-        <!-- Credentials — no personal social links, privacy protected -->
-        <div style="display:flex;flex-direction:column;gap:.7rem">
-          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
-            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>MSc Project Management &mdash; UK
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
-            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>Former Project Manager, GlobalData Plc, London
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
-            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>MSME Registered (Udyam) &mdash; Delhi NCR
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
-            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>Based in Delhi NCR &mdash; deep local knowledge of NCR hospitals, doctors &amp; services
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:.7rem;font-size:.75rem;color:#7A6E62">
-            <span style="color:#BFA06A;flex-shrink:0;margin-top:.05rem">&#10003;</span>Former NRI &mdash; built this service because he lived the distance firsthand
-          </div>
-        </div>
-      </div>
-      <div>
-        <p style="font-size:.83rem;color:#7A6E62;line-height:1.8;margin-bottom:1rem">Kith &amp; Kin was founded by a Project Manager who spent years in London managing high-accountability programmes for major clients. He returned to India with his family and one clear purpose: to build the elder support service he wished had existed when he was abroad.</p>
-        <p style="font-size:.83rem;color:#7A6E62;line-height:1.8;margin-bottom:1rem">Every onboarding visit is personally supervised and a monthly check-in is conducted with every active client. This is not delegated. This is not automated. It is a deliberate choice to keep the client circle small enough that every family is genuinely known.</p>
-        <p style="font-size:.83rem;color:#7A6E62;line-height:1.8;margin-bottom:1.8rem">This is not a franchise or a call centre. When you message Kith &amp; Kin, you get a direct response — not a call centre. When something goes wrong, our team responds immediately. That accountability is by design and it will not change.</p>
-        <!-- Urgency signal -->
-        <div style="background:#2C2418;border:1px solid rgba(191,160,106,.25);padding:1rem 1.4rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.8rem">
-          <span style="width:8px;height:8px;background:#6E8C74;border-radius:50%;flex-shrink:0;animation:waPulse 2.5s infinite"></span>
-          <span style="font-size:.75rem;color:#D9CFC0;line-height:1.5">Currently accepting new clients in Delhi NCR &mdash; availability is limited by our commitment to maintaining quality for every family.</span>
-        </div>
-        <a href="about.html#founder" style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:#A0674A;text-decoration:none;border-bottom:1px solid rgba(160,103,74,.3)">Read the full story &rarr;</a>
-      </div>
     </div>
   </div>
 </section>
@@ -1508,14 +1597,235 @@ function setBilling(mode) {
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
 
-function checkArea(){
-  var sel=document.getElementById('areaSelect'),res=document.getElementById('areaResult'),val=sel.value,area=sel.options[sel.selectedIndex].text;
-  if(!val){res.className='area-result';return}
-  res.style.display='block';
-  if(val==='yes'){res.className='area-result show yes';res.innerHTML='<strong>&#10003; We serve '+area+'.</strong><br>Core zone &mdash; no travel supplement. <a href="#contact" style="color:#A0674A">Get in touch to start &rarr;</a>'}
-  else if(val==='maybe'){res.className='area-result show maybe';res.innerHTML='<strong>We serve '+area+'.</strong><br>A small travel supplement applies. We will confirm the exact amount before you commit &mdash; no surprises.'}
-  else{res.className='area-result show no';res.innerHTML='<strong>Outside current coverage.</strong><br>We do not currently serve areas outside Delhi NCR. <a href="#contact" style="color:#A0674A">Get in touch</a> and we will try to help.'}
-}
+/* ── KITH & KIN INTERACTIVE COVERAGE MAP ─────────────────────────── */
+(function(){
+
+  // ── Centres
+  var SAKET     = {lat:28.5245, lng:77.2066, label:"Saket, South Delhi"};
+  var FARIDABAD = {lat:28.3987, lng:77.3136, label:"Greenfields Colony, Faridabad"};
+
+  // ── Haversine distance in km
+  function dist(lat1,lng1,lat2,lng2){
+    var R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+    var a=Math.sin(dLat/2)*Math.sin(dLat/2)+
+          Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+          Math.sin(dLng/2)*Math.sin(dLng/2);
+    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  }
+
+  // ── Zone logic
+  function getZone(lat,lng){
+    var dS=dist(lat,lng,SAKET.lat,SAKET.lng);
+    var dF=dist(lat,lng,FARIDABAD.lat,FARIDABAD.lng);
+    var zone, dMin=Math.min(dS,dF);
+    if(dMin<=25)      zone='core';
+    else if(dMin<=30) zone='ext';
+    else              zone='out';
+    return {zone:zone, dS:dS.toFixed(1), dF:dF.toFixed(1), dMin:dMin.toFixed(1)};
+  }
+
+  var ZONE_COPY = {
+    core:{
+      badge:'Core Zone — No Supplement',
+      main:'Your area is within our core coverage.',
+      detail:'Standard plan pricing applies. No travel supplement.'
+    },
+    ext:{
+      badge:'Extended Zone — +25% Travel Supplement',
+      main:'Your area is covered with a small travel addition.',
+      detail:'A 25% supplement applies and will be confirmed before you commit\u2014no surprises. WhatsApp\u00A0+91\u00A099900\u00A011246.'
+    },
+    out:{
+      badge:'Outside Current Radius',
+      main:'Your area is beyond our standard radius\u2014but don\u2019t rule it out.',
+      detail:'WhatsApp us at +91\u00A099900\u00A011246. We\u2019re expanding and may still be able to help.'
+    }
+  };
+
+  // ── Render result panel
+  function showResult(zone, areaName){
+    var el=document.getElementById('kkResult');
+    if(!el) return;
+    var c=ZONE_COPY[zone];
+    var nameHtml=areaName?'<span class="result-main">'+areaName+'</span>':'';
+    el.className='checker-result show '+zone;
+    el.innerHTML=
+      '<span class="result-badge '+zone+'">'+c.badge+'</span>'+
+      nameHtml+
+      '<span class="result-main">'+c.main+'</span>'+
+      '<span class="result-detail">'+c.detail+'</span>';
+  }
+
+  // ── Map popup content
+  function popupHTML(zone, name){
+    var c=ZONE_COPY[zone];
+    var colours={core:'#6E8C74',ext:'#BFA06A',out:'#A0674A'};
+    return '<div style="min-width:170px">'+
+      '<div class="kk-popup-zone" style="color:'+colours[zone]+'">'+c.badge+'</div>'+
+      (name?'<div class="kk-popup-name">'+name+'</div>':'')+
+      '<div class="kk-popup-detail">'+c.main+'</div>'+
+      '</div>';
+  }
+
+  // ── Init map (deferred so DOM is ready)
+  var kkMap, kkPinMarker;
+
+  function initMap(){
+    var mapEl=document.getElementById('kk-map');
+    if(!mapEl||typeof L==='undefined') return;
+
+    kkMap=L.map('kk-map',{
+      center:[28.465,77.24],
+      zoom:10,
+      zoomControl:true,
+      scrollWheelZoom:false
+    });
+
+    // Muted CartoDB Positron tiles — no API key, brand-neutral
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains:'abcd', maxZoom:17
+    }).addTo(kkMap);
+
+    // ── Zone circles — draw outer first so inner sits on top
+    // Out hint ring (30km, dashed terracotta)
+    L.circle([SAKET.lat,SAKET.lng],     {radius:30000,color:'#A0674A',weight:1.5,opacity:.35,fillColor:'#A0674A',fillOpacity:.04,dashArray:'5 4'}).addTo(kkMap);
+    L.circle([FARIDABAD.lat,FARIDABAD.lng],{radius:30000,color:'#A0674A',weight:1.5,opacity:.35,fillColor:'#A0674A',fillOpacity:.04,dashArray:'5 4'}).addTo(kkMap);
+
+    // Extended ring (25–30km band shown as 30km circle, gold)
+    L.circle([SAKET.lat,SAKET.lng],     {radius:30000,color:'#BFA06A',weight:1.2,opacity:.4,fillColor:'#BFA06A',fillOpacity:.06}).addTo(kkMap);
+    L.circle([FARIDABAD.lat,FARIDABAD.lng],{radius:30000,color:'#BFA06A',weight:1.2,opacity:.4,fillColor:'#BFA06A',fillOpacity:.06}).addTo(kkMap);
+
+    // Core ring (25km, green)
+    L.circle([SAKET.lat,SAKET.lng],     {radius:25000,color:'#6E8C74',weight:2,opacity:.6,fillColor:'#6E8C74',fillOpacity:.09}).addTo(kkMap);
+    L.circle([FARIDABAD.lat,FARIDABAD.lng],{radius:25000,color:'#6E8C74',weight:2,opacity:.6,fillColor:'#6E8C74',fillOpacity:.09}).addTo(kkMap);
+
+    // ── Office markers
+    function mkIcon(color){
+      return L.divIcon({
+        className:'',
+        html:'<div style="width:13px;height:13px;border-radius:50%;background:'+color+';border:3px solid #2C2418;box-shadow:0 2px 8px rgba(0,0,0,.35)"></div>',
+        iconSize:[13,13],iconAnchor:[6,6]
+      });
+    }
+    L.marker([SAKET.lat,SAKET.lng],{icon:mkIcon('#BFA06A')}).addTo(kkMap)
+      .bindTooltip('Kith &amp; Kin &mdash; Saket',{direction:'top',className:'kk-tooltip-map'});
+    L.marker([FARIDABAD.lat,FARIDABAD.lng],{icon:mkIcon('#6E8C74')}).addTo(kkMap)
+      .bindTooltip('Kith &amp; Kin &mdash; Greenfields, Faridabad',{direction:'top',className:'kk-tooltip-map'});
+
+    // ── Click anywhere on map
+    kkMap.on('click',function(e){
+      var res=getZone(e.latlng.lat,e.latlng.lng);
+      placeMarker(e.latlng.lat,e.latlng.lng,res.zone,null);
+      showResult(res.zone,null);
+    });
+  }
+
+  // ── Drop animated marker + popup
+  function placeMarker(lat,lng,zone,name){
+    if(!kkMap) return;
+    if(kkPinMarker) kkMap.removeLayer(kkPinMarker);
+    var colours={core:'#6E8C74',ext:'#BFA06A',out:'#A0674A'};
+    kkPinMarker=L.circleMarker([lat,lng],{
+      radius:8,
+      color:'#2C2418',weight:2,
+      fillColor:colours[zone],fillOpacity:1
+    }).addTo(kkMap);
+    L.popup({maxWidth:230,className:'kk-popup',closeButton:false})
+      .setLatLng([lat,lng])
+      .setContent(popupHTML(zone,name))
+      .openOn(kkMap);
+  }
+
+  // ── Pincode check
+  window.kkCheckPin=function(){
+    var raw=(document.getElementById('kkPinInput').value||'').trim();
+    var btn=document.getElementById('kkCheckBtn');
+    var res=document.getElementById('kkResult');
+    if(!/^\d{6}$/.test(raw)){
+      res.className='checker-result show error';
+      res.innerHTML='<span class="result-main">Please enter a valid 6-digit pincode.</span>';
+      return;
+    }
+    res.className='checker-result show loading';
+    res.innerHTML='Looking up pincode\u2026';
+    btn.disabled=true;
+
+    // Step 1: India Post API — validates pincode and gets area name
+    fetch('https://api.postalpincode.in/pincode/'+raw)
+      .then(function(r){return r.json()})
+      .then(function(data){
+        if(!data||!data[0]||data[0].Status!=='Success'||!data[0].PostOffice||!data[0].PostOffice.length){
+          throw new Error('not_found');
+        }
+        var po=data[0].PostOffice[0];
+        var areaName=po.Name+(po.District?', '+po.District:'');
+
+        // Step 2: Nominatim geocode for coordinates
+        return fetch('https://nominatim.openstreetmap.org/search?postalcode='+raw+'&country=India&format=json&limit=1',
+          {headers:{'Accept-Language':'en','User-Agent':'kithkin.care/1.0'}})
+          .then(function(r){return r.json()})
+          .then(function(geo){
+            if(!geo||!geo.length) throw new Error('no_geo');
+            return {lat:parseFloat(geo[0].lat),lng:parseFloat(geo[0].lon),name:areaName};
+          });
+      })
+      .then(function(loc){
+        var res=getZone(loc.lat,loc.lng);
+        showResult(res.zone,loc.name);
+        kkMap.setView([loc.lat,loc.lng],12,{animate:true});
+        placeMarker(loc.lat,loc.lng,res.zone,loc.name);
+      })
+      .catch(function(e){
+        var el=document.getElementById('kkResult');
+        el.className='checker-result show error';
+        if(e.message==='not_found'){
+          el.innerHTML='<span class="result-main">Pincode not found in India Post records. Try clicking on the map instead.</span>';
+        } else {
+          el.innerHTML='<span class="result-main">Could not connect. Please check your internet and try again, or click the map.</span>';
+        }
+      })
+      .finally(function(){btn.disabled=false});
+  };
+
+  // ── GPS location
+  window.kkUseGPS=function(){
+    var res=document.getElementById('kkResult');
+    if(!navigator.geolocation){
+      res.className='checker-result show error';
+      res.innerHTML='<span class="result-main">Location access is not supported by your browser.</span>';
+      return;
+    }
+    res.className='checker-result show loading';
+    res.innerHTML='Getting your location\u2026';
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        var lat=pos.coords.latitude,lng=pos.coords.longitude;
+        var z=getZone(lat,lng);
+        showResult(z.zone,null);
+        kkMap.setView([lat,lng],12,{animate:true});
+        placeMarker(lat,lng,z.zone,'Your location');
+      },
+      function(){
+        var el=document.getElementById('kkResult');
+        el.className='checker-result show error';
+        el.innerHTML='<span class="result-main">Location access was denied. Please enter your pincode instead.</span>';
+      }
+    );
+  };
+
+  // ── Load Leaflet JS then init map
+  if(typeof L!=='undefined'){
+    initMap();
+  } else {
+    var s=document.createElement('script');
+    s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    s.onload=initMap;
+    document.head.appendChild(s);
+  }
+
+})();
+/* ── END COVERAGE MAP ─────────────────────────────────────────────── */
 
 function showReport(plan,btn){
   document.querySelectorAll('.report-tab').forEach(function(t){t.classList.remove('active')});
