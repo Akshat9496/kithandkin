@@ -6,14 +6,25 @@ async function getSession() {
   return session;
 }
 
-async function getProfile(userId) {
+async function getProfile(userId, email) {
+  // Try by ID first
   const { data, error } = await db
     .from('profiles')
     .select('*')
     .eq('id', userId)
     .single();
-  if (error) return null;
-  return data;
+  if (!error && data) return data;
+
+  // Fallback: look up by email (handles invite flow where IDs may differ)
+  if (email) {
+    const { data: data2 } = await db
+      .from('profiles')
+      .select('*')
+      .eq('email', email)
+      .single();
+    if (data2) return { ...data2, id: userId };
+  }
+  return null;
 }
 
 async function requireAuth(allowedRoles) {
@@ -22,7 +33,7 @@ async function requireAuth(allowedRoles) {
     window.location.href = '/portal/index.html';
     return null;
   }
-  const profile = await getProfile(session.user.id);
+  const profile = await getProfile(session.user.id, session.user.email);
   if (!profile) {
     await db.auth.signOut();
     window.location.href = '/portal/index.html';
