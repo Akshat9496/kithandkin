@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Kith & Kin Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/portal/css/portal.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+
+<div class="portal-layout">
+
+  <!-- Admin Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="https://kithkin.care">Kith <em>&</em> Kin</a>
+      <span class="portal-tag">Admin Panel</span>
+    </div>
+    <ul class="sidebar-nav">
+      <span class="sidebar-section">Overview</span>
+      <li><a href="#" onclick="showTab('overview')" id="tab-overview" class="active"><span class="nav-icon">⌂</span> Dashboard</a></li>
+
+      <span class="sidebar-section">Clients</span>
+      <li><a href="#" onclick="showTab('clients')" id="tab-clients"><span class="nav-icon">👥</span> All Clients</a></li>
+      <li><a href="#" onclick="showTab('addClient')" id="tab-addClient"><span class="nav-icon">＋</span> Add Client</a></li>
+
+      <span class="sidebar-section">Reports</span>
+      <li><a href="#" onclick="showTab('addReport')" id="tab-addReport"><span class="nav-icon">📝</span> Add Visit Report</a></li>
+      <li><a href="#" onclick="showTab('allReports')" id="tab-allReports"><span class="nav-icon">📋</span> All Reports</a></li>
+
+      <span class="sidebar-section">Schedule</span>
+      <li><a href="#" onclick="showTab('schedule')" id="tab-schedule"><span class="nav-icon">📅</span> Manage Schedule</a></li>
+
+      <span class="sidebar-section">Comms</span>
+      <li><a href="#" onclick="showTab('messages')" id="tab-messages"><span class="nav-icon">💬</span> Messages <span id="adminUnreadBadge" style="display:none;background:#BFA06A;color:#2C2418;border-radius:10px;padding:.1rem .45rem;font-size:.6rem;margin-left:.25rem"></span></a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <strong id="adminName">Loading…</strong>
+        <span style="color:var(--terra)">Administrator</span>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="signOut()" style="width:100%;justify-content:center">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content" id="mainContent">
+    <div style="text-align:center;padding:4rem;color:var(--muted)">Loading admin panel…</div>
+  </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/portal/js/supabase.js"></script>
+<script src="/portal/js/app.js"></script>
+<script>
+let currentTab = 'overview';
+let allClients = [];
+let allReportsList = [];
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function init() {
+  const auth = await requireAuth(['admin']);
+  if (!auth) return;
+  document.getElementById('adminName').textContent = auth.profile.full_name;
+  await loadClients();
+  await checkUnread();
+  showTab('overview');
+}
+
+// ── Tab router ────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById(`tab-${tab}`);
+  if (el) el.classList.add('active');
+
+  const renders = {
+    overview: renderOverview,
+    clients: renderClients,
+    addClient: renderAddClient,
+    addReport: renderAddReport,
+    allReports: renderAllReports,
+    schedule: renderSchedule,
+    messages: renderMessages
+  };
+  if (renders[tab]) renders[tab]();
+  return false;
+}
+
+// ── Load shared data ──────────────────────────────────────────────────────────
+async function loadClients() {
+  const { data } = await db
+    .from('clients')
+    .select('*, elders(*), profiles(full_name, email)')
+    .order('created_at', { ascending: false });
+  allClients = data || [];
+}
+
+async function checkUnread() {
+  const { count } = await db
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('read_by_admin', false);
+  if (count > 0) {
+    const b = document.getElementById('adminUnreadBadge');
+    b.textContent = count; b.style.display = 'inline';
+  }
+}
+
+// ── OVERVIEW ─────────────────────────────────────────────────────────────────
+async function renderOverview() {
+  const active = allClients.filter(c => c.status === 'Active');
+  const { data: recentReports } = await db
+    .from('visit_reports')
+    .select('*, elders(full_name), clients(plan)')
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  const { data: upcomingVisits } = await db
+    .from('visit_schedule')
+    .select('*, elders(full_name)')
+    .eq('status', 'Scheduled')
+    .gte('scheduled_date', new Date().toISOString().split('T')[0])
+    .order('scheduled_date', { ascending: true })
+    .limit(5);
+
+  const { count: unread } = await db
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('read_by_admin', false);
+
+  setContent(`
+    <div class="page-header">
+      <span class="eyebrow">Admin Panel</span>
+      <h1>Overview</h1>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:1.5rem">
+      <div class="stat-card">
+        <div class="stat-label">Active Clients</div>
+        <div class="stat-value">${active.length}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Clients</div>
+        <div class="stat-value">${allClients.length}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Upcoming Visits</div>
+        <div class="stat-value">${upcomingVisits?.length || 0}</div>
+      </div>
+      <div class="stat-card" style="cursor:pointer" onclick="showTab('messages')">
+        <div class="stat-label">Unread Messages</div>
+        <div class="stat-value" style="color:${unread > 0 ? 'var(--terra)' : 'var(--deep)'}">${unread || 0}</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="align-items:start">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:1rem">
+          <div class="card-title" style="margin:0">Recent Reports</div>
+          <button class="btn btn-outline btn-sm" onclick="showTab('addReport')">+ Add Report</button>
+        </div>
+        ${recentReports?.length ? `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Elder</th><th>Date</th><th>Mood</th></tr></thead>
+            <tbody>
+              ${recentReports.map(r => `
+                <tr>
+                  <td>${r.elders?.full_name || '—'}</td>
+                  <td>${formatDateShort(r.visit_date)}</td>
+                  <td><span class="score-badge"><span class="score-dot" style="background:${scoreColor(r.mood_score)}"></span>${r.mood_score ? scoreLabel(r.mood_score) : '—'}</span></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>` : '<p style="font-size:.82rem;color:var(--muted)">No reports yet.</p>'}
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:1rem">
+          <div class="card-title" style="margin:0">Upcoming Visits</div>
+          <button class="btn btn-outline btn-sm" onclick="showTab('schedule')">Manage</button>
+        </div>
+        ${upcomingVisits?.length ? `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Elder</th><th>Date</th><th>Time</th></tr></thead>
+            <tbody>
+              ${upcomingVisits.map(v => `
+                <tr>
+                  <td>${v.elders?.full_name || '—'}</td>
+                  <td>${formatDateShort(v.scheduled_date)}</td>
+                  <td>${v.scheduled_time ? v.scheduled_time.slice(0,5) : '—'}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>` : '<p style="font-size:.82rem;color:var(--muted)">No upcoming visits scheduled.</p>'}
+      </div>
+    </div>
+  `);
+}
+
+// ── CLIENTS LIST ──────────────────────────────────────────────────────────────
+function renderClients() {
+  setContent(`
+    <div class="page-header">
+      <span class="eyebrow">Admin Panel</span>
+      <h1>All Clients</h1>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+        <button class="btn btn-primary btn-sm" onclick="showTab('addClient')">+ Add New Client</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Elder</th><th>Family Contact</th><th>Plan</th><th>Status</th><th>Since</th><th></th></tr>
+          </thead>
+          <tbody>
+            ${allClients.length ? allClients.map(c => `
+              <tr>
+                <td>
+                  <div style="font-weight:400">${c.elders?.full_name || '—'}</div>
+                  <div style="font-size:.72rem;color:var(--muted)">${c.elders?.area || c.elders?.city || ''}</div>
+                </td>
+                <td style="font-size:.8rem">${c.profiles?.full_name || '—'}<br><span style="color:var(--muted);font-size:.72rem">${c.profiles?.email || ''}</span></td>
+                <td>The ${c.plan}</td>
+                <td><span class="badge badge-${c.status.toLowerCase()}">${c.status}</span></td>
+                <td style="font-size:.78rem">${formatDateShort(c.plan_start_date)}</td>
+                <td><button class="btn btn-outline btn-sm" onclick="viewClient('${c.id}')">View</button></td>
+              </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">No clients yet.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `);
+}
+
+function viewClient(id) {
+  const c = allClients.find(x => x.id === id);
+  if (!c) return;
+  const e = c.elders || {};
+  alert(`${e.full_name}\n${e.address || ''}\nPlan: The ${c.plan}\nStatus: ${c.status}\nLanguage: ${e.language_preference || '—'}\nMobility: ${e.mobility_level || '—'}`);
+}
+
+// ── ADD CLIENT ────────────────────────────────────────────────────────────────
+function renderAddClient() {
+  setContent(`
+    <div class="page-header">
+      <span class="eyebrow">Admin Panel</span>
+      <h1>Add New Client</h1>
+    </div>
+
+    <div class="grid-2" style="align-items:start">
+
+      <!-- Elder details -->
+      <div class="card">
+        <div class="card-title">Elder Details</div>
+        <div class="form-group"><label>Full Name *</label><input id="elderName" type="text" placeholder="e.g. Mrs Sunita Sharma"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Date of Birth</label><input id="elderDob" type="date"></div>
+          <div class="form-group"><label>Gender</label>
+            <select id="elderGender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label>Address</label><input id="elderAddress" type="text" placeholder="Full address"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Area</label><input id="elderArea" type="text" placeholder="e.g. Faridabad Sector 15"></div>
+          <div class="form-group"><label>Phone</label><input id="elderPhone" type="tel" placeholder="+91 98765 43210"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Emergency Contact Name</label><input id="ecName" type="text"></div>
+          <div class="form-group"><label>Emergency Contact Phone</label><input id="ecPhone" type="tel"></div>
+        </div>
+        <div class="form-group"><label>Medical Notes</label><textarea id="medNotes" placeholder="Conditions, medications, allergies…"></textarea></div>
+      </div>
+
+      <!-- Cultural profile + plan -->
+      <div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">Cultural Profile</div>
+          <div class="form-row">
+            <div class="form-group"><label>Language Preference</label>
+              <select id="lang"><option>Hindi</option><option>Punjabi</option><option>Urdu</option><option>Bengali</option><option>Tamil</option><option>Telugu</option><option>Marathi</option><option>Gujarati</option><option>English</option><option>Other</option></select>
+            </div>
+            <div class="form-group"><label>Religion</label><input id="religion" type="text" placeholder="e.g. Hindu, Muslim, Sikh"></div>
+          </div>
+          <div class="form-group"><label>Dietary Requirements</label><input id="diet" type="text" placeholder="e.g. Vegetarian, No beef, Jain"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Mobility Level</label>
+              <select id="mobility"><option value="">Select</option><option>Independent</option><option>Assisted</option><option>Wheelchair</option><option>Bedridden</option></select>
+            </div>
+            <div class="form-group"><label>Cognitive Status</label>
+              <select id="cognitive"><option value="">Select</option><option>Sharp</option><option>Mild decline</option><option>Moderate decline</option><option>Significant decline</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label>Privacy Sensitivity</label>
+            <select id="privacy"><option>Medium</option><option>Low</option><option>High</option></select>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Plan & Family Login</div>
+          <div class="form-row">
+            <div class="form-group"><label>Plan *</label>
+              <select id="plan" onchange="updateVisits()">
+                <option value="Essential">Essential (2 visits)</option>
+                <option value="Signature">Signature (4 visits)</option>
+                <option value="Premiere">Premiere (10 visits)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Start Date *</label><input id="startDate" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+          </div>
+          <div class="form-group"><label>Family Full Name *</label><input id="famName" type="text" placeholder="e.g. Rahul Sharma"></div>
+          <div class="form-group"><label>Family Email (for portal login) *</label><input id="famEmail" type="email" placeholder="rahul@email.com"></div>
+          <div class="form-group"><label>Notes</label><textarea id="clientNotes" placeholder="Internal notes about this client…"></textarea></div>
+
+          <button class="btn btn-primary" onclick="saveClient()" id="saveClientBtn" style="width:100%;justify-content:center;margin-top:.5rem">Create Client & Send Login</button>
+        </div>
+      </div>
+
+    </div>
+  `);
+}
+
+async function saveClient() {
+  const elderName = document.getElementById('elderName').value.trim();
+  const famName = document.getElementById('famName').value.trim();
+  const famEmail = document.getElementById('famEmail').value.trim();
+  const plan = document.getElementById('plan').value;
+  const startDate = document.getElementById('startDate').value;
+
+  if (!elderName || !famName || !famEmail || !plan || !startDate) {
+    showToast('Please fill in all required fields.', 'error'); return;
+  }
+
+  const btn = document.getElementById('saveClientBtn');
+  setLoading(btn, true, 'Create Client & Send Login');
+
+  try {
+    // 1. Create elder record
+    const { data: elder, error: elderErr } = await db.from('elders').insert({
+      full_name: elderName,
+      date_of_birth: document.getElementById('elderDob').value || null,
+      gender: document.getElementById('elderGender').value || null,
+      address: document.getElementById('elderAddress').value || null,
+      area: document.getElementById('elderArea').value || null,
+      phone: document.getElementById('elderPhone').value || null,
+      emergency_contact_name: document.getElementById('ecName').value || null,
+      emergency_contact_phone: document.getElementById('ecPhone').value || null,
+      medical_notes: document.getElementById('medNotes').value || null,
+      language_preference: document.getElementById('lang').value,
+      religion: document.getElementById('religion').value || null,
+      dietary_requirements: document.getElementById('diet').value || null,
+      mobility_level: document.getElementById('mobility').value || null,
+      cognitive_status: document.getElementById('cognitive').value || null,
+      privacy_sensitivity: document.getElementById('privacy').value
+    }).select().single();
+
+    if (elderErr) throw new Error('Could not create elder: ' + elderErr.message);
+
+    // 2. Create family user account (sends magic link email)
+    const planVisits = { Essential: 2, Signature: 4, Premiere: 10 };
+    const { data: newUser, error: userErr } = await db.auth.admin ? 
+      // If admin API available
+      { data: null, error: { message: 'Use invite instead' } } :
+      { data: null, error: { message: 'Use invite' } };
+
+    // Use signUp with email only (sends confirmation)
+    const { data: signUpData, error: signUpErr } = await db.auth.signUp({
+      email: famEmail,
+      password: Math.random().toString(36).slice(-12) + 'Kk!',
+      options: {
+        data: { full_name: famName, role: 'family' },
+        emailRedirectTo: window.location.origin + '/portal/auth-callback.html'
+      }
+    });
+
+    if (signUpErr && !signUpErr.message.includes('already registered')) {
+      throw new Error('Could not create family login: ' + signUpErr.message);
+    }
+
+    // Get or find user ID
+    let familyUserId = signUpData?.user?.id;
+
+    // If user already exists, find their profile
+    if (!familyUserId) {
+      const { data: existingProfile } = await db
+        .from('profiles')
+        .select('id')
+        .eq('email', famEmail)
+        .single();
+      familyUserId = existingProfile?.id;
+    }
+
+    if (!familyUserId) throw new Error('Could not get family user ID.');
+
+    // Update profile role to family (in case it defaulted wrong)
+    await db.from('profiles').update({ full_name: famName, role: 'family' }).eq('id', familyUserId);
+
+    // 3. Create client record
+    const { error: clientErr } = await db.from('clients').insert({
+      elder_id: elder.id,
+      family_user_id: familyUserId,
+      plan,
+      plan_start_date: startDate,
+      visits_per_month: planVisits[plan],
+      status: 'Active',
+      notes: document.getElementById('clientNotes').value || null
+    });
+
+    if (clientErr) throw new Error('Could not create client: ' + clientErr.message);
+
+    showToast(`Client created! Login email sent to ${famEmail}.`);
+    await loadClients();
+    showTab('clients');
+
+  } catch (err) {
+    showToast(err.message, 'error');
+    setLoading(btn, false, 'Create Client & Send Login');
+  }
+}
+
+// ── ADD VISIT REPORT ──────────────────────────────────────────────────────────
+function renderAddReport() {
+  const activeClients = allClients.filter(c => c.status === 'Active');
+
+  setContent(`
+    <div class="page-header">
+      <span class="eyebrow">Admin Panel</span>
+      <h1>Add Visit Report</h1>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:.4rem">Enter report details within 2 hours of each visit</p>
+    </div>
+
+    <div class="grid-2" style="align-items:start">
+
+      <div>
+        <!-- Client & date -->
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">Visit Details</div>
+          <div class="form-group"><label>Client *</label>
+            <select id="rptClient">
+              <option value="">Select client</option>
+              ${activeClients.map(c => `<option value="${c.id}" data-elder="${c.elder_id}">${c.elders?.full_name || '—'} (${c.plan})</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Visit Date *</label><input id="rptDate" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+            <div class="form-group"><label>Duration (minutes)</label><input id="rptDuration" type="number" min="15" max="480" placeholder="e.g. 60"></div>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;text-transform:none;letter-spacing:0;font-size:.82rem">
+              <input type="checkbox" id="rptVerified" style="width:auto"> Verified Visit (Premiere clients)
+            </label>
+          </div>
+        </div>
+
+        <!-- Vitals -->
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">Vitals</div>
+          <div class="form-row">
+            <div class="form-group"><label>BP Systolic</label><input id="rptBpSys" type="number" placeholder="e.g. 120"></div>
+            <div class="form-group"><label>BP Diastolic</label><input id="rptBpDia" type="number" placeholder="e.g. 80"></div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group"><label>Pulse (bpm)</label><input id="rptPulse" type="number" placeholder="72"></div>
+            <div class="form-group"><label>SpO₂ (%)</label><input id="rptSpo2" type="number" min="70" max="100" placeholder="98"></div>
+            <div class="form-group"><label>Temp (°C)</label><input id="rptTemp" type="number" step="0.1" placeholder="36.8"></div>
+          </div>
+          <div class="form-group"><label>Weight (kg)</label><input id="rptWeight" type="number" step="0.1" placeholder="e.g. 65.5"></div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Wellbeing scores -->
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">Wellbeing Scores</div>
+          <p style="font-size:.75rem;color:var(--muted);margin-bottom:1rem">Rate each area from 1 (Poor) to 5 (Excellent)</p>
+          ${scoreInput('rptMood', 'Mood')}
+          ${scoreInput('rptMobility', 'Mobility')}
+          ${scoreInput('rptNutrition', 'Nutrition')}
+          ${scoreInput('rptSocial', 'Social Engagement')}
+          ${scoreInput('rptHygiene', 'Hygiene')}
+        </div>
+
+        <!-- Narrative -->
+        <div class="card">
+          <div class="card-title">Narrative</div>
+          <div class="form-group"><label>Visit Summary *</label><textarea id="rptSummary" rows="3" placeholder="Brief summary of the visit — this is what the family sees on their dashboard."></textarea></div>
+          <div class="form-group"><label>Observations</label><textarea id="rptObs" placeholder="Detailed observations about the elder's condition, behaviour, environment…"></textarea></div>
+          <div class="form-group"><label>Actions Taken</label><textarea id="rptActions" placeholder="Medicines administered, errands done, calls made, referrals…"></textarea></div>
+
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;text-transform:none;letter-spacing:0;font-size:.82rem">
+              <input type="checkbox" id="rptFollowUp" style="width:auto" onchange="toggleFollowUp()"> Follow-up required
+            </label>
+          </div>
+          <div class="form-group" id="followUpGroup" style="display:none">
+            <label>Follow-up Notes</label>
+            <textarea id="rptFollowUpNotes" placeholder="What follow-up is needed and by when?"></textarea>
+          </div>
+
+          <button class="btn btn-primary" onclick="saveReport()" id="saveReportBtn" style="width:100%;justify-content:center;margin-top:.5rem">Save Visit Report</button>
+        </div>
+      </div>
+
+    </div>
+  `);
+}
+
+function scoreInput(id, label) {
+  return `
+    <div class="form-group" style="margin-bottom:.85rem">
+      <label>${label}</label>
+      <div style="display:flex;gap:.5rem">
+        ${[1,2,3,4,5].map(n => `
+          <label style="flex:1;text-align:center;cursor:pointer;padding:.5rem .25rem;border:1px solid var(--sand);border-radius:1px;font-size:.78rem;transition:all .2s" id="${id}_lbl_${n}">
+            <input type="radio" name="${id}" value="${n}" style="display:none" onchange="highlightScore('${id}',${n})">
+            ${n}
+          </label>`).join('')}
+      </div>
+    </div>`;
+}
+
+function highlightScore(id, val) {
+  for (let i = 1; i <= 5; i++) {
+    const lbl = document.getElementById(`${id}_lbl_${i}`);
+    if (lbl) {
+      lbl.style.background = i <= val ? scoreColor(val) : '';
+      lbl.style.borderColor = i <= val ? scoreColor(val) : 'var(--sand)';
+      lbl.style.color = i <= val ? '#fff' : 'var(--deep)';
+    }
+  }
+}
+
+function toggleFollowUp() {
+  const checked = document.getElementById('rptFollowUp').checked;
+  document.getElementById('followUpGroup').style.display = checked ? 'block' : 'none';
+}
+
+async function saveReport() {
+  const clientId = document.getElementById('rptClient').value;
+  const visitDate = document.getElementById('rptDate').value;
+  const summary = document.getElementById('rptSummary').value.trim();
+
+  if (!clientId || !visitDate || !summary) {
+    showToast('Client, date, and summary are required.', 'error'); return;
+  }
+
+  const client = allClients.find(c => c.id === clientId);
+  if (!client) { showToast('Client not found.', 'error'); return; }
+
+  const btn = document.getElementById('saveReportBtn');
+  setLoading(btn, true, 'Save Visit Report');
+
+  const getScore = (name) => {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? parseInt(el.value) : null;
+  };
+
+  const { error } = await db.from('visit_reports').insert({
+    client_id: clientId,
+    elder_id: client.elder_id,
+    visit_date: visitDate,
+    visit_duration_mins: parseInt(document.getElementById('rptDuration').value) || null,
+    blood_pressure_systolic: parseInt(document.getElementById('rptBpSys').value) || null,
+    blood_pressure_diastolic: parseInt(document.getElementById('rptBpDia').value) || null,
+    pulse_bpm: parseInt(document.getElementById('rptPulse').value) || null,
+    spo2_percent: parseInt(document.getElementById('rptSpo2').value) || null,
+    temperature_c: parseFloat(document.getElementById('rptTemp').value) || null,
+    weight_kg: parseFloat(document.getElementById('rptWeight').value) || null,
+    mood_score: getScore('rptMood'),
+    mobility_score: getScore('rptMobility'),
+    nutrition_score: getScore('rptNutrition'),
+    social_score: getScore('rptSocial'),
+    hygiene_score: getScore('rptHygiene'),
+    summary,
+    observations: document.getElementById('rptObs').value || null,
+    actions_taken: document.getElementById('rptActions').value || null,
+    follow_up_required: document.getElementById('rptFollowUp').checked,
+    follow_up_notes: document.getElementById('rptFollowUpNotes').value || null,
+    verified_visit: document.getElementById('rptVerified').checked
+  });
+
+  if (error) {
+    showToast('Error saving report: ' + error.message, 'error');
+    setLoading(btn, false, 'Save Visit Report');
+    return;
+  }
+
+  showToast('Visit report saved successfully.');
+  showTab('allReports');
+}
+
+// ── ALL REPORTS ───────────────────────────────────────────────────────────────
+async function renderAllReports() {
+  const { data: reports } = await db
+    .from('visit_reports')
+    .select('*, elders(full_name), clients(plan)')
+    .order('visit_date', { ascending: false })
+    .limit(50);
+
+  allReportsList = reports || [];
+
+  setContent(`
+    <div class="page-header">
+      <span class="eyebrow">Admin Panel</span>
+      <h1>All Visit Reports</h1>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Elder</th><th>Date</th><th>Plan</th><th>Mood</th><th>BP</th><th>Follow-up</th><th>Summary</th></tr>
+          </thead>
+          <tbody>
+            ${allReportsList.length ? allReportsList.map(r => `
+              <tr>
+                <td style="font-weight:400">${r.elders?.full_name || '—'}</td>
+                <td>${formatDateShort(r.visit_date)}</td>
+                <td style="font-size:.75rem">The ${r.clients?.plan || '—'}</td>
+                <td><span class="score-badge"><span class="score-dot" style="background:${scoreColor(r.mood_score)}"></span>${r.mood_score ? scoreLabel(r.mood_score) : '—'}</span></td>
+                <td style="font-size:.78rem">${bpDisplay(r.blood_pressure_systolic, r.blood_pressure_diastolic)}</td>
+                <td>${r.follow_up_required ? '<span class="badge badge-paused">Yes</span>' : '—'}</td>
+                <td style="font-size:.75rem;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.summary || '—'}</td>
+              </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">No reports yet.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `);
+}
+
+// ── SCHEDULE ──────────────────────────────────────────────────────────────────
+async function renderSchedule() {
+  const activeClients = allClients.filter(c => c.status === 'Active');
+
+  const { data: upcoming } = await db
+    .from('visit_schedule')
+    .select('*, elders(full_name)')
+    .gte('scheduled_date', new Date().toISOString().split('T')[0])
+    .order('scheduled_date', { ascending: true })
+    .limit(20);
+
+  setContent(`
+    <div class="page-header">
+      <span class="eyebrow">Admin Panel</span>
+      <h1>Manage Schedule</h1>
+    </div>
+
+    <div class="grid-2" style="align-items:start">
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">Schedule a Visit</div>
+        <div class="form-group"><label>Client *</label>
+          <select id="schClient">
+            <option value="">Select client</option>
+            ${activeClients.map(c => `<option value="${c.id}" data-elder="${c.elder_id}">${c.elders?.full_name || '—'}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Date *</label><input id="schDate" type="date"></div>
+          <div class="form-group"><label>Time</label><input id="schTime" type="time"></div>
+        </div>
+        <div class="form-group"><label>Notes</label><input id="schNotes" type="text" placeholder="Any notes for this visit"></div>
+        <button class="btn btn-primary" onclick="saveSchedule()" id="saveSchBtn" style="width:100%;justify-content:center">Schedule Visit</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Upcoming Visits</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Elder</th><th>Date</th><th>Time</th><th>Status</th><th></th></tr></thead>
+            <tbody id="scheduleBody">
+              ${upcoming?.length ? upcoming.map(v => `
+                <tr>
+                  <td>${v.elders?.full_name || '—'}</td>
+                  <td>${formatDateShort(v.scheduled_date)}</td>
+                  <td>${v.scheduled_time ? v.scheduled_time.slice(0,5) : '—'}</td>
+                  <td><span class="badge badge-${v.status.toLowerCase()}">${v.status}</span></td>
+                  <td><button class="btn btn-outline btn-sm" onclick="cancelVisit('${v.id}')">Cancel</button></td>
+                </tr>`).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1.5rem;font-size:.82rem">No upcoming visits.</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  `);
+}
+
+async function saveSchedule() {
+  const clientId = document.getElementById('schClient').value;
+  const date = document.getElementById('schDate').value;
+  if (!clientId || !date) { showToast('Client and date are required.', 'error'); return; }
+
+  const client = allClients.find(c => c.id === clientId);
+  const btn = document.getElementById('saveSchBtn');
+  setLoading(btn, true, 'Schedule Visit');
+
+  const { error } = await db.from('visit_schedule').insert({
+    client_id: clientId,
+    elder_id: client.elder_id,
+    scheduled_date: date,
+    scheduled_time: document.getElementById('schTime').value || null,
+    notes: document.getElementById('schNotes').value || null,
+    status: 'Scheduled'
+  });
+
+  if (error) {
+    showToast('Error: ' + error.message, 'error');
+    setLoading(btn, false, 'Schedule Visit');
+    return;
+  }
+
+  showToast('Visit scheduled.');
+  renderSchedule();
+}
+
+async function cancelVisit(id) {
+  if (!confirm('Mark this visit as cancelled?')) return;
+  await db.from('visit_schedule').update({ status: 'Cancelled' }).eq('id', id);
+  showToast('Visit cancelled.');
+  renderSchedule();
+}
+
+// ── MESSAGES ──────────────────────────────────────────────────────────────────
+async function renderMessages() {
+  const { data: threads } = await db
+    .from('clients')
+    .select('id, elders(full_name), profiles(full_name)')
+    .eq('status', 'Active');
+
+  setContent(`
+    <div class="page-header">
+      <span class="eyebrow">Admin Panel</span>
+      <h1>Messages</h1>
+    </div>
+    <div class="grid-2" style="align-items:start">
+      <div class="card">
+        <div class="card-title">Client Threads</div>
+        <div id="threadList" style="display:flex;flex-direction:column;gap:.5rem">
+          ${threads?.length ? threads.map(t => `
+            <button onclick="loadThread('${t.id}','${t.elders?.full_name || 'Client'}')" class="btn btn-outline" style="justify-content:flex-start;text-align:left">
+              <span>💬</span> ${t.elders?.full_name || '—'} <span style="color:var(--muted);font-size:.72rem;margin-left:.5rem">(${t.profiles?.full_name || '—'})</span>
+            </button>`).join('') : '<p style="font-size:.82rem;color:var(--muted)">No active clients.</p>'}
+        </div>
+      </div>
+      <div class="card" id="threadPane">
+        <div class="empty-state"><div class="empty-icon">💬</div><p>Select a client thread to view messages.</p></div>
+      </div>
+    </div>
+  `);
+
+  // Mark all admin unread as read
+  await db.from('messages').update({ read_by_admin: true }).eq('read_by_admin', false);
+  document.getElementById('adminUnreadBadge').style.display = 'none';
+}
+
+let currentThreadClientId = null;
+let adminUserId = null;
+let threadPolling = null;
+
+async function loadThread(clientId, elderName) {
+  currentThreadClientId = clientId;
+  const sess = await db.auth.getSession();
+  adminUserId = sess.data.session?.user.id;
+
+  await fetchThreadMessages(elderName);
+
+  if (threadPolling) clearInterval(threadPolling);
+  threadPolling = setInterval(() => fetchThreadMessages(elderName), 20000);
+}
+
+async function fetchThreadMessages(elderName) {
+  const { data: messages } = await db
+    .from('messages')
+    .select('*, profiles(full_name, role)')
+    .eq('client_id', currentThreadClientId)
+    .order('created_at', { ascending: true });
+
+  const pane = document.getElementById('threadPane');
+  if (!pane) { clearInterval(threadPolling); return; }
+
+  const msgsHtml = messages?.length ? messages.map(m => {
+    const isAdmin = m.profiles?.role === 'admin';
+    const time = new Date(m.created_at).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    return `
+      <div style="display:flex;flex-direction:column;align-items:${isAdmin ? 'flex-end' : 'flex-start'};margin-bottom:.6rem">
+        <div style="max-width:80%;padding:.75rem 1rem;font-size:.83rem;line-height:1.5;border-radius:2px;
+          background:${isAdmin ? 'var(--deep)' : 'var(--cream)'};
+          color:${isAdmin ? 'var(--ivory)' : 'var(--deep)'};
+          border:${isAdmin ? 'none' : '1px solid var(--sand)'}">${m.body}</div>
+        <div style="font-size:.65rem;color:var(--muted);margin-top:.2rem">${isAdmin ? 'You' : m.profiles?.full_name || 'Family'} · ${time}</div>
+      </div>`;
+  }).join('') : '<div style="text-align:center;color:var(--muted);font-size:.8rem;padding:1.5rem">No messages yet.</div>';
+
+  pane.innerHTML = `
+    <div class="card-title">${elderName}</div>
+    <div id="adminMsgList" style="height:320px;overflow-y:auto;margin-bottom:1rem;padding:.5rem">${msgsHtml}</div>
+    <div style="display:flex;gap:.75rem">
+      <textarea id="adminMsgInput" placeholder="Reply to family…" style="flex:1;padding:.7rem;border:1px solid var(--sand);border-radius:1px;font-family:'Outfit',sans-serif;font-size:.83rem;resize:none;height:48px;outline:none;background:var(--cream)" onkeydown="handleAdminKey(event)"></textarea>
+      <button class="btn btn-primary" onclick="sendAdminMsg()">Send</button>
+    </div>`;
+
+  const msgList = document.getElementById('adminMsgList');
+  if (msgList) msgList.scrollTop = msgList.scrollHeight;
+
+  // Mark as read
+  await db.from('messages').update({ read_by_admin: true }).eq('client_id', currentThreadClientId).eq('read_by_admin', false);
+}
+
+async function sendAdminMsg() {
+  const input = document.getElementById('adminMsgInput');
+  const body = input.value.trim();
+  if (!body || !currentThreadClientId || !adminUserId) return;
+
+  await db.from('messages').insert({
+    client_id: currentThreadClientId,
+    sender_id: adminUserId,
+    body,
+    read_by_admin: true,
+    read_by_family: false
+  });
+
+  input.value = '';
+  await fetchThreadMessages(document.querySelector('#threadPane .card-title')?.textContent || '');
+}
+
+function handleAdminKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAdminMsg(); }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function setContent(html) {
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+document.addEventListener('click', (e) => {
+  const s = document.getElementById('sidebar'), b = document.getElementById('menuBtn');
+  if (s.classList.contains('open') && !s.contains(e.target) && e.target !== b) s.classList.remove('open');
+});
+
+init();
+</script>
+</body>
+</html>

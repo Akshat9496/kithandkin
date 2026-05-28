@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Kith & Kin Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/portal/css/portal.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+
+<div class="portal-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="https://kithkin.care">Kith <em>&</em> Kin</a>
+      <span class="portal-tag">Family Portal</span>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="/portal/dashboard.html" class="active"><span class="nav-icon">⌂</span> Dashboard</a></li>
+      <li><a href="/portal/reports.html"><span class="nav-icon">📋</span> Visit Reports</a></li>
+      <li><a href="/portal/schedule.html"><span class="nav-icon">📅</span> Schedule</a></li>
+      <li><a href="/portal/profile.html"><span class="nav-icon">👤</span> Care Profile</a></li>
+      <li><a href="/portal/messages.html"><span class="nav-icon">💬</span> Messages <span id="unreadBadge" style="display:none;background:#BFA06A;color:#2C2418;border-radius:10px;padding:.1rem .45rem;font-size:.6rem;margin-left:.25rem"></span></a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <strong id="userName">Loading…</strong>
+        <span id="planBadge" style="color:var(--gold)"></span>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="signOut()" style="width:100%;justify-content:center">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <span class="eyebrow">Family Portal</span>
+      <h1 id="pageTitle">Good morning</h1>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:.4rem" id="pageSubtitle">Loading your dashboard…</p>
+    </div>
+
+    <!-- Alert banner (follow-up required) -->
+    <div id="followUpBanner" style="display:none;background:rgba(230,126,34,.1);border:1px solid rgba(230,126,34,.3);border-left:3px solid #E67E22;padding:1rem 1.25rem;margin-bottom:1.5rem;border-radius:1px">
+      <p style="font-size:.82rem;color:#E67E22;font-weight:400">⚠️ <strong>Follow-up noted</strong> — <span id="followUpText"></span></p>
+    </div>
+
+    <!-- Stats row -->
+    <div class="grid-4" style="margin-bottom:1.5rem" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-label">Plan</div>
+        <div class="stat-value" id="statPlan" style="font-size:1.3rem">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Visits This Month</div>
+        <div class="stat-value" id="statVisits">—</div>
+        <div class="stat-sub" id="statVisitsSub"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Last Visit</div>
+        <div class="stat-value" id="statLastVisit" style="font-size:1.1rem;line-height:1.3">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Next Visit</div>
+        <div class="stat-value" id="statNextVisit" style="font-size:1.1rem;line-height:1.3">—</div>
+      </div>
+    </div>
+
+    <!-- Two column: chart + latest report -->
+    <div class="grid-2" style="margin-bottom:1.5rem;align-items:start">
+
+      <!-- Wellbeing trend chart -->
+      <div class="card">
+        <div class="card-title">Wellbeing Trend</div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:1rem">Average scores across last 6 visits</p>
+        <div style="position:relative;height:220px">
+          <canvas id="wellbeingChart"></canvas>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1rem">
+          <span style="font-size:.7rem;color:var(--muted)"><span style="color:#BFA06A">●</span> Mood</span>
+          <span style="font-size:.7rem;color:var(--muted)"><span style="color:#6E8C74">●</span> Mobility</span>
+          <span style="font-size:.7rem;color:var(--muted)"><span style="color:#A0674A">●</span> Nutrition</span>
+          <span style="font-size:.7rem;color:var(--muted)"><span style="color:#7A6E62">●</span> Social</span>
+        </div>
+      </div>
+
+      <!-- Latest report summary -->
+      <div class="card" id="latestReportCard">
+        <div class="card-title">Latest Visit Report</div>
+        <div id="latestReportContent">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <p>No visit reports yet. Your first report will appear here after the initial visit.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Vitals snapshot -->
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-title">Latest Vitals</div>
+      <div class="grid-4" id="vitalsRow" style="margin-top:.5rem">
+        <div>
+          <div style="font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem">Blood Pressure</div>
+          <div style="font-size:1.3rem;font-family:'Cormorant Garamond',serif;font-weight:300" id="vitalBP">—</div>
+        </div>
+        <div>
+          <div style="font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem">Pulse</div>
+          <div style="font-size:1.3rem;font-family:'Cormorant Garamond',serif;font-weight:300" id="vitalPulse">—</div>
+        </div>
+        <div>
+          <div style="font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem">SpO₂</div>
+          <div style="font-size:1.3rem;font-family:'Cormorant Garamond',serif;font-weight:300" id="vitalSpo2">—</div>
+        </div>
+        <div>
+          <div style="font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem">Temperature</div>
+          <div style="font-size:1.3rem;font-family:'Cormorant Garamond',serif;font-weight:300" id="vitalTemp">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent reports list -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <div class="card-title" style="margin-bottom:0">Recent Visits</div>
+        <a href="/portal/reports.html" class="btn btn-outline btn-sm">View All</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Duration</th>
+              <th>Mood</th>
+              <th>Follow-up</th>
+              <th>Summary</th>
+            </tr>
+          </thead>
+          <tbody id="recentReportsBody">
+            <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;font-size:.82rem">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/portal/js/supabase.js"></script>
+<script src="/portal/js/app.js"></script>
+<script>
+let clientData = null;
+let reportsData = [];
+let chartInstance = null;
+
+async function init() {
+  const auth = await requireAuth(['family']);
+  if (!auth) return;
+
+  const { profile } = auth;
+
+  // Set greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('pageTitle').textContent = `${greeting}, ${profile.full_name.split(' ')[0]}`;
+  document.getElementById('userName').textContent = profile.full_name;
+
+  // Load client record
+  const { data: client, error: clientErr } = await db
+    .from('clients')
+    .select('*, elders(*)')
+    .eq('family_user_id', profile.id)
+    .eq('status', 'Active')
+    .single();
+
+  if (clientErr || !client) {
+    document.getElementById('pageSubtitle').textContent = 'No active plan found. Please contact us at hello@kithkin.care';
+    return;
+  }
+
+  clientData = client;
+  const elder = client.elders;
+
+  document.getElementById('pageSubtitle').textContent = `Monitoring ${elder.full_name} · ${elder.area || elder.city}`;
+  document.getElementById('planBadge').textContent = `The ${client.plan}`;
+  document.getElementById('statPlan').textContent = `The ${client.plan}`;
+  document.getElementById('statVisitsSub').textContent = `of ${client.visits_per_month} this month`;
+
+  // Load reports
+  const { data: reports } = await db
+    .from('visit_reports')
+    .select('*')
+    .eq('client_id', client.id)
+    .order('visit_date', { ascending: false })
+    .limit(10);
+
+  reportsData = reports || [];
+
+  // Count visits this month
+  const now = new Date();
+  const thisMonth = reportsData.filter(r => {
+    const d = new Date(r.visit_date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  document.getElementById('statVisits').textContent = thisMonth.length;
+
+  // Last visit
+  if (reportsData.length > 0) {
+    document.getElementById('statLastVisit').textContent = formatDateShort(reportsData[0].visit_date);
+  }
+
+  // Next scheduled visit
+  const { data: upcoming } = await db
+    .from('visit_schedule')
+    .select('*')
+    .eq('client_id', client.id)
+    .eq('status', 'Scheduled')
+    .gte('scheduled_date', new Date().toISOString().split('T')[0])
+    .order('scheduled_date', { ascending: true })
+    .limit(1);
+
+  if (upcoming && upcoming.length > 0) {
+    document.getElementById('statNextVisit').textContent = formatDateShort(upcoming[0].scheduled_date);
+  } else {
+    document.getElementById('statNextVisit').textContent = 'TBC';
+  }
+
+  // Follow-up banner
+  const lastFollowUp = reportsData.find(r => r.follow_up_required);
+  if (lastFollowUp && lastFollowUp.follow_up_notes) {
+    document.getElementById('followUpBanner').style.display = 'block';
+    document.getElementById('followUpText').textContent = lastFollowUp.follow_up_notes;
+  }
+
+  // Latest report card
+  renderLatestReport(reportsData[0]);
+
+  // Vitals
+  if (reportsData[0]) {
+    const r = reportsData[0];
+    document.getElementById('vitalBP').textContent = bpDisplay(r.blood_pressure_systolic, r.blood_pressure_diastolic);
+    document.getElementById('vitalPulse').textContent = r.pulse_bpm ? `${r.pulse_bpm} bpm` : '—';
+    document.getElementById('vitalSpo2').textContent = r.spo2_percent ? `${r.spo2_percent}%` : '—';
+    document.getElementById('vitalTemp').textContent = r.temperature_c ? `${r.temperature_c}°C` : '—';
+  }
+
+  // Recent reports table
+  renderRecentTable(reportsData.slice(0, 5));
+
+  // Wellbeing chart
+  renderChart(reportsData.slice(0, 6).reverse());
+
+  // Unread messages badge
+  const { count } = await db
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('client_id', client.id)
+    .eq('read_by_family', false);
+
+  if (count > 0) {
+    const badge = document.getElementById('unreadBadge');
+    badge.textContent = count;
+    badge.style.display = 'inline';
+  }
+}
+
+function renderLatestReport(report) {
+  if (!report) return;
+  const el = document.getElementById('latestReportContent');
+  el.innerHTML = `
+    <div style="margin-bottom:1rem">
+      <div style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem">${formatDate(report.visit_date)}</div>
+      <p style="font-size:.88rem;line-height:1.6;color:var(--deep)">${report.summary || 'No summary recorded.'}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem">
+      ${scoreBlock('Mood', report.mood_score)}
+      ${scoreBlock('Mobility', report.mobility_score)}
+      ${scoreBlock('Nutrition', report.nutrition_score)}
+    </div>
+    ${report.observations ? `<div style="font-size:.78rem;color:var(--muted);line-height:1.5;border-top:1px solid var(--sand);padding-top:.75rem;margin-top:.25rem"><strong style="color:var(--deep);font-weight:400">Observations:</strong> ${report.observations}</div>` : ''}
+    <div style="margin-top:1rem"><a href="/portal/reports.html" class="btn btn-outline btn-sm">Full Report →</a></div>
+  `;
+}
+
+function scoreBlock(label, score) {
+  const color = scoreColor(score);
+  return `
+    <div style="text-align:center;padding:.75rem;background:var(--cream);border-radius:1px">
+      <div style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem">${label}</div>
+      <div style="font-size:1.4rem;font-family:'Cormorant Garamond',serif;font-weight:300;color:${color}">${score || '—'}</div>
+      <div style="font-size:.65rem;color:${color}">${score ? scoreLabel(score) : ''}</div>
+    </div>`;
+}
+
+function renderRecentTable(reports) {
+  const tbody = document.getElementById('recentReportsBody');
+  if (!reports.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;font-size:.82rem">No visits recorded yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = reports.map(r => `
+    <tr>
+      <td>${formatDateShort(r.visit_date)}</td>
+      <td>${r.visit_duration_mins ? `${r.visit_duration_mins} min` : '—'}</td>
+      <td>
+        <span class="score-badge">
+          <span class="score-dot" style="background:${scoreColor(r.mood_score)}"></span>
+          ${r.mood_score ? scoreLabel(r.mood_score) : '—'}
+        </span>
+      </td>
+      <td>${r.follow_up_required ? '<span class="badge badge-paused">Yes</span>' : '<span style="color:var(--muted);font-size:.78rem">No</span>'}</td>
+      <td style="color:var(--muted);font-size:.78rem;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.summary || '—'}</td>
+    </tr>
+  `).join('');
+}
+
+function renderChart(reports) {
+  if (!reports.length) return;
+  const labels = reports.map(r => formatDateShort(r.visit_date));
+  const ctx = document.getElementById('wellbeingChart').getContext('2d');
+
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Mood', data: reports.map(r => r.mood_score),
+          borderColor: '#BFA06A', backgroundColor: 'rgba(191,160,106,.1)',
+          tension: .4, fill: false, pointRadius: 4, pointHoverRadius: 6
+        },
+        {
+          label: 'Mobility', data: reports.map(r => r.mobility_score),
+          borderColor: '#6E8C74', backgroundColor: 'rgba(110,140,116,.1)',
+          tension: .4, fill: false, pointRadius: 4, pointHoverRadius: 6
+        },
+        {
+          label: 'Nutrition', data: reports.map(r => r.nutrition_score),
+          borderColor: '#A0674A', backgroundColor: 'rgba(160,103,74,.1)',
+          tension: .4, fill: false, pointRadius: 4, pointHoverRadius: 6
+        },
+        {
+          label: 'Social', data: reports.map(r => r.social_score),
+          borderColor: '#7A6E62', backgroundColor: 'rgba(122,110,98,.1)',
+          tension: .4, fill: false, pointRadius: 4, pointHoverRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          min: 1, max: 5,
+          ticks: {
+            stepSize: 1,
+            font: { family: 'Outfit', size: 10 },
+            color: '#7A6E62',
+            callback: v => ['','Poor','Fair','Good','V.Good','Excellent'][v] || v
+          },
+          grid: { color: 'rgba(217,207,192,.4)' }
+        },
+        x: {
+          ticks: { font: { family: 'Outfit', size: 10 }, color: '#7A6E62' },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Close sidebar on outside click
+document.addEventListener('click', (e) => {
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('menuBtn');
+  if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== btn) {
+    sidebar.classList.remove('open');
+  }
+});
+
+init();
+</script>
+</body>
+</html>

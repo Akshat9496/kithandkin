@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visit Reports — Kith & Kin Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/portal/css/portal.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+
+<div class="portal-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="https://kithkin.care">Kith <em>&</em> Kin</a>
+      <span class="portal-tag">Family Portal</span>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="/portal/dashboard.html"><span class="nav-icon">⌂</span> Dashboard</a></li>
+      <li><a href="/portal/reports.html" class="active"><span class="nav-icon">📋</span> Visit Reports</a></li>
+      <li><a href="/portal/schedule.html"><span class="nav-icon">📅</span> Schedule</a></li>
+      <li><a href="/portal/profile.html"><span class="nav-icon">👤</span> Care Profile</a></li>
+      <li><a href="/portal/messages.html"><span class="nav-icon">💬</span> Messages</a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user"><strong id="userName">Loading…</strong></div>
+      <button class="btn btn-outline btn-sm" onclick="signOut()" style="width:100%;justify-content:center">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <span class="eyebrow">Family Portal</span>
+      <h1>Visit Reports</h1>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:.4rem" id="elderName">All recorded visits for your parent</p>
+    </div>
+
+    <!-- Report detail modal -->
+    <div class="modal-overlay" id="reportModal" style="display:none">
+      <div class="modal" style="max-width:700px">
+        <div class="modal-header">
+          <h2 id="modalTitle">Visit Report</h2>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports list -->
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Duration</th>
+              <th>Mood</th>
+              <th>Mobility</th>
+              <th>Nutrition</th>
+              <th>BP</th>
+              <th>Follow-up</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="reportsBody">
+            <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem;font-size:.82rem">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/portal/js/supabase.js"></script>
+<script src="/portal/js/app.js"></script>
+<script>
+let allReports = [];
+
+async function init() {
+  const auth = await requireAuth(['family']);
+  if (!auth) return;
+  const { profile } = auth;
+  document.getElementById('userName').textContent = profile.full_name;
+
+  const { data: client } = await db
+    .from('clients')
+    .select('*, elders(*)')
+    .eq('family_user_id', profile.id)
+    .eq('status', 'Active')
+    .single();
+
+  if (!client) {
+    document.getElementById('reportsBody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem">No active plan found.</td></tr>';
+    return;
+  }
+
+  document.getElementById('elderName').textContent = `All recorded visits for ${client.elders.full_name}`;
+
+  const { data: reports } = await db
+    .from('visit_reports')
+    .select('*')
+    .eq('client_id', client.id)
+    .order('visit_date', { ascending: false });
+
+  allReports = reports || [];
+  renderTable(allReports);
+}
+
+function renderTable(reports) {
+  const tbody = document.getElementById('reportsBody');
+  if (!reports.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:3rem;font-size:.82rem">No visit reports recorded yet. They will appear here after each visit.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = reports.map(r => `
+    <tr>
+      <td style="font-weight:400">${formatDate(r.visit_date)}</td>
+      <td>${r.visit_duration_mins ? `${r.visit_duration_mins} min` : '—'}</td>
+      <td><span class="score-badge"><span class="score-dot" style="background:${scoreColor(r.mood_score)}"></span>${r.mood_score ? scoreLabel(r.mood_score) : '—'}</span></td>
+      <td><span class="score-badge"><span class="score-dot" style="background:${scoreColor(r.mobility_score)}"></span>${r.mobility_score ? scoreLabel(r.mobility_score) : '—'}</span></td>
+      <td><span class="score-badge"><span class="score-dot" style="background:${scoreColor(r.nutrition_score)}"></span>${r.nutrition_score ? scoreLabel(r.nutrition_score) : '—'}</span></td>
+      <td style="font-size:.8rem">${bpDisplay(r.blood_pressure_systolic, r.blood_pressure_diastolic)}</td>
+      <td>${r.follow_up_required ? '<span class="badge badge-paused">Required</span>' : '<span style="color:var(--muted);font-size:.75rem">None</span>'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="openReport('${r.id}')">View</button></td>
+    </tr>
+  `).join('');
+}
+
+function openReport(id) {
+  const r = allReports.find(x => x.id === id);
+  if (!r) return;
+
+  document.getElementById('modalTitle').textContent = `Visit — ${formatDate(r.visit_date)}`;
+
+  document.getElementById('modalBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <!-- Scores -->
+      <div>
+        <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Wellbeing Scores</div>
+        <div style="display:flex;flex-direction:column;gap:.5rem">
+          ${scoreRow('Mood', r.mood_score)}
+          ${scoreRow('Mobility', r.mobility_score)}
+          ${scoreRow('Nutrition', r.nutrition_score)}
+          ${scoreRow('Social', r.social_score)}
+          ${scoreRow('Hygiene', r.hygiene_score)}
+        </div>
+      </div>
+      <!-- Vitals -->
+      <div>
+        <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Vitals</div>
+        <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem">
+          <div><span style="color:var(--muted)">Blood Pressure: </span>${bpDisplay(r.blood_pressure_systolic, r.blood_pressure_diastolic)}</div>
+          <div><span style="color:var(--muted)">Pulse: </span>${r.pulse_bpm ? `${r.pulse_bpm} bpm` : '—'}</div>
+          <div><span style="color:var(--muted)">SpO₂: </span>${r.spo2_percent ? `${r.spo2_percent}%` : '—'}</div>
+          <div><span style="color:var(--muted)">Temperature: </span>${r.temperature_c ? `${r.temperature_c}°C` : '—'}</div>
+          <div><span style="color:var(--muted)">Weight: </span>${r.weight_kg ? `${r.weight_kg} kg` : '—'}</div>
+          <div><span style="color:var(--muted)">Duration: </span>${r.visit_duration_mins ? `${r.visit_duration_mins} minutes` : '—'}</div>
+        </div>
+      </div>
+    </div>
+
+    ${r.summary ? `<div style="margin-bottom:1rem"><div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Visit Summary</div><p style="font-size:.88rem;line-height:1.7">${r.summary}</p></div>` : ''}
+
+    ${r.observations ? `<div style="margin-bottom:1rem"><div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Observations</div><p style="font-size:.85rem;line-height:1.7;color:var(--muted)">${r.observations}</p></div>` : ''}
+
+    ${r.actions_taken ? `<div style="margin-bottom:1rem"><div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Actions Taken</div><p style="font-size:.85rem;line-height:1.7;color:var(--muted)">${r.actions_taken}</p></div>` : ''}
+
+    ${r.follow_up_required ? `<div style="background:rgba(230,126,34,.08);border:1px solid rgba(230,126,34,.25);padding:1rem;border-radius:1px;margin-top:.5rem"><div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#E67E22;margin-bottom:.3rem">⚠ Follow-up Required</div><p style="font-size:.82rem;color:var(--deep)">${r.follow_up_notes || 'Follow-up noted — please contact us for details.'}</p></div>` : ''}
+
+    ${r.verified_visit ? `<div style="margin-top:1rem;font-size:.72rem;color:var(--sage)">✓ Verified Visit — recorded with confirmation</div>` : ''}
+  `;
+
+  document.getElementById('reportModal').style.display = 'flex';
+}
+
+function scoreRow(label, score) {
+  const color = scoreColor(score);
+  const pct = score ? ((score - 1) / 4) * 100 : 0;
+  return `
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span style="font-size:.75rem;width:60px;color:var(--muted)">${label}</span>
+      <div style="flex:1;height:4px;background:var(--sand);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;transition:width .3s"></div>
+      </div>
+      <span style="font-size:.75rem;color:${color};width:60px">${score ? scoreLabel(score) : '—'}</span>
+    </div>`;
+}
+
+function closeModal() {
+  document.getElementById('reportModal').style.display = 'none';
+}
+
+// Close modal on overlay click
+document.getElementById('reportModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('menuBtn');
+  if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== btn) {
+    sidebar.classList.remove('open');
+  }
+});
+
+init();
+</script>
+</body>
+</html>

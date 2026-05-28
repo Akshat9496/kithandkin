@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule — Kith & Kin Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/portal/css/portal.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+
+<div class="portal-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="https://kithkin.care">Kith <em>&</em> Kin</a>
+      <span class="portal-tag">Family Portal</span>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="/portal/dashboard.html"><span class="nav-icon">⌂</span> Dashboard</a></li>
+      <li><a href="/portal/reports.html"><span class="nav-icon">📋</span> Visit Reports</a></li>
+      <li><a href="/portal/schedule.html" class="active"><span class="nav-icon">📅</span> Schedule</a></li>
+      <li><a href="/portal/profile.html"><span class="nav-icon">👤</span> Care Profile</a></li>
+      <li><a href="/portal/messages.html"><span class="nav-icon">💬</span> Messages</a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user"><strong id="userName">Loading…</strong></div>
+      <button class="btn btn-outline btn-sm" onclick="signOut()" style="width:100%;justify-content:center">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <span class="eyebrow">Family Portal</span>
+      <h1>Visit Schedule</h1>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:.4rem">Upcoming and past visits for your parent</p>
+    </div>
+
+    <!-- Upcoming -->
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-title">Upcoming Visits</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Time</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody id="upcomingBody">
+            <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;font-size:.82rem">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Past -->
+    <div class="card">
+      <div class="card-title">Past Visits</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Time</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody id="pastBody">
+            <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;font-size:.82rem">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(191,160,106,.06);border:1px solid rgba(191,160,106,.2);border-radius:1px;font-size:.8rem;color:var(--muted);line-height:1.6">
+      To reschedule a visit or request an additional visit, please message us via the <a href="/portal/messages.html" style="color:var(--gold)">Messages</a> tab or WhatsApp us at <a href="https://wa.me/919990011246" style="color:var(--gold)" target="_blank">+91 99900 11246</a>.
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/portal/js/supabase.js"></script>
+<script src="/portal/js/app.js"></script>
+<script>
+async function init() {
+  const auth = await requireAuth(['family']);
+  if (!auth) return;
+  const { profile } = auth;
+  document.getElementById('userName').textContent = profile.full_name;
+
+  const { data: client } = await db
+    .from('clients')
+    .select('id')
+    .eq('family_user_id', profile.id)
+    .eq('status', 'Active')
+    .single();
+
+  if (!client) return;
+
+  const today = new Date().toISOString().split('T')[0];
+
+  const { data: upcoming } = await db
+    .from('visit_schedule')
+    .select('*')
+    .eq('client_id', client.id)
+    .gte('scheduled_date', today)
+    .order('scheduled_date', { ascending: true });
+
+  const { data: past } = await db
+    .from('visit_schedule')
+    .select('*')
+    .eq('client_id', client.id)
+    .lt('scheduled_date', today)
+    .order('scheduled_date', { ascending: false })
+    .limit(20);
+
+  renderScheduleTable('upcomingBody', upcoming || [], 'No upcoming visits scheduled. Please contact us to arrange your next visit.');
+  renderScheduleTable('pastBody', past || [], 'No past visits recorded.');
+}
+
+function renderScheduleTable(tbodyId, items, emptyMsg) {
+  const tbody = document.getElementById(tbodyId);
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;font-size:.82rem">${emptyMsg}</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(v => `
+    <tr>
+      <td style="font-weight:400">${formatDate(v.scheduled_date)}</td>
+      <td>${v.scheduled_time ? v.scheduled_time.slice(0,5) : '—'}</td>
+      <td><span class="badge badge-${v.status.toLowerCase()}">${v.status}</span></td>
+      <td style="font-size:.78rem;color:var(--muted)">${v.notes || '—'}</td>
+    </tr>
+  `).join('');
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+document.addEventListener('click', (e) => {
+  const s = document.getElementById('sidebar'), b = document.getElementById('menuBtn');
+  if (s.classList.contains('open') && !s.contains(e.target) && e.target !== b) s.classList.remove('open');
+});
+
+init();
+</script>
+</body>
+</html>

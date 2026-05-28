@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signing you in — Kith & Kin Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Outfit:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Outfit',sans-serif;
+  background:#2C2418;color:#FAF7F2;
+  height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;
+}
+.wrap{max-width:320px;padding:2rem}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:#FAF7F2;margin-bottom:2rem}
+.logo em{font-style:italic;color:#BFA06A}
+.spinner{
+  width:32px;height:32px;border:2px solid rgba(191,160,106,.2);
+  border-top-color:#BFA06A;border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto 1.5rem;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+h2{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;margin-bottom:.5rem}
+p{font-size:.8rem;color:#7A6E62;font-weight:300}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">Kith <em>&</em> Kin</div>
+  <div class="spinner"></div>
+  <h2>Signing you in…</h2>
+  <p>Please wait a moment.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/portal/js/supabase.js"></script>
+<script>
+(async () => {
+  // Give Supabase a moment to process the URL hash/token
+  await new Promise(r => setTimeout(r, 1000));
+
+  const { data: { session } } = await db.auth.getSession();
+
+  if (!session) {
+    // Try to get session from URL
+    const { data, error } = await db.auth.exchangeCodeForSession(window.location.search);
+    if (error || !data?.session) {
+      window.location.href = '/portal/index.html?error=link_expired';
+      return;
+    }
+  }
+
+  const finalSession = (await db.auth.getSession()).data.session;
+  if (!finalSession) { window.location.href = '/portal/index.html'; return; }
+
+  const { data: profile } = await db.from('profiles').select('role').eq('id', finalSession.user.id).single();
+
+  if (!profile) { window.location.href = '/portal/index.html'; return; }
+
+  if (profile.role === 'admin') window.location.href = '/portal/admin.html';
+  else if (profile.role === 'associate') window.location.href = '/portal/associate.html';
+  else window.location.href = '/portal/dashboard.html';
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Care Profile — Kith & Kin Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/portal/css/portal.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+
+<div class="portal-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="https://kithkin.care">Kith <em>&</em> Kin</a>
+      <span class="portal-tag">Family Portal</span>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="/portal/dashboard.html"><span class="nav-icon">⌂</span> Dashboard</a></li>
+      <li><a href="/portal/reports.html"><span class="nav-icon">📋</span> Visit Reports</a></li>
+      <li><a href="/portal/schedule.html"><span class="nav-icon">📅</span> Schedule</a></li>
+      <li><a href="/portal/profile.html" class="active"><span class="nav-icon">👤</span> Care Profile</a></li>
+      <li><a href="/portal/messages.html"><span class="nav-icon">💬</span> Messages</a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user"><strong id="userName">Loading…</strong></div>
+      <button class="btn btn-outline btn-sm" onclick="signOut()" style="width:100%;justify-content:center">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <span class="eyebrow">Family Portal</span>
+      <h1>Care Profile</h1>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:.4rem">Your parent's personalised care profile — reviewed at every visit</p>
+    </div>
+
+    <div id="profileContent">
+      <div style="text-align:center;padding:3rem;color:var(--muted);font-size:.85rem">Loading profile…</div>
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/portal/js/supabase.js"></script>
+<script src="/portal/js/app.js"></script>
+<script>
+async function init() {
+  const auth = await requireAuth(['family']);
+  if (!auth) return;
+  const { profile } = auth;
+  document.getElementById('userName').textContent = profile.full_name;
+
+  const { data: client } = await db
+    .from('clients')
+    .select('*, elders(*)')
+    .eq('family_user_id', profile.id)
+    .eq('status', 'Active')
+    .single();
+
+  if (!client || !client.elders) {
+    document.getElementById('profileContent').innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted);font-size:.85rem">No care profile found. Please contact us at hello@kithkin.care</div>';
+    return;
+  }
+
+  const e = client.elders;
+  const age = e.date_of_birth ? Math.floor((new Date() - new Date(e.date_of_birth)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
+
+  document.getElementById('profileContent').innerHTML = `
+
+    <!-- Identity -->
+    <div class="card" style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:.3rem">${e.full_name}</div>
+          <div style="font-size:.78rem;color:var(--muted)">${age ? `${age} years old` : ''}${e.gender ? ` · ${e.gender}` : ''}${e.area ? ` · ${e.area}, ${e.city}` : ''}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem">Plan</div>
+          <div style="font-size:.95rem;color:var(--gold)">The ${client.plan}</div>
+          <span class="badge badge-${client.status.toLowerCase()}" style="margin-top:.3rem">${client.status}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:1.5rem;align-items:start">
+
+      <!-- Cultural Profile -->
+      <div class="card">
+        <div class="card-title">Cultural & Personal Preferences</div>
+        <div style="display:flex;flex-direction:column;gap:.75rem">
+          ${profileRow('Language', e.language_preference)}
+          ${profileRow('Religion', e.religion)}
+          ${profileRow('Dietary Requirements', e.dietary_requirements)}
+          ${profileRow('Privacy Sensitivity', e.privacy_sensitivity)}
+        </div>
+        <div style="margin-top:1.25rem;padding:.75rem;background:rgba(191,160,106,.06);border-radius:1px;font-size:.75rem;color:var(--muted);line-height:1.5">
+          Our associate is matched to your parent's language and cultural preferences. Associates are briefed on these details before every visit.
+        </div>
+      </div>
+
+      <!-- Health Profile -->
+      <div class="card">
+        <div class="card-title">Health & Mobility</div>
+        <div style="display:flex;flex-direction:column;gap:.75rem">
+          ${profileRow('Mobility Level', e.mobility_level)}
+          ${profileRow('Cognitive Status', e.cognitive_status)}
+          ${profileRow('Emergency Contact', e.emergency_contact_name ? `${e.emergency_contact_name}${e.emergency_contact_phone ? ' · ' + e.emergency_contact_phone : ''}` : null)}
+        </div>
+        ${e.medical_notes ? `
+        <div style="margin-top:1.25rem">
+          <div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Medical Notes</div>
+          <p style="font-size:.82rem;line-height:1.6;color:var(--deep)">${e.medical_notes}</p>
+        </div>` : ''}
+      </div>
+
+    </div>
+
+    <!-- Contact info -->
+    <div class="card">
+      <div class="card-title">Contact Details</div>
+      <div class="grid-2">
+        ${profileRow('Address', e.address)}
+        ${profileRow('Phone', e.phone)}
+      </div>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:1rem;line-height:1.5">
+        To update any details in this profile, please message us via the <a href="/portal/messages.html" style="color:var(--gold)">Messages</a> tab or email <a href="mailto:hello@kithkin.care" style="color:var(--gold)">hello@kithkin.care</a>.
+      </p>
+    </div>
+
+  `;
+}
+
+function profileRow(label, value) {
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding-bottom:.75rem;border-bottom:1px solid rgba(217,207,192,.4)">
+      <span style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0">${label}</span>
+      <span style="font-size:.82rem;color:var(--deep);text-align:right">${value || '<span style="color:var(--sand)">Not recorded</span>'}</span>
+    </div>`;
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+document.addEventListener('click', (e) => {
+  const s = document.getElementById('sidebar'), b = document.getElementById('menuBtn');
+  if (s.classList.contains('open') && !s.contains(e.target) && e.target !== b) s.classList.remove('open');
+});
+
+init();
+</script>
+</body>
+</html>
