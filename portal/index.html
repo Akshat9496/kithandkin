@@ -13,230 +13,69 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--deep:#2C2418;--ivory:#FAF7F2;--cream:#F2EDE4;--sand:#D9CFC0;--gold:#BFA06A;--muted:#7A6E62;--terra:#A0674A}
 html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--deep);color:var(--ivory);overflow:hidden}
-
 body{display:flex;align-items:center;justify-content:center;position:relative}
-
-/* Background texture */
-body::before{
-  content:'';position:absolute;inset:0;
-  background-image:
-    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(191,160,106,.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 30%, rgba(160,103,74,.04) 0%, transparent 60%);
-}
-
-/* Decorative arcs */
+body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(ellipse 80% 60% at 20% 50%, rgba(191,160,106,.06) 0%, transparent 60%),radial-gradient(ellipse 60% 80% at 80% 30%, rgba(160,103,74,.04) 0%, transparent 60%)}
 .arc{position:absolute;border-radius:50%;border:1px solid rgba(191,160,106,.07);pointer-events:none}
-
-.login-wrap{
-  position:relative;z-index:10;
-  width:100%;max-width:420px;
-  padding:1rem;
-}
-
-.login-card{
-  background:rgba(250,247,242,.04);
-  border:1px solid rgba(191,160,106,.15);
-  backdrop-filter:blur(20px);
-  padding:3rem 2.5rem;
-  border-radius:2px;
-}
-
-.login-logo{
-  text-align:center;
-  margin-bottom:2.5rem;
-}
-
-.login-logo a{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.6rem;
-  font-weight:300;
-  color:var(--ivory);
-  text-decoration:none;
-  letter-spacing:.04em;
-}
-
+.login-wrap{position:relative;z-index:10;width:100%;max-width:420px;padding:1rem}
+.login-card{background:rgba(250,247,242,.04);border:1px solid rgba(191,160,106,.15);backdrop-filter:blur(20px);padding:3rem 2.5rem;border-radius:2px}
+.login-logo{text-align:center;margin-bottom:2.5rem}
+.login-logo a{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--ivory);text-decoration:none;letter-spacing:.04em}
 .login-logo a em{font-style:italic;color:var(--gold)}
-
-.login-logo .portal-tag{
-  display:block;
-  font-size:.6rem;
-  letter-spacing:.3em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-top:.4rem;
-}
-
-.login-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.5rem;
-  font-weight:300;
-  color:var(--ivory);
-  margin-bottom:.4rem;
-  text-align:center;
-}
-
-.login-sub{
-  font-size:.78rem;
-  color:var(--muted);
-  text-align:center;
-  margin-bottom:2rem;
-  line-height:1.5;
-  font-weight:300;
-}
-
+.login-logo .portal-tag{display:block;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:.4rem}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--ivory);margin-bottom:.4rem;text-align:center}
+.login-sub{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:2rem;line-height:1.5;font-weight:300}
 .form-group{margin-bottom:1.1rem}
-
-.form-group label{
-  display:block;
-  font-size:.65rem;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:.45rem;
-}
-
-.form-group input{
-  width:100%;
-  padding:.8rem 1rem;
-  background:rgba(250,247,242,.06);
-  border:1px solid rgba(217,207,192,.2);
-  color:var(--ivory);
-  font-family:'Outfit',sans-serif;
-  font-size:.88rem;
-  font-weight:300;
-  border-radius:1px;
-  outline:none;
-  transition:border-color .2s;
-}
-
+.form-group label{display:block;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem}
+.form-group input{width:100%;padding:.8rem 1rem;background:rgba(250,247,242,.06);border:1px solid rgba(217,207,192,.2);color:var(--ivory);font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:300;border-radius:1px;outline:none;transition:border-color .2s}
 .form-group input:focus{border-color:rgba(191,160,106,.6)}
 .form-group input::placeholder{color:rgba(122,110,98,.6)}
-
-.btn-login{
-  width:100%;
-  padding:.9rem;
-  background:var(--gold);
-  color:var(--deep);
-  border:none;
-  font-family:'Outfit',sans-serif;
-  font-size:.75rem;
-  font-weight:400;
-  letter-spacing:.2em;
-  text-transform:uppercase;
-  cursor:pointer;
-  border-radius:1px;
-  transition:all .2s;
-  margin-top:.5rem;
-}
-
+.btn-login{width:100%;padding:.9rem;background:var(--gold);color:var(--deep);border:none;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .2s;margin-top:.5rem}
 .btn-login:hover{background:var(--ivory)}
 .btn-login:disabled{opacity:.6;cursor:not-allowed}
-
-.divider{
-  display:flex;align-items:center;gap:1rem;
-  margin:1.5rem 0;color:var(--muted);font-size:.72rem;
-}
+.divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:var(--muted);font-size:.72rem}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(217,207,192,.2)}
-
-.magic-link-btn{
-  width:100%;padding:.85rem;
-  background:none;
-  border:1px solid rgba(191,160,106,.3);
-  color:var(--sand);
-  font-family:'Outfit',sans-serif;
-  font-size:.75rem;font-weight:300;
-  letter-spacing:.15em;text-transform:uppercase;
-  cursor:pointer;border-radius:1px;
-  transition:all .2s;
-}
+.magic-link-btn{width:100%;padding:.85rem;background:none;border:1px solid rgba(191,160,106,.3);color:var(--sand);font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:300;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .2s}
 .magic-link-btn:hover{border-color:var(--gold);color:var(--gold)}
 .magic-link-btn:disabled{opacity:.6;cursor:not-allowed}
-
-.login-footer{
-  text-align:center;
-  margin-top:2rem;
-  font-size:.72rem;
-  color:var(--muted);
-  line-height:1.6;
-}
-
+.login-footer{text-align:center;margin-top:2rem;font-size:.72rem;color:var(--muted);line-height:1.6}
 .login-footer a{color:var(--gold);text-decoration:none}
 .login-footer a:hover{text-decoration:underline}
-
-/* Success state */
-.magic-sent{
-  display:none;
-  text-align:center;
-  padding:1rem 0;
-}
-
-.magic-sent .check{
-  font-size:2.5rem;
-  margin-bottom:1rem;
-  display:block;
-}
-
-.magic-sent h3{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.3rem;font-weight:300;
-  color:var(--ivory);margin-bottom:.75rem;
-}
-
-.magic-sent p{
-  font-size:.8rem;color:var(--muted);
-  line-height:1.6;font-weight:300;
-}
-
-.error-msg{
-  color:#E74C3C;font-size:.75rem;
-  margin-top:.75rem;text-align:center;
-  display:none;
-}
-
-@keyframes toastIn{from{opacity:0;transform:translateY(1rem)}to{opacity:1;transform:translateY(0)}}
-@keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(1rem)}}
+.magic-sent{display:none;text-align:center;padding:1rem 0}
+.magic-sent .check{font-size:2.5rem;margin-bottom:1rem;display:block}
+.magic-sent h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--ivory);margin-bottom:.75rem}
+.magic-sent p{font-size:.8rem;color:var(--muted);line-height:1.6;font-weight:300}
+.error-msg{color:#E74C3C;font-size:.75rem;margin-top:.75rem;text-align:center;display:none}
 </style>
 </head>
 <body>
-
-<!-- Decorative arcs -->
 <div class="arc" style="width:600px;height:600px;top:-200px;left:-200px;opacity:.5"></div>
 <div class="arc" style="width:400px;height:400px;bottom:-100px;right:-100px;opacity:.3"></div>
 <div class="arc" style="width:200px;height:200px;top:30%;right:10%;opacity:.4"></div>
 
 <div class="login-wrap">
   <div class="login-card">
-
     <div class="login-logo">
       <a href="https://kithkin.care">Kith <em>&</em> Kin</a>
       <span class="portal-tag">Family Portal</span>
     </div>
 
-    <!-- Login form -->
     <div id="loginForm">
       <h2 class="login-title">Welcome back</h2>
       <p class="login-sub">Sign in with your email and password, or request a one-click magic link.</p>
-
       <div class="form-group">
         <label for="email">Email address</label>
         <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
       </div>
-
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
       </div>
-
       <button class="btn-login" id="signInBtn" onclick="signInWithPassword()">Sign In</button>
-
       <div class="divider">or</div>
-
       <button class="magic-link-btn" id="magicBtn" onclick="sendMagicLink()">Send Magic Link to My Email</button>
-
       <p class="error-msg" id="errorMsg"></p>
     </div>
 
-    <!-- Magic link sent confirmation -->
     <div class="magic-sent" id="magicSent">
       <span class="check">✉️</span>
       <h3>Check your email</h3>
@@ -246,22 +85,26 @@ body::before{
     <div class="login-footer">
       <a href="https://kithkin.care">← Back to kithkin.care</a>
     </div>
-
   </div>
 </div>
 
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/portal/js/supabase.js"></script>
 <script>
-// If already logged in, redirect appropriately
+// If already logged in, redirect
 (async () => {
   const { data: { session } } = await db.auth.getSession();
-  if (session) {
-    const { data: profile } = await db.from('profiles').select('role').eq('id', session.user.id).single();
-    if (profile) redirectByRole(profile.role);
-  }
+  if (session) await redirectByEmail(session.user.email);
 })();
+
+async function redirectByEmail(email) {
+  const { data: profile } = await db
+    .from('profiles')
+    .select('role')
+    .eq('email', email)
+    .single();
+  if (profile) redirectByRole(profile.role);
+}
 
 function redirectByRole(role) {
   if (role === 'admin') window.location.href = '/portal/admin.html';
@@ -297,17 +140,21 @@ async function signInWithPassword() {
     return;
   }
 
-  // Wait for session to be fully established
-  await new Promise(r => setTimeout(r, 800));
+  // Query by email — avoids session timing issue with auth.uid()
+  const userEmail = data.user.email;
+  let profile = null;
 
-  // Get profile and redirect
-  const { data: profile, error: profileError } = await db
-    .from('profiles')
-    .select('role')
-    .eq('id', data.user.id)
-    .single();
+  for (let i = 0; i < 4; i++) {
+    await new Promise(r => setTimeout(r, 500));
+    const { data: p } = await db
+      .from('profiles')
+      .select('role')
+      .eq('email', userEmail)
+      .single();
+    if (p) { profile = p; break; }
+  }
 
-  if (profileError || !profile) {
+  if (!profile) {
     showError('Profile not found. Please contact hello@kithkin.care');
     btn.disabled = false; btn.textContent = 'Sign In';
     return;
@@ -341,7 +188,6 @@ async function sendMagicLink() {
   document.getElementById('sentTo').textContent = email;
 }
 
-// Allow Enter key to submit
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') signInWithPassword();
 });
