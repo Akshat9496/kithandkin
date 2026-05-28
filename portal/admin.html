@@ -247,7 +247,112 @@ function viewClient(id) {
   const c = allClients.find(x => x.id === id);
   if (!c) return;
   const e = c.elders || {};
-  alert(`${e.full_name}\n${e.address || ''}\nPlan: The ${c.plan}\nStatus: ${c.status}\nLanguage: ${e.language_preference || '—'}\nMobility: ${e.mobility_level || '—'}`);
+
+  // Build edit modal
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.id = 'editClientModal';
+  modal.innerHTML = `
+    <div class="modal" style="max-width:750px">
+      <div class="modal-header">
+        <h2>Edit Client — ${e.full_name}</h2>
+        <button class="modal-close" onclick="document.getElementById('editClientModal').remove()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="grid-2" style="gap:1.5rem">
+          <div>
+            <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Elder Details</div>
+            <div class="form-group"><label>Full Name</label><input id="ec_name" value="${e.full_name||''}"></div>
+            <div class="form-group"><label>Address</label><input id="ec_address" value="${e.address||''}"></div>
+            <div class="form-group"><label>Area</label><input id="ec_area" value="${e.area||''}"></div>
+            <div class="form-group"><label>Phone</label><input id="ec_phone" value="${e.phone||''}"></div>
+            <div class="form-group"><label>Language</label>
+              <select id="ec_lang">
+                ${['Hindi','Punjabi','Urdu','Bengali','Tamil','Telugu','Marathi','Gujarati','English','Other'].map(l=>`<option ${e.language_preference===l?'selected':''}>${l}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group"><label>Religion</label><input id="ec_religion" value="${e.religion||''}"></div>
+            <div class="form-group"><label>Dietary Requirements</label><input id="ec_diet" value="${e.dietary_requirements||''}"></div>
+            <div class="form-group"><label>Medical Notes</label><textarea id="ec_medical">${e.medical_notes||''}</textarea></div>
+          </div>
+          <div>
+            <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Plan & Status</div>
+            <div class="form-group"><label>Plan</label>
+              <select id="ec_plan">
+                ${['Essential','Signature','Premiere'].map(p=>`<option value="${p}" ${c.plan===p?'selected':''}>${p}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group"><label>Status</label>
+              <select id="ec_status">
+                ${['Active','Paused','Cancelled'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group"><label>Mobility Level</label>
+              <select id="ec_mobility">
+                <option value="">Select</option>
+                ${['Independent','Assisted','Wheelchair','Bedridden'].map(m=>`<option ${e.mobility_level===m?'selected':''}>${m}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group"><label>Cognitive Status</label>
+              <select id="ec_cognitive">
+                <option value="">Select</option>
+                ${['Sharp','Mild decline','Moderate decline','Significant decline'].map(m=>`<option ${e.cognitive_status===m?'selected':''}>${m}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group"><label>Emergency Contact Name</label><input id="ec_ecname" value="${e.emergency_contact_name||''}"></div>
+            <div class="form-group"><label>Emergency Contact Phone</label><input id="ec_ecphone" value="${e.emergency_contact_phone||''}"></div>
+            <div class="form-group"><label>Notes (internal)</label><textarea id="ec_notes">${c.notes||''}</textarea></div>
+            <div style="margin-top:1rem;padding:.75rem;background:rgba(191,160,106,.06);border-radius:1px;font-size:.75rem;color:var(--muted)">
+              Family login: ${c.profiles?.email || '—'}<br>
+              To reset their password, update it via Supabase → Auth → Users.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="document.getElementById('editClientModal').remove()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveClientEdit('${c.id}','${e.id}')">Save Changes</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', function(ev){ if(ev.target===this) this.remove(); });
+}
+
+async function saveClientEdit(clientId, elderId) {
+  const planVisits = { Essential: 2, Signature: 4, Premiere: 10 };
+  const plan = document.getElementById('ec_plan').value;
+
+  const { error: elderErr } = await db.from('elders').update({
+    full_name: document.getElementById('ec_name').value,
+    address: document.getElementById('ec_address').value || null,
+    area: document.getElementById('ec_area').value || null,
+    phone: document.getElementById('ec_phone').value || null,
+    language_preference: document.getElementById('ec_lang').value,
+    religion: document.getElementById('ec_religion').value || null,
+    dietary_requirements: document.getElementById('ec_diet').value || null,
+    medical_notes: document.getElementById('ec_medical').value || null,
+    mobility_level: document.getElementById('ec_mobility').value || null,
+    cognitive_status: document.getElementById('ec_cognitive').value || null,
+    emergency_contact_name: document.getElementById('ec_ecname').value || null,
+    emergency_contact_phone: document.getElementById('ec_ecphone').value || null,
+  }).eq('id', elderId);
+
+  if (elderErr) { showToast('Error updating elder: ' + elderErr.message, 'error'); return; }
+
+  const { error: clientErr } = await db.from('clients').update({
+    plan,
+    visits_per_month: planVisits[plan],
+    status: document.getElementById('ec_status').value,
+    notes: document.getElementById('ec_notes').value || null,
+  }).eq('id', clientId);
+
+  if (clientErr) { showToast('Error updating client: ' + clientErr.message, 'error'); return; }
+
+  showToast('Client updated successfully.');
+  document.getElementById('editClientModal').remove();
+  await loadClients();
+  renderClients();
 }
 
 // ── ADD CLIENT ────────────────────────────────────────────────────────────────

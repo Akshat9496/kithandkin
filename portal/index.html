@@ -12,8 +12,8 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--deep:#2C2418;--ivory:#FAF7F2;--cream:#F2EDE4;--sand:#D9CFC0;--gold:#BFA06A;--muted:#7A6E62;--terra:#A0674A}
-html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--deep);color:var(--ivory);overflow:hidden}
-body{display:flex;align-items:center;justify-content:center;position:relative}
+html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--deep);color:var(--ivory)}
+body{display:flex;align-items:center;justify-content:center;position:relative;min-height:100vh}
 body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(ellipse 80% 60% at 20% 50%, rgba(191,160,106,.06) 0%, transparent 60%),radial-gradient(ellipse 60% 80% at 80% 30%, rgba(160,103,74,.04) 0%, transparent 60%)}
 .arc{position:absolute;border-radius:50%;border:1px solid rgba(191,160,106,.07);pointer-events:none}
 .login-wrap{position:relative;z-index:10;width:100%;max-width:420px;padding:1rem}
@@ -32,17 +32,18 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
 .btn-login{width:100%;padding:.9rem;background:var(--gold);color:var(--deep);border:none;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .2s;margin-top:.5rem}
 .btn-login:hover{background:var(--ivory)}
 .btn-login:disabled{opacity:.6;cursor:not-allowed}
+.forgot-link{display:block;text-align:center;margin-top:1rem;font-size:.72rem;color:var(--muted);cursor:pointer;background:none;border:none;width:100%;font-family:'Outfit',sans-serif}
+.forgot-link:hover{color:var(--gold)}
 .login-footer{text-align:center;margin-top:2rem;font-size:.72rem;color:var(--muted);line-height:1.6}
 .login-footer a{color:var(--gold);text-decoration:none}
-.login-footer a:hover{text-decoration:underline}
 .error-msg{color:#E74C3C;font-size:.75rem;margin-top:.75rem;text-align:center;display:none}
-.help-text{text-align:center;margin-top:1rem;font-size:.72rem;color:var(--muted)}
+.success-msg{color:#27AE60;font-size:.75rem;margin-top:.75rem;text-align:center;display:none}
+.help-text{text-align:center;margin-top:1rem;font-size:.72rem;color:var(--muted);line-height:1.6}
 </style>
 </head>
 <body>
 <div class="arc" style="width:600px;height:600px;top:-200px;left:-200px;opacity:.5"></div>
 <div class="arc" style="width:400px;height:400px;bottom:-100px;right:-100px;opacity:.3"></div>
-<div class="arc" style="width:200px;height:200px;top:30%;right:10%;opacity:.4"></div>
 
 <div class="login-wrap">
   <div class="login-card">
@@ -51,9 +52,10 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
       <span class="portal-tag">Family Portal</span>
     </div>
 
-    <div id="loginForm">
+    <!-- Sign in view -->
+    <div id="signInView">
       <h2 class="login-title">Welcome back</h2>
-      <p class="login-sub">Sign in with the email and password shared by the Kith & Kin team.</p>
+      <p class="login-sub">Sign in with the email and password provided by Kith & Kin.</p>
       <div class="form-group">
         <label for="email">Email address</label>
         <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
@@ -64,11 +66,26 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
       </div>
       <button class="btn-login" id="signInBtn" onclick="signInWithPassword()">Sign In</button>
       <p class="error-msg" id="errorMsg"></p>
-      <p class="help-text">Trouble signing in? WhatsApp us at <a href="https://wa.me/919990011246" style="color:var(--gold)">+91 99900 11246</a></p>
+      <button class="forgot-link" onclick="showForgot()">Forgot your password?</button>
+    </div>
+
+    <!-- Forgot password view -->
+    <div id="forgotView" style="display:none">
+      <h2 class="login-title">Reset Password</h2>
+      <p class="login-sub">Enter your email and we'll send you a reset link.</p>
+      <div class="form-group">
+        <label for="resetEmail">Email address</label>
+        <input type="email" id="resetEmail" placeholder="your@email.com">
+      </div>
+      <button class="btn-login" id="resetBtn" onclick="sendReset()">Send Reset Link</button>
+      <p class="error-msg" id="resetError"></p>
+      <p class="success-msg" id="resetSuccess"></p>
+      <button class="forgot-link" onclick="showSignIn()">← Back to sign in</button>
     </div>
 
     <div class="login-footer">
-      <a href="https://kithkin.care">← Back to kithkin.care</a>
+      <a href="https://kithkin.care">← Back to kithkin.care</a><br>
+      <span style="margin-top:.5rem;display:block">Need help? <a href="https://wa.me/919990011246">WhatsApp us</a></span>
     </div>
   </div>
 </div>
@@ -76,6 +93,7 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/portal/js/supabase.js"></script>
 <script>
+// If already logged in, redirect
 (async () => {
   const { data: { session } } = await db.auth.getSession();
   if (session) await redirectByEmail(session.user.email);
@@ -83,10 +101,7 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
 
 async function redirectByEmail(email) {
   const { data: profile } = await db
-    .from('profiles')
-    .select('role')
-    .eq('email', email)
-    .single();
+    .from('profiles').select('role').eq('email', email).single();
   if (profile) redirectByRole(profile.role);
 }
 
@@ -96,22 +111,24 @@ function redirectByRole(role) {
   else window.location.href = '/portal/dashboard.html';
 }
 
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
+function showForgot() {
+  document.getElementById('signInView').style.display = 'none';
+  document.getElementById('forgotView').style.display = 'block';
+  document.getElementById('resetEmail').value = document.getElementById('email').value;
 }
 
-function hideError() {
-  document.getElementById('errorMsg').style.display = 'none';
+function showSignIn() {
+  document.getElementById('forgotView').style.display = 'none';
+  document.getElementById('signInView').style.display = 'block';
 }
 
 async function signInWithPassword() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
-  hideError();
+  const errEl = document.getElementById('errorMsg');
+  errEl.style.display = 'none';
 
-  if (!email || !password) { showError('Please enter your email and password.'); return; }
+  if (!email || !password) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; return; }
 
   const btn = document.getElementById('signInBtn');
   btn.disabled = true; btn.textContent = 'Signing in…';
@@ -119,7 +136,8 @@ async function signInWithPassword() {
   const { data, error } = await db.auth.signInWithPassword({ email, password });
 
   if (error) {
-    showError('Incorrect email or password. Please contact us if you need help.');
+    errEl.textContent = 'Incorrect email or password. Please check and try again.';
+    errEl.style.display = 'block';
     btn.disabled = false; btn.textContent = 'Sign In';
     return;
   }
@@ -127,8 +145,38 @@ async function signInWithPassword() {
   await redirectByEmail(data.user.email);
 }
 
+async function sendReset() {
+  const email = document.getElementById('resetEmail').value.trim();
+  const errEl = document.getElementById('resetError');
+  const sucEl = document.getElementById('resetSuccess');
+  errEl.style.display = 'none'; sucEl.style.display = 'none';
+
+  if (!email) { errEl.textContent = 'Please enter your email.'; errEl.style.display = 'block'; return; }
+
+  const btn = document.getElementById('resetBtn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  const { error } = await db.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://kithkin.care/portal/reset-password.html'
+  });
+
+  if (error) {
+    errEl.textContent = 'Could not send reset email. Please contact hello@kithkin.care';
+    errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Send Reset Link';
+    return;
+  }
+
+  sucEl.textContent = 'Reset link sent! Check your email inbox.';
+  sucEl.style.display = 'block';
+  btn.textContent = 'Sent';
+}
+
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') signInWithPassword();
+  if (e.key === 'Enter') {
+    if (document.getElementById('forgotView').style.display !== 'none') sendReset();
+    else signInWithPassword();
+  }
 });
 </script>
 </body>

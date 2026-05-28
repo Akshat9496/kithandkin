@@ -176,32 +176,25 @@ async function init() {
   document.getElementById('pageTitle').textContent = `${greeting}, ${profile.full_name.split(' ')[0]}`;
   document.getElementById('userName').textContent = profile.full_name;
 
-  // Load client record — try by profile.id first, then by email
+  // Load client — search by email across all profiles to handle invite flow
   let client = null;
-  const { data: c1 } = await db
-    .from('clients')
-    .select('*, elders(*)')
-    .eq('family_user_id', profile.id)
-    .eq('status', 'Active')
-    .single();
 
-  if (c1) {
-    client = c1;
-  } else {
-    // Fallback: find profile by email, then find client
-    const { data: profileByEmail } = await db
-      .from('profiles')
-      .select('id')
-      .eq('email', auth.session.user.email)
-      .single();
-    if (profileByEmail) {
-      const { data: c2 } = await db
+  // Get all profile IDs matching this email (handles duplicate profiles from invite)
+  const { data: matchingProfiles } = await db
+    .from('profiles')
+    .select('id')
+    .eq('email', auth.session.user.email);
+
+  if (matchingProfiles && matchingProfiles.length > 0) {
+    const ids = matchingProfiles.map(p => p.id);
+    for (const pid of ids) {
+      const { data: c } = await db
         .from('clients')
         .select('*, elders(*)')
-        .eq('family_user_id', profileByEmail.id)
+        .eq('family_user_id', pid)
         .eq('status', 'Active')
         .single();
-      client = c2;
+      if (c) { client = c; break; }
     }
   }
 
