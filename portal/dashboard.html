@@ -176,15 +176,36 @@ async function init() {
   document.getElementById('pageTitle').textContent = `${greeting}, ${profile.full_name.split(' ')[0]}`;
   document.getElementById('userName').textContent = profile.full_name;
 
-  // Load client record
-  const { data: client, error: clientErr } = await db
+  // Load client record — try by profile.id first, then by email
+  let client = null;
+  const { data: c1 } = await db
     .from('clients')
     .select('*, elders(*)')
     .eq('family_user_id', profile.id)
     .eq('status', 'Active')
     .single();
 
-  if (clientErr || !client) {
+  if (c1) {
+    client = c1;
+  } else {
+    // Fallback: find profile by email, then find client
+    const { data: profileByEmail } = await db
+      .from('profiles')
+      .select('id')
+      .eq('email', auth.session.user.email)
+      .single();
+    if (profileByEmail) {
+      const { data: c2 } = await db
+        .from('clients')
+        .select('*, elders(*)')
+        .eq('family_user_id', profileByEmail.id)
+        .eq('status', 'Active')
+        .single();
+      client = c2;
+    }
+  }
+
+  if (!client) {
     document.getElementById('pageSubtitle').textContent = 'No active plan found. Please contact us at hello@kithkin.care';
     return;
   }
