@@ -297,9 +297,23 @@ async function signInWithPassword() {
     return;
   }
 
+  // Wait for session to be fully established
+  await new Promise(r => setTimeout(r, 800));
+
   // Get profile and redirect
-  const { data: profile } = await db.from('profiles').select('role').eq('id', data.user.id).single();
-  if (profile) redirectByRole(profile.role);
+  const { data: profile, error: profileError } = await db
+    .from('profiles')
+    .select('role')
+    .eq('id', data.user.id)
+    .single();
+
+  if (profileError || !profile) {
+    showError('Profile not found. Please contact hello@kithkin.care');
+    btn.disabled = false; btn.textContent = 'Sign In';
+    return;
+  }
+
+  redirectByRole(profile.role);
 }
 
 async function sendMagicLink() {
