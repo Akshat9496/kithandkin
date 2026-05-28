@@ -368,31 +368,32 @@ async function saveClient() {
 
     if (elderErr) throw new Error('Could not create elder: ' + elderErr.message);
 
-    // 2. Create family profile row directly (no auth signup needed)
-    // We insert into profiles with a placeholder UUID — when they log in
-    // via magic link, their auth.uid() will be linked by email match
-    const tempId = crypto.randomUUID();
-    const { error: profileErr } = await db.from('profiles').insert({
-      id: tempId,
-      full_name: famName,
-      email: famEmail,
-      role: 'family'
-    });
+    // 2. Call Edge Function to create family user (uses service role key server-side)
+    const { data: { session } } = await db.auth.getSession();
+    const fnRes = await fetch(
+      'https://ijyqeopkoxfvkgaufuoo.supabase.co/functions/v1/create-family-user',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqeXFlb3Brb3hmdmtnYXVmdW9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Mjk3NTMsImV4cCI6MjA5NTUwNTc1M30.ys25-6S6L7AtfgC-BpuumVieFDJ4j9grcugcD2udfKM'
+        },
+        body: JSON.stringify({ email: famEmail, full_name: famName })
+      }
+    );
 
-    // Ignore duplicate email errors — profile may already exist
-    let familyUserId = tempId;
-    if (profileErr) {
-      // Try to find existing profile by email
-      const { data: existing } = await db
-        .from('profiles')
-        .select('id')
-        .eq('email', famEmail)
-        .single();
-      if (!existing) throw new Error('Could not create family profile: ' + profileErr.message);
-      familyUserId = existing.id;
-    }
+    const fnData = await fnRes.json();
+    if (fnData.error) throw new Error('Could not create family login: ' + fnData.error);
 
-    // 3. Create client record
+    const familyUserId = fnData.user_id;
+
+    // 3. Update profile with correct name and role
+    await db.from('profiles')
+      .update({ full_name: famName, role: 'family' })
+      .eq('id', familyUserId);
+
+    // 4. Create client record
     const { error: clientErr } = await db.from('clients').insert({
       elder_id: elder.id,
       family_user_id: familyUserId,
@@ -405,22 +406,7 @@ async function saveClient() {
 
     if (clientErr) throw new Error('Could not create client: ' + clientErr.message);
 
-    // 4. Send magic link to family email
-    const { error: otpErr } = await db.auth.signInWithOtp({
-      email: famEmail,
-      options: {
-        emailRedirectTo: window.location.origin + '/portal/auth-callback.html',
-        shouldCreateUser: true
-      }
-    });
-
-    if (otpErr) {
-      // Client was created even if email fails — log it
-      showToast(`Client created! Note: Could not send login email — send manually from Supabase.`, 'error');
-    } else {
-      showToast(`Client created! Magic link sent to ${famEmail}.`);
-    }
-
+    showToast(`Client created! Invite email sent to ${famEmail}.`);
     await loadClients();
     showTab('clients');
 
