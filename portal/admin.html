@@ -342,9 +342,11 @@ async function saveClient() {
   }
 
   const btn = document.getElementById('saveClientBtn');
-  setLoading(btn, true, 'Create Client & Send Login');
+  setLoading(btn, true, 'Creating client…');
 
   try {
+    const planVisits = { Essential: 2, Signature: 4, Premiere: 10 };
+
     // 1. Create elder record
     const { data: elder, error: elderErr } = await db.from('elders').insert({
       full_name: elderName,
@@ -366,44 +368,29 @@ async function saveClient() {
 
     if (elderErr) throw new Error('Could not create elder: ' + elderErr.message);
 
-    // 2. Create family user account (sends magic link email)
-    const planVisits = { Essential: 2, Signature: 4, Premiere: 10 };
-    const { data: newUser, error: userErr } = await db.auth.admin ? 
-      // If admin API available
-      { data: null, error: { message: 'Use invite instead' } } :
-      { data: null, error: { message: 'Use invite' } };
-
-    // Use signUp with email only (sends confirmation)
-    const { data: signUpData, error: signUpErr } = await db.auth.signUp({
+    // 2. Create family profile row directly (no auth signup needed)
+    // We insert into profiles with a placeholder UUID — when they log in
+    // via magic link, their auth.uid() will be linked by email match
+    const tempId = crypto.randomUUID();
+    const { error: profileErr } = await db.from('profiles').insert({
+      id: tempId,
+      full_name: famName,
       email: famEmail,
-      password: Math.random().toString(36).slice(-12) + 'Kk!',
-      options: {
-        data: { full_name: famName, role: 'family' },
-        emailRedirectTo: window.location.origin + '/portal/auth-callback.html'
-      }
+      role: 'family'
     });
 
-    if (signUpErr && !signUpErr.message.includes('already registered')) {
-      throw new Error('Could not create family login: ' + signUpErr.message);
-    }
-
-    // Get or find user ID
-    let familyUserId = signUpData?.user?.id;
-
-    // If user already exists, find their profile
-    if (!familyUserId) {
-      const { data: existingProfile } = await db
+    // Ignore duplicate email errors — profile may already exist
+    let familyUserId = tempId;
+    if (profileErr) {
+      // Try to find existing profile by email
+      const { data: existing } = await db
         .from('profiles')
         .select('id')
         .eq('email', famEmail)
         .single();
-      familyUserId = existingProfile?.id;
+      if (!existing) throw new Error('Could not create family profile: ' + profileErr.message);
+      familyUserId = existing.id;
     }
-
-    if (!familyUserId) throw new Error('Could not get family user ID.');
-
-    // Update profile role to family (in case it defaulted wrong)
-    await db.from('profiles').update({ full_name: famName, role: 'family' }).eq('id', familyUserId);
 
     // 3. Create client record
     const { error: clientErr } = await db.from('clients').insert({
@@ -418,7 +405,22 @@ async function saveClient() {
 
     if (clientErr) throw new Error('Could not create client: ' + clientErr.message);
 
-    showToast(`Client created! Login email sent to ${famEmail}.`);
+    // 4. Send magic link to family email
+    const { error: otpErr } = await db.auth.signInWithOtp({
+      email: famEmail,
+      options: {
+        emailRedirectTo: window.location.origin + '/portal/auth-callback.html',
+        shouldCreateUser: true
+      }
+    });
+
+    if (otpErr) {
+      // Client was created even if email fails — log it
+      showToast(`Client created! Note: Could not send login email — send manually from Supabase.`, 'error');
+    } else {
+      showToast(`Client created! Magic link sent to ${famEmail}.`);
+    }
+
     await loadClients();
     showTab('clients');
 
