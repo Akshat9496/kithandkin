@@ -32,19 +32,11 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
 .btn-login{width:100%;padding:.9rem;background:var(--gold);color:var(--deep);border:none;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .2s;margin-top:.5rem}
 .btn-login:hover{background:var(--ivory)}
 .btn-login:disabled{opacity:.6;cursor:not-allowed}
-.divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:var(--muted);font-size:.72rem}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(217,207,192,.2)}
-.magic-link-btn{width:100%;padding:.85rem;background:none;border:1px solid rgba(191,160,106,.3);color:var(--sand);font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:300;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .2s}
-.magic-link-btn:hover{border-color:var(--gold);color:var(--gold)}
-.magic-link-btn:disabled{opacity:.6;cursor:not-allowed}
 .login-footer{text-align:center;margin-top:2rem;font-size:.72rem;color:var(--muted);line-height:1.6}
 .login-footer a{color:var(--gold);text-decoration:none}
 .login-footer a:hover{text-decoration:underline}
-.magic-sent{display:none;text-align:center;padding:1rem 0}
-.magic-sent .check{font-size:2.5rem;margin-bottom:1rem;display:block}
-.magic-sent h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--ivory);margin-bottom:.75rem}
-.magic-sent p{font-size:.8rem;color:var(--muted);line-height:1.6;font-weight:300}
 .error-msg{color:#E74C3C;font-size:.75rem;margin-top:.75rem;text-align:center;display:none}
+.help-text{text-align:center;margin-top:1rem;font-size:.72rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -61,7 +53,7 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
 
     <div id="loginForm">
       <h2 class="login-title">Welcome back</h2>
-      <p class="login-sub">Sign in with your email and password, or request a one-click magic link.</p>
+      <p class="login-sub">Sign in with the email and password shared by the Kith & Kin team.</p>
       <div class="form-group">
         <label for="email">Email address</label>
         <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
@@ -71,15 +63,8 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
         <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
       </div>
       <button class="btn-login" id="signInBtn" onclick="signInWithPassword()">Sign In</button>
-      <div class="divider">or</div>
-      <button class="magic-link-btn" id="magicBtn" onclick="sendMagicLink()">Send Magic Link to My Email</button>
       <p class="error-msg" id="errorMsg"></p>
-    </div>
-
-    <div class="magic-sent" id="magicSent">
-      <span class="check">✉️</span>
-      <h3>Check your email</h3>
-      <p>We've sent a sign-in link to <strong id="sentTo" style="color:var(--gold)"></strong>.<br><br>Click the link in your email to access the portal. It's valid for 24 hours.</p>
+      <p class="help-text">Trouble signing in? WhatsApp us at <a href="https://wa.me/919990011246" style="color:var(--gold)">+91 99900 11246</a></p>
     </div>
 
     <div class="login-footer">
@@ -91,7 +76,6 @@ body::before{content:'';position:absolute;inset:0;background-image:radial-gradie
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/portal/js/supabase.js"></script>
 <script>
-// If already logged in, redirect
 (async () => {
   const { data: { session } } = await db.auth.getSession();
   if (session) await redirectByEmail(session.user.email);
@@ -135,57 +119,12 @@ async function signInWithPassword() {
   const { data, error } = await db.auth.signInWithPassword({ email, password });
 
   if (error) {
-    showError('Incorrect email or password. Please try again.');
+    showError('Incorrect email or password. Please contact us if you need help.');
     btn.disabled = false; btn.textContent = 'Sign In';
     return;
   }
 
-  // Query by email — avoids session timing issue with auth.uid()
-  const userEmail = data.user.email;
-  let profile = null;
-
-  for (let i = 0; i < 4; i++) {
-    await new Promise(r => setTimeout(r, 500));
-    const { data: p } = await db
-      .from('profiles')
-      .select('role')
-      .eq('email', userEmail)
-      .single();
-    if (p) { profile = p; break; }
-  }
-
-  if (!profile) {
-    showError('Profile not found. Please contact hello@kithkin.care');
-    btn.disabled = false; btn.textContent = 'Sign In';
-    return;
-  }
-
-  redirectByRole(profile.role);
-}
-
-async function sendMagicLink() {
-  const email = document.getElementById('email').value.trim();
-  hideError();
-
-  if (!email) { showError('Please enter your email address first.'); return; }
-
-  const btn = document.getElementById('magicBtn');
-  btn.disabled = true; btn.textContent = 'Sending…';
-
-  const { error } = await db.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: window.location.origin + '/portal/auth-callback.html' }
-  });
-
-  if (error) {
-    showError('Could not send magic link. Please try again.');
-    btn.disabled = false; btn.textContent = 'Send Magic Link to My Email';
-    return;
-  }
-
-  document.getElementById('loginForm').style.display = 'none';
-  document.getElementById('magicSent').style.display = 'block';
-  document.getElementById('sentTo').textContent = email;
+  await redirectByEmail(data.user.email);
 }
 
 document.addEventListener('keydown', (e) => {

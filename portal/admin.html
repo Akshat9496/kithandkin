@@ -320,9 +320,12 @@ function renderAddClient() {
           </div>
           <div class="form-group"><label>Family Full Name *</label><input id="famName" type="text" placeholder="e.g. Rahul Sharma"></div>
           <div class="form-group"><label>Family Email (for portal login) *</label><input id="famEmail" type="email" placeholder="rahul@email.com"></div>
+          <div class="form-group"><label>Portal Password *</label><input id="famPassword" type="text" placeholder="e.g. Kithkin@2024" autocomplete="off">
+            <div style="font-size:.68rem;color:var(--muted);margin-top:.3rem">Share this with the family via WhatsApp. Min 8 characters.</div>
+          </div>
           <div class="form-group"><label>Notes</label><textarea id="clientNotes" placeholder="Internal notes about this client…"></textarea></div>
 
-          <button class="btn btn-primary" onclick="saveClient()" id="saveClientBtn" style="width:100%;justify-content:center;margin-top:.5rem">Create Client & Send Login</button>
+          <button class="btn btn-primary" onclick="saveClient()" id="saveClientBtn" style="width:100%;justify-content:center;margin-top:.5rem">Create Client</button>
         </div>
       </div>
 
@@ -368,7 +371,10 @@ async function saveClient() {
 
     if (elderErr) throw new Error('Could not create elder: ' + elderErr.message);
 
-    // 2. Call Edge Function to create family user (uses service role key server-side)
+    // 2. Call Edge Function to create family user with password
+    const famPassword = document.getElementById('famPassword').value.trim();
+    if (!famPassword || famPassword.length < 8) throw new Error('Password must be at least 8 characters.');
+
     const { data: { session } } = await db.auth.getSession();
     const fnRes = await fetch(
       'https://ijyqeopkoxfvkgaufuoo.supabase.co/functions/v1/create-family-user',
@@ -379,7 +385,7 @@ async function saveClient() {
           'Authorization': `Bearer ${session.access_token}`,
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqeXFlb3Brb3hmdmtnYXVmdW9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Mjk3NTMsImV4cCI6MjA5NTUwNTc1M30.ys25-6S6L7AtfgC-BpuumVieFDJ4j9grcugcD2udfKM'
         },
-        body: JSON.stringify({ email: famEmail, full_name: famName })
+        body: JSON.stringify({ email: famEmail, full_name: famName, password: famPassword })
       }
     );
 
@@ -406,7 +412,7 @@ async function saveClient() {
 
     if (clientErr) throw new Error('Could not create client: ' + clientErr.message);
 
-    showToast(`Client created! Invite email sent to ${famEmail}.`);
+    showToast(`Client created! Share login: ${famEmail} / ${document.getElementById('famPassword').value.trim()}`);
     await loadClients();
     showTab('clients');
 
