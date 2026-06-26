@@ -115,6 +115,16 @@ footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2
   .related-grid{grid-template-columns:1fr}
   .footer-inner{flex-direction:column;align-items:flex-start;gap:1.5rem}
 }
+
+<style>
+.related-articles{margin:2.5rem 0 1.5rem;padding-top:2rem;border-top:1px solid #D9CFC0}
+.related-articles h3{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:#2C2418;margin-bottom:1.2rem;letter-spacing:.02em}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem}
+.related-card{background:#FAF7F2;border:1px solid #D9CFC0;padding:1rem 1.1rem;text-decoration:none;display:block;transition:border-color .2s,background .2s}
+.related-card:hover{border-color:#BFA06A;background:#FFF8F0}
+.related-card-title{font-size:.82rem;color:#2C2418;line-height:1.45;font-weight:400;margin-bottom:.35rem}
+.related-card-cta{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#BFA06A;font-family:'Outfit',sans-serif}
+</style>
 </style>
 </head>
 <body>
@@ -231,7 +241,25 @@ footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2
 
   </div>
 
-  <div class="author-card">
+  
+<div class="related-articles">
+  <h3>You might also find useful</h3>
+  <div class="related-grid">
+        <a href="/blog-visit-report.html" class="related-card">
+          <div class="related-card-title">What a good elder care visit report should actually contain</div>
+          <div class="related-card-cta">Read &rarr;</div>
+        </a>
+        <a href="/blog-needs-more-support.html" class="related-card">
+          <div class="related-card-title">How to know if your parent needs more support</div>
+          <div class="related-card-cta">Read &rarr;</div>
+        </a>
+        <a href="/blog-caregiver-vs-concierge.html" class="related-card">
+          <div class="related-card-title">Caregiver, nurse, or concierge — which does your parent actually need?</div>
+          <div class="related-card-cta">Read &rarr;</div>
+        </a>
+  </div>
+</div>
+<div class="author-card">
     <img src="kithkin-logo-brown.PNG" alt="Kith &amp; Kin" class="author-logo">
     <div class="author-card-text">
       <h4>Written by Kith &amp; Kin</h4>
