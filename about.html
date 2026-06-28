@@ -403,6 +403,7 @@ footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2
       <div class="divider"></div>
       <p style="margin-top:1rem;font-size:.82rem;color:#7A6E62;font-weight:300;max-width:560px;line-height:1.7">Every visit ends with a structured WhatsApp report sent to the family the same day. Here is what you will receive &mdash; across each plan.</p>
     </div>
+    <div class="rpt-name-bar" style="text-align:center;margin:1rem 0 .5rem"><label style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:#7A6E62;display:block;margin-bottom:.4rem" for="rpt-name-a">Enter your parent's name to personalise</label><input type="text" id="rpt-name-a" placeholder="e.g. Mr. Ramesh Gupta" maxlength="42" oninput="personaliseAboutReport(this.value)" style="border:1px solid #D9CFC0;background:#FAF7F2;color:#2C2418;padding:.45rem .8rem;font-size:.8rem;font-family:'Outfit',sans-serif;width:230px;max-width:90%;text-align:center"></div>
     <div class="report-tabs">
       <button class="report-tab active" onclick="showReport('essential',this)">The Essential</button>
       <button class="report-tab" onclick="showReport('signature',this)">The Signature</button>
@@ -531,6 +532,21 @@ function toggleFaq(btn){
   document.querySelectorAll('.faq-btn.open').forEach(function(b){b.classList.remove('open');b.nextElementSibling.classList.remove('open')});
   if(!open){btn.classList.add('open');ans.classList.add('open')}
 }
+
+var _aboutRptDefault='Mr. Ramesh Gupta';
+function personaliseAboutReport(val){
+  var newName=val.trim()||'Mr. Ramesh Gupta';
+  document.querySelectorAll('.report-panel').forEach(function(panel){
+    function walk(node){
+      if(node.nodeType===3&&node.textContent.indexOf(_aboutRptDefault)!==-1){
+        node.textContent=node.textContent.split(_aboutRptDefault).join(newName);
+      }else{node.childNodes.forEach(walk);}
+    }
+    walk(panel);
+  });
+  _aboutRptDefault=newName;
+}
+
 </script>
 </body>
 </html>
