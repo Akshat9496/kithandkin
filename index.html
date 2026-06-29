@@ -103,7 +103,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:16px}
+html{scroll-behavior:smooth;font-size:16px;overflow-x:hidden}
 :root{--deep:#2C2418;--ivory:#FAF7F2;--cream:#F2EDE4;--sand:#D9CFC0;--terra:#A0674A;--gold:#BFA06A;--muted:#7A6E62;--sage:#6E8C74;--white:#FFFFFF;--nav-h:68px}
 body{font-family:'Outfit',sans-serif;background:#FAF7F2;color:#2C2418;overflow-x:hidden}
 .display{font-family:'Cormorant Garamond',serif}
@@ -458,7 +458,15 @@ footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2
 /* Founder section inline grid — force single column on mobile */
 #founder .section-inner > div[style*="grid-template-columns"]{grid-template-columns:1fr!important;gap:2rem!important}
 /* Plans flight anchor — stack on mobile */
-#plans .section-inner > div[style*="flex"]:first-of-type{flex-direction:column!important}
+#plans .section-inner > div[style*="flex"]:first-of-type{flex-direction:column!important;align-items:flex-start!important}
+}
+/* ━━ ONBOARDING STEPS — MOBILE */
+@media(max-width:768px){
+#onboarding .section-inner>div[style*="grid-template-columns"]{grid-template-columns:repeat(2,1fr)!important;gap:2rem 1.5rem!important}
+#onboarding .section-inner>div[style*="position:absolute"]{display:none!important}
+}
+@media(max-width:480px){
+#onboarding .section-inner>div[style*="grid-template-columns"]{grid-template-columns:1fr!important;gap:1.5rem!important}
 }
 @media(max-width:560px){
 .visit-steps{grid-template-columns:1fr}
@@ -493,7 +501,7 @@ footer{background:#2C2418;border-top:1px solid rgba(191,160,106,.13);padding:2.2
 .counter-item:last-child{border-right:none}
 .counter-num{font-family:'Cormorant Garamond',serif;font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:300;color:#BFA06A;line-height:1;display:block;letter-spacing:.02em}
 .counter-label{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:#7A6E62;margin-top:.4rem;display:block;line-height:1.4}
-@media(max-width:560px){.counter-grid{grid-template-columns:repeat(2,1fr)}.counter-item:nth-child(2){border-right:none}.counter-item:nth-child(3){border-right:1px solid rgba(191,160,106,.15)}}
+@media(max-width:560px){.counter-grid{grid-template-columns:repeat(2,1fr)}.counter-item:nth-child(2){border-right:none}.counter-item:nth-child(3){border-right:1px solid rgba(191,160,106,.15)}.counter-item:nth-child(4){border-right:none}}
 
 /* ── WHATSAPP NOTIFICATION DEMO ─────────────────────────────────────────────── */
 #wa-demo{background:#2C2418;padding:5.5rem 5%;position:relative;overflow:hidden}
@@ -624,6 +632,9 @@ nav a.nav-links-a{position:relative}
   .anim-stagger>*,.anim-line{transition:none!important;opacity:1!important;transform:none!important}
 }
 
+.addons-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:640px){#addons-hint{display:block!important}}
+
 /* ━━ SCROLL PROGRESS BAR */
 #scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#BFA06A,#A0674A);width:0;z-index:9999;pointer-events:none}
 
@@ -649,7 +660,7 @@ nav a.nav-links-a{position:relative}
 #last-spoke h2 em{color:#BFA06A;font-style:italic}
 .ls-sub{font-size:.76rem;color:#4f4840;margin-bottom:1.35rem}
 .ls-row{display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap}
-#ls-input{background:rgba(250,247,242,.06);border:1px solid rgba(191,160,106,.2);color:#FAF7F2;padding:.58rem .85rem;font-size:.8rem;font-family:'Outfit',sans-serif;flex:1;min-width:200px;max-width:280px;color-scheme:dark}
+#ls-input{background:rgba(250,247,242,.06);border:1px solid rgba(191,160,106,.2);color:#FAF7F2;padding:.58rem .85rem;font-size:.8rem;font-family:'Outfit',sans-serif;flex:1;min-width:0;max-width:280px;width:100%;color-scheme:dark}
 #ls-input:focus{outline:none;border-color:#BFA06A}
 .ls-btn{background:#BFA06A;color:#2C2418;border:none;padding:.58rem 1.3rem;font-size:.67rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;font-family:'Outfit',sans-serif;transition:background .2s;flex-shrink:0}
 .ls-btn:hover{background:#d4b47a}
@@ -1435,7 +1446,9 @@ nav a.nav-links-a{position:relative}
       <div class="divider"></div>
       <p style="margin-top:1rem;font-size:.82rem;color:#7A6E62;font-weight:300;max-width:520px;line-height:1.7">Billed per instance. No commitment. Add what you need, when you need it.</p>
     </div>
-    <table style="width:100%;border-collapse:collapse;margin-top:1.2rem;font-size:.82rem">
+    <p style="display:none;font-size:.68rem;color:#7A6E62;text-align:center;margin-bottom:.5rem;font-style:italic" id="addons-hint">← Scroll to see all add-ons →</p>
+    <div class="addons-scroll-wrap">
+    <table style="width:100%;border-collapse:collapse;margin-top:1.2rem;font-size:.82rem;min-width:520px">
       <thead>
         <tr style="background:#2C2418">
           <th style="padding:.7rem 1.1rem;text-align:left;font-weight:400;font-size:.68rem;letter-spacing:.12em;color:#BFA06A;width:40%">Service</th>
@@ -1483,6 +1496,7 @@ nav a.nav-links-a{position:relative}
         </tr>
       </tbody>
     </table>
+    </div><!-- /addons-scroll-wrap -->
     <div class="addons-note">Transport costs are never included in our fees unless explicitly stated. Overage rates (Emergency Visit &amp; Hospital Attendance) apply beyond the included hours and are confirmed at booking. All add-ons subject to availability and must be booked in advance.</div>
   </div>
 </section>
