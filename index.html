@@ -735,6 +735,19 @@ nav a.nav-links-a{position:relative}
 /* ━━ WA BTN GLASS */
 .wa-btn{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 
+
+/* ── Country Selector ── */
+.country-selector{position:relative;margin-left:.6rem}
+.cs-btn{display:flex;align-items:center;gap:.45rem;background:rgba(191,160,106,.1);border:1px solid rgba(191,160,106,.25);padding:.38rem .75rem;cursor:pointer;font-family:'Outfit',sans-serif;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#D9CFC0;transition:all .2s;white-space:nowrap}
+.cs-btn:hover{background:rgba(191,160,106,.2);border-color:rgba(191,160,106,.5)}
+.cs-flag{font-size:.9rem;line-height:1}
+.cs-chevron{font-size:.6rem;opacity:.7;transition:transform .2s}
+.country-selector.open .cs-chevron{transform:rotate(180deg)}
+.cs-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#2C2418;border:1px solid rgba(191,160,106,.25);min-width:190px;z-index:999;box-shadow:0 8px 28px rgba(0,0,0,.35);display:none}
+.country-selector.open .cs-dropdown{display:block}
+.cs-option{display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;font-size:.72rem;color:#c8bfb4;text-decoration:none;letter-spacing:.03em;transition:background .15s}
+.cs-option:hover,.cs-option.active{background:rgba(191,160,106,.12);color:#BFA06A}
+
 </style>
 
 <!-- FAQ Schema for Google rich results -->
@@ -837,6 +850,23 @@ nav a.nav-links-a{position:relative}
     <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
   </ul>
   <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  <div class="country-selector" id="countrySelector">
+    <button class="cs-btn" onclick="toggleCountryMenu(event)">
+      <span class="cs-flag">&#127758;</span>
+      <span class="cs-label">NRI Families</span>
+      <span class="cs-chevron">&#9662;</span>
+    </button>
+    <div class="cs-dropdown" id="csDropdown">
+      <a href="https://kithkin.care/" class="cs-option active">&#127758; All Regions</a>
+      <a href="https://kithkin.care/nri-uk.html" class="cs-option">&#127468;&#127463; United Kingdom</a>
+      <a href="https://kithkin.care/nri-usa.html" class="cs-option">&#127482;&#127480; United States</a>
+      <a href="https://kithkin.care/nri-canada.html" class="cs-option">&#127464;&#127462; Canada</a>
+      <a href="https://kithkin.care/nri-australia.html" class="cs-option">&#127462;&#127482; Australia</a>
+      <a href="https://kithkin.care/nri-nz.html" class="cs-option">&#127475;&#127487; New Zealand</a>
+      <a href="https://kithkin.care/nri-uae.html" class="cs-option">&#127462;&#127466; UAE &amp; Middle East</a>
+      <a href="https://kithkin.care/nri-europe.html" class="cs-option">&#127466;&#127482; Europe</a>
+    </div>
+  </div>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <a href="#what" onclick="closeMenu()">What We Do</a>
@@ -2544,6 +2574,11 @@ function sendChatMsg(){
   },700+Math.random()*600);
 }
 
+</script>
+
+<script>
+function toggleCountryMenu(e){e.stopPropagation();document.getElementById('countrySelector').classList.toggle('open')}
+document.addEventListener('click',function(){var cs=document.getElementById('countrySelector');if(cs)cs.classList.remove('open')});
 </script>
 </body>
 </html>
