@@ -114,7 +114,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:300}
 p,label,span,li,td,th,a,button,input,select,textarea{font-family:'Outfit',sans-serif}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(44,36,24,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(191,160,106,.15)}
+nav{position:fixed;top:30px;left:0;right:0;z-index:200;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(44,36,24,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(191,160,106,.15)}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;color:#FAF7F2;text-decoration:none;letter-spacing:.04em}
 .nav-logo em{font-style:italic;color:#BFA06A}
 .nav-links{display:flex;gap:1.8rem;list-style:none}
@@ -129,7 +129,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:68px;display:flex;ali
 .mobile-menu.open{display:flex}
 
 /* HERO */
-#hero{min-height:100vh;background:#2C2418;display:flex;align-items:center;padding:calc(68px + 4rem) 5% 4rem;position:relative;overflow:hidden}
+#hero{min-height:100vh;background:#2C2418;display:flex;align-items:center;padding:calc(98px + 4rem) 5% 4rem;position:relative;overflow:hidden}
 #hero::before{content:'';position:absolute;inset:0;background-image:url('hero-elder.jpg');background-size:cover;background-position:center 30%;opacity:.18;z-index:0}
 #hero::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,rgba(44,36,24,.96) 0%,rgba(44,36,24,.75) 55%,rgba(44,36,24,.4) 100%);z-index:1}
 .hero-arc{position:absolute;border-radius:50%;border:1px solid rgba(191,160,106,.09);pointer-events:none}
@@ -644,7 +644,7 @@ nav a.nav-links-a{position:relative}
 }
 
 /* ━━ DELHI CLOCK */
-#delhi-clock{width:100%;text-align:center;padding:.45rem 1rem;font-size:.78rem;letter-spacing:.12em;color:#FFFFFF;font-family:'Outfit',sans-serif;background:#1a110a;border-bottom:1px solid rgba(191,160,106,.2)}
+#delhi-clock{position:fixed;top:0;left:0;width:100%;z-index:201;text-align:center;padding:.4rem 1rem;font-size:.78rem;letter-spacing:.12em;color:#FFFFFF;font-family:'Outfit',sans-serif;background:#1a110a;border-bottom:1px solid rgba(191,160,106,.2)}
 #delhi-clock .ct{color:#BFA06A}
 
 /* ━━ COUNTRY BANNER */
