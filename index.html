@@ -2599,7 +2599,6 @@ document.addEventListener('click',function(){var cs=document.getElementById('cou
     var d=new Date(Date.now()-72*3600*1000);
     var pad=function(n){return String(n).padStart(2,'0');};
     inp.value=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
-    if(typeof calcLastSpoke==='function')calcLastSpoke();
   }
 })();
 </script>
