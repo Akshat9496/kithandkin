@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Your Membership — Kith &amp; Kin Elder Concierge</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://kithkin.care/checkout.html">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth}
+:root{--deep:#2C2418;--ivory:#FAF7F2;--cream:#F2EDE4;--sand:#D9CFC0;--terra:#A0674A;--gold:#BFA06A;--muted:#7A6E62}
+body{font-family:'Outfit',sans-serif;background:var(--ivory);color:var(--deep);min-height:100vh;display:flex;flex-direction:column}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:300}
+a{color:inherit}
+
+/* TOP BAR — deliberately minimal, no site nav, to keep focus on completing payment */
+.topbar{background:var(--deep);padding:1.1rem 6%;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(191,160,106,.2)}
+.topbar-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.topbar-logo img{height:34px;width:34px;object-fit:contain;border-radius:2px}
+.topbar-logo .name{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--ivory);line-height:1}
+.topbar-logo .sub{font-size:.4rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:2px}
+.topbar-back{font-size:.72rem;letter-spacing:.06em;color:var(--sand);text-decoration:none;display:flex;align-items:center;gap:.4rem;transition:color .2s}
+.topbar-back:hover{color:var(--gold)}
+
+main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:3.2rem 6% 4rem}
+.checkout-wrap{max-width:600px;width:100%}
+.eyebrow{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--terra);text-align:center;margin-bottom:.6rem}
+h1.page-title{font-size:2.2rem;text-align:center;line-height:1.15;margin-bottom:.5rem}
+h1.page-title em{font-style:italic;color:var(--terra)}
+.page-sub{text-align:center;font-size:.86rem;color:var(--muted);font-weight:300;max-width:440px;margin:0 auto 2.2rem}
+
+/* PLAN SWITCHER TABS */
+.plan-tabs{display:flex;gap:.5rem;justify-content:center;margin-bottom:1.8rem;flex-wrap:wrap}
+.plan-tab{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.6rem 1.1rem;border:1px solid var(--sand);background:transparent;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
+.plan-tab:hover{border-color:var(--gold);color:var(--deep)}
+.plan-tab.active{background:var(--deep);border-color:var(--deep);color:var(--ivory)}
+
+/* SELECTED PLAN CARD */
+.plan-card{background:#fff;border:1.5px solid var(--sand);padding:2.2rem 2rem;position:relative}
+.plan-card.featured{background:var(--deep);border-color:var(--deep)}
+.featured-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--deep);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;padding:.3rem .9rem;font-weight:500}
+.plan-tier{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin-bottom:.3rem}
+.plan-card.featured .plan-tier{color:var(--gold)}
+.plan-name{font-size:1.7rem;margin-bottom:.15rem}
+.plan-card.featured .plan-name{color:var(--ivory)}
+.plan-freq{font-size:.78rem;color:var(--muted);font-weight:300;margin-bottom:1.1rem}
+.plan-card.featured .plan-freq{color:var(--sand)}
+.plan-price-row{border-top:1px solid var(--sand);border-bottom:1px solid var(--sand);padding:1.1rem 0;margin-bottom:1.3rem}
+.plan-card.featured .plan-price-row{border-color:rgba(255,255,255,.12)}
+.plan-price{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:2.6rem;line-height:1}
+.plan-card.featured .plan-price{color:var(--gold)}
+.plan-price sup{font-size:1.1rem;margin-right:.15rem;font-weight:300}
+.plan-price sub{font-size:.85rem;color:var(--muted);font-weight:300}
+.plan-card.featured .plan-price sub{color:var(--sand)}
+.plan-features{list-style:none;margin-bottom:1.6rem}
+.plan-features li{font-size:.82rem;font-weight:300;padding:.5rem 0;border-bottom:1px solid rgba(122,110,98,.12);display:flex;gap:.5rem;color:var(--deep)}
+.plan-card.featured .plan-features li{color:var(--sand);border-color:rgba(255,255,255,.08)}
+.plan-features li::before{content:'–';color:var(--terra);flex-shrink:0}
+.plan-card.featured .plan-features li::before{color:var(--gold)}
+
+.plan-cta-wrap{text-align:center;padding-top:.4rem}
+.plan-cta-note{font-size:.68rem;color:var(--muted);margin-top:.8rem;font-weight:300}
+.plan-card.featured .plan-cta-note{color:var(--sand)}
+
+/* TRUST STRIP */
+.trust-strip{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;margin-top:2.2rem;padding-top:1.8rem;border-top:1px solid var(--sand)}
+.trust-item{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--muted);font-weight:300}
+.trust-item .ic{color:var(--terra);font-size:.9rem}
+
+.help-note{text-align:center;font-size:.78rem;color:var(--muted);font-weight:300;margin-top:2.2rem}
+.help-note a{color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(160,103,74,.3)}
+
+footer{background:var(--deep);padding:1.6rem 6%;text-align:center}
+.footer-copy{font-size:.68rem;color:var(--muted)}
+.footer-links{margin-top:.4rem}
+.footer-links a{font-size:.68rem;color:var(--sand);text-decoration:none;margin:0 .5rem}
+.footer-links a:hover{color:var(--gold)}
+
+@media(max-width:600px){
+  h1.page-title{font-size:1.7rem}
+  .plan-card{padding:1.7rem 1.4rem}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="topbar-logo">
+    <img src="kithkin-logo-black.png" alt="Kith &amp; Kin">
+    <div>
+      <div class="name">Kith &amp; Kin</div>
+      <div class="sub">Elder Concierge</div>
+    </div>
+  </a>
+  <a href="/#plans" class="topbar-back">&larr; Back to site</a>
+</div>
+
+<main>
+  <div class="checkout-wrap">
+    <div class="eyebrow">Membership Checkout</div>
+    <h1 class="page-title">Complete Your <em>Membership</em></h1>
+    <p class="page-sub">Review your plan below and pay securely with Razorpay. We'll be in touch over WhatsApp within 24 hours to schedule your first visit.</p>
+
+    <div class="plan-tabs" id="planTabs">
+      <button class="plan-tab" data-plan="essential" onclick="selectPlan('essential')">The Essential</button>
+      <button class="plan-tab" data-plan="signature" onclick="selectPlan('signature')">The Signature</button>
+      <button class="plan-tab" data-plan="premiere" onclick="selectPlan('premiere')">The Premier</button>
+    </div>
+
+    <div id="planCardHost"></div>
+
+    <div class="trust-strip">
+      <div class="trust-item"><span class="ic">&#128274;</span> Secured by Razorpay &middot; PCI-DSS Compliant</div>
+      <div class="trust-item"><span class="ic">&#128172;</span> Confirmed over WhatsApp within 24 hrs</div>
+      <div class="trust-item"><span class="ic">&#8635;</span> Cancel anytime, 7 days notice</div>
+    </div>
+
+    <p class="help-note">Not sure which plan is right? <a href="/#compare">Compare plans</a> or message us on <a href="https://wa.me/919990011246">WhatsApp</a>.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-copy">&copy; 2026 Kith &amp; Kin &middot; Delhi NCR &middot; +91 99900 11246 &middot; hello@kithkin.care</div>
+  <div class="footer-links">
+    <a href="/terms.html">Terms &amp; Conditions</a>
+    <a href="/refund.html">Refund &amp; Cancellation</a>
+    <a href="/contact.html">Contact</a>
+  </div>
+</footer>
+
+<script>
+var PLANS = {
+  essential: {
+    tier: "Tier One", name: "The Essential", freq: "2 Visits / Month", price: "5,999",
+    buttonId: "pl_TRDKHAKML2fZLh", featured: false,
+    features: ["2 home visits per month","Weekly check-in call","Vital monitoring — BP &amp; pulse","Medication adherence check","Structured Wellbeing Check-in (15–20 mins)","Same-day WhatsApp report","Issue identification &amp; escalation"]
+  },
+  signature: {
+    tier: "Tier Two", name: "The Signature", freq: "4 Visits / Month", price: "9,999",
+    buttonId: "pl_TRDM51BtkXedue", featured: true,
+    features: ["4 home visits per month","Everything in The Essential","Companionship &amp; Mood Assessment (30–40 mins)","Errand liaison — bills &amp; groceries","Service coordination — repairs &amp; help","Health advocacy &amp; appointment support","Early warning signs identified &amp; flagged","Proactive updates between visits","Annual health check after 6 months"]
+  },
+  premiere: {
+    tier: "Tier Three", name: "The Premier", freq: "10 Visits / Month", price: "20,999",
+    buttonId: "pl_TRDNPknlx83EMz", featured: false,
+    features: ["10 home visits per month","Everything in The Signature","In-depth Longitudinal Wellbeing Assessment (45–60 mins)","Hospital attendance — 2 per month","Emergency protocol &amp; escalation plan","Interests &amp; social engagement support","Annual health check after 3 months","Verified Visit recording — footage accessible to family for 30 days","Monthly senior review visit","24-hour direct WhatsApp line"]
+  }
+};
+
+function renderPlan(key){
+  var p = PLANS[key];
+  var host = document.getElementById('planCardHost');
+  var featuredClass = p.featured ? ' featured' : '';
+  var badge = p.featured ? '<div class="featured-badge">Most Chosen</div>' : '';
+  var featuresHtml = p.features.map(function(f){ return '<li>' + f + '</li>'; }).join('');
+  host.innerHTML =
+    '<div class="plan-card' + featuredClass + '">' + badge +
+      '<p class="plan-tier">' + p.tier + '</p>' +
+      '<h2 class="plan-name">' + p.name + '</h2>' +
+      '<p class="plan-freq">' + p.freq + '</p>' +
+      '<div class="plan-price-row"><span class="plan-price"><sup>&#8377;</sup>' + p.price + '<sub> /mo</sub></span></div>' +
+      '<ul class="plan-features">' + featuresHtml + '</ul>' +
+      '<div class="plan-cta-wrap">' +
+        '<form><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="' + p.buttonId + '" async><' + '/script></form>' +
+        '<p class="plan-cta-note">Secure checkout via Razorpay &middot; we\'ll confirm your first visit over WhatsApp</p>' +
+      '</div>' +
+    '</div>';
+
+  // The script tag inserted via innerHTML won't auto-execute — create and inject a live one.
+  var oldScript = host.querySelector('script');
+  var newScript = document.createElement('script');
+  newScript.src = "https://checkout.razorpay.com/v1/payment-button.js";
+  newScript.setAttribute('data-payment_button_id', p.buttonId);
+  newScript.async = true;
+  oldScript.parentNode.replaceChild(newScript, oldScript);
+}
+
+function selectPlan(key){
+  if(!PLANS[key]) key = 'essential';
+  document.querySelectorAll('.plan-tab').forEach(function(t){
+    t.classList.toggle('active', t.getAttribute('data-plan') === key);
+  });
+  renderPlan(key);
+  var url = new URL(window.location);
+  url.searchParams.set('plan', key);
+  window.history.replaceState({}, '', url);
+}
+
+(function init(){
+  var params = new URLSearchParams(window.location.search);
+  var plan = params.get('plan');
+  selectPlan(PLANS[plan] ? plan : 'essential');
+})();
+</script>
+
+</body>
+</html>
