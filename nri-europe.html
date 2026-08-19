@@ -1286,7 +1286,7 @@ nav a.nav-links-a{position:relative}
           <li>Same-day WhatsApp report</li>
           <li>Issue identification &amp; escalation</li>
         </ul>
-        <div class="plan-cta-wrap"><a href="https://rzp.io/rzp/pm1TldNx" target="_blank" rel="noopener" class="btn-primary" style="display:block;width:100%;text-align:center;box-sizing:border-box">Proceed to Payment</a><p class="plan-cta-note">Secure checkout via Razorpay &middot; we'll confirm your first visit over WhatsApp</p></div>
+        <div class="plan-cta-wrap"><a id="cta-essential" href="https://rzp.io/rzp/pm1TldNx" target="_blank" rel="noopener" class="btn-primary" style="display:block;width:100%;text-align:center;box-sizing:border-box">Proceed to Payment</a><p class="plan-cta-note">Secure checkout via Razorpay &middot; we'll confirm your first visit over WhatsApp</p></div>
       
       </div>
       <div class="plan-card featured">
@@ -1306,7 +1306,7 @@ nav a.nav-links-a{position:relative}
           <li>Proactive updates between visits</li>
           <li>Annual health check after 6 months</li>
         </ul>
-        <div class="plan-cta-wrap"><a href="https://rzp.io/rzp/5cSyGkY" target="_blank" rel="noopener" class="btn-primary" style="display:block;width:100%;text-align:center;box-sizing:border-box">Proceed to Payment</a><p class="plan-cta-note">Secure checkout via Razorpay &middot; we'll confirm your first visit over WhatsApp</p></div>
+        <div class="plan-cta-wrap"><a id="cta-signature" href="https://rzp.io/rzp/5cSyGkY" target="_blank" rel="noopener" class="btn-primary" style="display:block;width:100%;text-align:center;box-sizing:border-box">Proceed to Payment</a><p class="plan-cta-note">Secure checkout via Razorpay &middot; we'll confirm your first visit over WhatsApp</p></div>
       
       </div>
       <div class="plan-card">
@@ -1326,7 +1326,7 @@ nav a.nav-links-a{position:relative}
           <li>Monthly senior review visit</li>
           <li>24-hour direct WhatsApp line</li>
         </ul>
-        <div class="plan-cta-wrap"><a href="https://rzp.io/rzp/3B5P00Lw" target="_blank" rel="noopener" class="btn-primary" style="display:block;width:100%;text-align:center;box-sizing:border-box">Proceed to Payment</a><p class="plan-cta-note">Secure checkout via Razorpay &middot; we'll confirm your first visit over WhatsApp</p></div>
+        <div class="plan-cta-wrap"><a id="cta-premiere" href="https://rzp.io/rzp/3B5P00Lw" target="_blank" rel="noopener" class="btn-primary" style="display:block;width:100%;text-align:center;box-sizing:border-box">Proceed to Payment</a><p class="plan-cta-note">Secure checkout via Razorpay &middot; we'll confirm your first visit over WhatsApp</p></div>
       
       </div>
     </div>
@@ -1838,15 +1838,15 @@ var waS=document.getElementById('wa-demo');if(waS)waObs.observe(waS);
 var billingMode = 'monthly';
 var billingData = {
   monthly: {
-    essential: { price: '5,999', note: ' /mo' },
-    signature: { price: '9,999', note: ' /mo' },
-    premiere:  { price: '20,999', note: ' /mo' },
+    essential: { price: '5,999', note: ' /mo', url: 'https://rzp.io/rzp/pm1TldNx' },
+    signature: { price: '9,999', note: ' /mo', url: 'https://rzp.io/rzp/5cSyGkY' },
+    premiere:  { price: '20,999', note: ' /mo', url: 'https://rzp.io/rzp/3B5P00Lw' },
     note: ''
   },
   annual: {
-    essential: { price: '59,990', note: ' /yr  ≈ ₹4,999/mo' },
-    signature: { price: '99,990', note: ' /yr  ≈ ₹8,333/mo' },
-    premiere:  { price: '2,09,990', note: ' /yr  ≈ ₹17,499/mo' },
+    essential: { price: '59,990', note: ' /yr  ≈ ₹4,999/mo', url: 'https://rzp.io/rzp/HKd3hVW' },
+    signature: { price: '99,990', note: ' /yr  ≈ ₹8,333/mo', url: 'https://rzp.io/rzp/2azaJYGP' },
+    premiere:  { price: '2,09,990', note: ' /yr  ≈ ₹17,499/mo', url: 'https://rzp.io/rzp/CUyjxrw' },
     note: '✓ Annual billing — you save the equivalent of 2 months. Rate locked for 12 months.'
   }
 };
@@ -1860,6 +1860,10 @@ function setBilling(mode) {
   document.getElementById('price-premiere').textContent = d.premiere.price;
   document.getElementById('price-premiere-note').textContent = d.premiere.note;
   document.getElementById('billing-note').textContent = d.note;
+  document.getElementById('cta-essential').href = d.essential.url;
+  document.getElementById('cta-signature').href = d.signature.url;
+  document.getElementById('cta-premiere').href = d.premiere.url;
+  if (window.KK_renderLocalPrices) window.KK_renderLocalPrices(mode);
   // Toggle button styles
   var btnM = document.getElementById('btn-monthly');
   var btnA = document.getElementById('btn-annual');
@@ -2391,16 +2395,16 @@ function resetChat(){
 /* ━━ COUNTRY PERSONALISATION */
 (function(){
   var msgs={
-    GB:"You're in the <strong>United Kingdom</strong>. Your parents are in Delhi &mdash; 4.5 hours away by clock, a long flight by heart. We're 10 minutes from them.",
-    US:"You're in the <strong>United States</strong>. Your parents are in Delhi — over 10 time zones away. Kith &amp; Kin bridges that distance.",
-    CA:"You're in <strong>Canada</strong>. Your parents are in Delhi — thousands of miles away. We visit them so you don't have to worry between calls.",
-    AU:"You're in <strong>Australia</strong>. Delhi is a long flight away, but Kith &amp; Kin can be with your parent within days. Peace of mind doesn't have to wait.",
-    NZ:"You're in <strong>New Zealand</strong>. Delhi is far — but your parents' wellbeing doesn't have to feel uncertain. We visit, check in, and report back.",
-    AE:"You're in the <strong>UAE</strong>. A short flight to Delhi, but not always possible to just go. Let Kith &amp; Kin be your presence when you can't be there.",
-    SG:"You're in <strong>Singapore</strong>. Your parents in Delhi are closer than most — but distance is relative when you're the one worrying.",
-    QA:"You're in <strong>Qatar</strong>. Whether you're an hour away or ten, Kith &amp; Kin gives you a real picture of how your parent is doing.",
-    KW:"You're in <strong>Kuwait</strong>. We visit your parents in Delhi on your behalf, keep them company, and send you a full report the same day.",
-    OM:"You're in <strong>Oman</strong>. Kith &amp; Kin visits your parents and sends you a full WhatsApp report the same day — vitals, mood, and anything to flag."
+    GB:"You\'re in the <strong>United Kingdom</strong>. Your parents are in Delhi &mdash; 4.5 hours away by clock, a long flight by heart. We're 10 minutes from them.",
+    US:"You\'re in the <strong>United States</strong>. Your parents are in Delhi — over 10 time zones away. Kith &amp; Kin bridges that distance.",
+    CA:"You\'re in <strong>Canada</strong>. Your parents are in Delhi — thousands of miles away. We visit them so you don't have to worry between calls.",
+    AU:"You\'re in <strong>Australia</strong>. Delhi is a long flight away, but Kith &amp; Kin can be with your parent within days. Peace of mind doesn't have to wait.",
+    NZ:"You\'re in <strong>New Zealand</strong>. Delhi is far — but your parents' wellbeing doesn't have to feel uncertain. We visit, check in, and report back.",
+    AE:"You\'re in the <strong>UAE</strong>. A short flight to Delhi, but not always possible to just go. Let Kith &amp; Kin be your presence when you can't be there.",
+    SG:"You\'re in <strong>Singapore</strong>. Your parents in Delhi are closer than most — but distance is relative when you're the one worrying.",
+    QA:"You\'re in <strong>Qatar</strong>. Whether you're an hour away or ten, Kith &amp; Kin gives you a real picture of how your parent is doing.",
+    KW:"You\'re in <strong>Kuwait</strong>. We visit your parents in Delhi on your behalf, keep them company, and send you a full report the same day.",
+    OM:"You\'re in <strong>Oman</strong>. Kith &amp; Kin visits your parents and sends you a full WhatsApp report the same day — vitals, mood, and anything to flag."
   };
   try{
     fetch('https://ipapi.co/json/')
@@ -2599,25 +2603,38 @@ function sendChatMsg(){
 
 <script>
 (function(){
-  var KK_CURRENCY='EUR',KK_SYMBOL='€',KK_PRICES=[5999,9999,20999];
+  var KK_CURRENCY='EUR',KK_SYMBOL='€';
+  var KK_PRICES_MONTHLY=[5999,9999,20999];
+  var KK_PRICES_ANNUAL=[59990,99990,209990];
+  var KK_RATE=null;
+
+  function renderLocalPrices(mode){
+    if(!KK_RATE)return;
+    var prices=(mode==='annual')?KK_PRICES_ANNUAL:KK_PRICES_MONTHLY;
+    var suffix=(mode==='annual')?' /yr at today\'s rate':' at today\'s rate';
+    var ids=['price-essential','price-signature','price-premiere'];
+    prices.forEach(function(inr,i){
+      var local=Math.round(inr*KK_RATE);
+      var el=document.getElementById(ids[i]+'-local');
+      if(el)el.textContent='~'+KK_SYMBOL+local.toLocaleString()+suffix;
+    });
+    // Update compare table
+    var cids=['cmp-essential','cmp-signature','cmp-premiere'];
+    prices.forEach(function(inr,i){
+      var local=Math.round(inr*KK_RATE);
+      var el=document.getElementById(cids[i]);
+      if(el)el.textContent='~'+KK_SYMBOL+local.toLocaleString();
+    });
+  }
+  window.KK_renderLocalPrices=renderLocalPrices;
+
   fetch('https://open.exchangerate-api.com/v6/latest/INR')
     .then(function(r){return r.json()})
     .then(function(d){
       var rate=d.conversion_rates[KK_CURRENCY];
       if(!rate)return;
-      var ids=['price-essential','price-signature','price-premiere'];
-      KK_PRICES.forEach(function(inr,i){
-        var local=Math.round(inr*rate);
-        var el=document.getElementById(ids[i]+'-local');
-        if(el)el.textContent='~'+KK_SYMBOL+local.toLocaleString()+' at today\'s rate';
-      });
-      // Update compare table
-      var cids=['cmp-essential','cmp-signature','cmp-premiere'];
-      KK_PRICES.forEach(function(inr,i){
-        var local=Math.round(inr*rate);
-        var el=document.getElementById(cids[i]);
-        if(el)el.textContent='~'+KK_SYMBOL+local.toLocaleString();
-      });
+      KK_RATE=rate;
+      renderLocalPrices((typeof billingMode!=='undefined')?billingMode:'monthly');
     })
     .catch(function(){});
 
@@ -2625,7 +2642,7 @@ function sendChatMsg(){
   var bi=document.getElementById('country-banner-inner');
   var bb=document.getElementById('country-banner');
   if(bi&&bb){
-    bi.innerHTML='Viewing this page from <strong>Europe</strong> &mdash; Amsterdam · Frankfurt · Paris · Zurich. You're 3.5–4.5 hours behind Delhi.';
+    bi.innerHTML='Viewing this page from <strong>Europe</strong> &mdash; Amsterdam · Frankfurt · Paris · Zurich. You\'re 3.5–4.5 hours behind Delhi.';
     bb.classList.add('show');
   }
 })();
